@@ -3,6 +3,7 @@
   "description": "Data7 Manager",
   "version": "1.0.0",
   "private": true,
+  "repository": "https://github.com/matheusdevelope/data7-manager",
   "author": {
     "email": "emersonmatheustu@gmail.com",
     "name": "Matheus Teixeira",
@@ -15,6 +16,7 @@
     "build:preload": "cd ./packages/preload && vite build",
     "build:renderer": "cd ./packages/renderer && vite build",
     "compile": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js --dir --config.asar=false",
+    "package": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js",
     "test": "npm run test:main && npm run test:preload && npm run test:renderer && npm run test:e2e",
     "test:e2e": "npm run build && vitest run",
     "test:main": "vitest run -r packages/main --passWithNoTests",
