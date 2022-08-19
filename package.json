@@ -1,11 +1,8 @@
 {
-  "name": "my-boilerpalte-electron-vite-react",
-  "description": "Secure boilerplate for Electron app based on Vite",
+  "name": "data7-manager",
+  "description": "Data7 Manager",
+  "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": ">=v16.13",
-    "npm": ">=8.1"
-  },
   "author": {
     "email": "emersonmatheustu@gmail.com",
     "name": "Matheus Teixeira",
