@@ -12,6 +12,9 @@ if (!isSingleInstance) {
 }
 app.on('second-instance', InitializeInterface);
 
+app.setLoginItemSettings({
+  openAtLogin: true,
+});
 // Disable Hardware Acceleration to save more system resources.
 app.disableHardwareAcceleration();
 
