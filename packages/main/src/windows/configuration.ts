@@ -4,12 +4,17 @@ import { createDefaultWindow } from "../handlers/ControlWindows";
 let Window: BrowserWindow;
 
 function Create() {
-  if (Window && !Window.isDestroyed()) return Window;
+  if (Window && !Window.isDestroyed()) {
+    Focus();
+    return Window;
+  }
   Window = createDefaultWindow(null, {
     show: false,
     fullscreenable: false,
   });
-  Window.on("ready-to-show", () => null);
+  Window.on("ready-to-show", () => {
+    Focus();
+  });
 
   const pageUrl =
     import.meta.env.DEV && import.meta.env.VITE_DEV_SERVER_URL !== undefined
@@ -23,7 +28,6 @@ function Create() {
   return Window;
 }
 function Focus() {
-  Create();
   Window.show();
   Window.focus();
 }

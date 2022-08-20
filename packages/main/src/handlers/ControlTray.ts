@@ -8,7 +8,7 @@ let Menus: MenuItemConstructorOptions[] = [
   {
     id: "config-window",
     label: "Configurações",
-    click: WindowConfigurationPanel().Focus,
+    click: WindowConfigurationPanel().Create,
   },
   {
     label: "Reiniciar",
