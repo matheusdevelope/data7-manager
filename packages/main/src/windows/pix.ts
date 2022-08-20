@@ -1,20 +1,21 @@
-import type { BrowserWindow } from 'electron';
-import { screen } from 'electron';
-import { Global_State } from '../global_state';
-import ControlTray from '../handlers/ControlTray';
-import { createDefaultWindow } from '../handlers/ControlWindows';
-import { CreateNotification } from '../handlers/notifications';
-import { Storage } from '../services/local_storage';
+import type { BrowserWindow } from "electron";
+import { screen } from "electron";
+import { Global_State } from "../global_state";
+import ControlTray from "../handlers/ControlTray";
+import { createDefaultWindow, ToggleWindow } from "../handlers/ControlWindows";
+import { CreateNotification } from "../handlers/notifications";
+import { Storage } from "../services/local_storage";
 
 let Window: BrowserWindow;
 
 function Create(cb_ready?: (Window: BrowserWindow) => void) {
+  if (Window && !Window.isDestroyed()) return Window;
   const screenElectron = screen;
   const display = screenElectron.getPrimaryDisplay();
   const dimensions = display.workAreaSize;
 
-  const DimensionsUSer: IDimensions = Storage.has('dimensions')
-    ? (Storage.get('dimensions') as unknown as IDimensions)
+  const DimensionsUSer: IDimensions = Storage.has("dimensions")
+    ? (Storage.get("dimensions") as unknown as IDimensions)
     : {
         width: Math.floor(dimensions.width * 0.25),
         height: Math.floor(dimensions.height * 0.45),
@@ -33,36 +34,34 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
     transparent: true,
   });
 
-  if (!Window) return;
-
-  Window.on('minimize', function (event: { preventDefault: () => void }) {
+  Window.on("minimize", function (event: { preventDefault: () => void }) {
     event.preventDefault();
     Window.hide();
   });
 
-  Window.on('close', function (event) {
+  Window.on("close", function (event) {
     event.preventDefault();
     Window.hide();
     return false;
   });
 
-  Window.on('resized', () => {
+  Window.on("resized", () => {
     const { height, width } = screen.getPrimaryDisplay().workAreaSize;
     const position = Window.getBounds();
     const newX = width / 2 - position.width / 2;
     const newY = height / 2 - position.height / 2;
     Window.setBounds({ x: Math.floor(newX), y: Math.floor(newY) });
-    Storage.set('dimensions', {
+    Storage.set("dimensions", {
       width: position.width,
       height: position.height,
     });
   });
 
-  Window.on('ready-to-show', () => {
+  Window.on("ready-to-show", () => {
     CreateNotification({
       silent: true,
       title: Global_State.name_app,
-      body: 'O serviço PIX está ativo, aguardando atualizações.',
+      body: "O serviço PIX está ativo, aguardando atualizações.",
     });
     RegisterMenusOnTray();
     // if (import.meta.env.DEV) {
@@ -74,24 +73,20 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
     import.meta.env.DEV && import.meta.env.VITE_DEV_SERVER_URL !== undefined
       ? import.meta.env.VITE_DEV_SERVER_URL
       : new URL(
-          '../renderer/dist/index.html',
-          'file://' + __dirname,
+          "../renderer/dist/index.html",
+          "file://" + __dirname,
         ).toString();
 
-  Window.loadURL(pageUrl + '#/qrcode');
+  Window.loadURL(pageUrl + "#/qrcode");
   cb_ready && cb_ready(Window);
   return Window;
 }
 function RegisterMenusOnTray() {
   ControlTray().AddAction({
-    label: 'Parar/Ativar Serviço PIX',
+    id: "toggle-pix-window",
+    label: "Exibir Tela Pix",
     click: () => {
-      if (Window.isDestroyed()) {
-        Create();
-      } else {
-        Window.removeAllListeners();
-        Window.destroy();
-      }
+      ToggleWindow(Create());
     },
   });
 }

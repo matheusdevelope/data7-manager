@@ -1,3 +1,12 @@
+enum EnumTypeOfCallback {
+  error,
+  success,
+}
+enum EnumDevices {
+  desktop,
+  mobile,
+}
+
 interface IObjectConfig {
   key: string;
   value: string | number | boolean;
@@ -101,14 +110,7 @@ interface IDataQrCode {
   message: string;
   created_at: Date;
 }
-enum EnumTypeOfCallback {
-  error,
-  success,
-}
-enum EnumDevices {
-  desktop,
-  mobile,
-}
+
 interface ICallback {
   type: EnumTypeOfCallback;
   message: string;
