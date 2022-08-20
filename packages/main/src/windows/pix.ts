@@ -1,14 +1,28 @@
 import type { BrowserWindow } from "electron";
+import { dialog } from "electron";
 import { screen } from "electron";
 import { Global_State } from "../global_state";
 import ControlTray from "../handlers/ControlTray";
 import { createDefaultWindow, ToggleWindow } from "../handlers/ControlWindows";
 import { CreateNotification } from "../handlers/notifications";
 import { Storage } from "../services/local_storage";
+import { WindowConfigurationPanel } from "./configuration";
 
 let Window: BrowserWindow;
 
 function Create(cb_ready?: (Window: BrowserWindow) => void) {
+  if (Global_State.localConfig().cnpj.length == 0) {
+    dialog
+      .showMessageBox({
+        type: "info",
+        title: Global_State.name_app,
+        message:
+          "Você não possui nenhum CNPJ cadastrado, por gentileza acesse as configurações e informe o CNPJ. \nSem o CNPJ você será incapaz de receber PIX nesse terminal.",
+      })
+      .then(() => {
+        WindowConfigurationPanel().Create();
+      });
+  }
   if (Window && !Window.isDestroyed()) return Window;
   const screenElectron = screen;
   const display = screenElectron.getPrimaryDisplay();
@@ -28,20 +42,20 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
     minHeight: 460,
     maxWidth: dimensions.width,
     maxHeight: dimensions.height,
-    show: false,
+    closable: false,
     frame: false,
     fullscreenable: false,
     transparent: true,
+    alwaysOnTop: import.meta.env.DEV,
   });
 
   Window.on("minimize", function (event: { preventDefault: () => void }) {
     event.preventDefault();
-    Window.hide();
+    return false;
   });
 
   Window.on("close", function (event) {
     event.preventDefault();
-    Window.hide();
     return false;
   });
 
@@ -81,14 +95,21 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
   cb_ready && cb_ready(Window);
   return Window;
 }
+const MenuItemTray = {
+  id: "toggle-pix-window",
+  label: "Mostrar área PIX",
+  click: () => {
+    ToggleWindow(Create(), (isVisible) => {
+      ControlTray().ReplaceMenuItem({
+        ...MenuItemTray,
+        label: isVisible ? "Ocultar área PIX" : MenuItemTray.label,
+      });
+    });
+  },
+};
+
 function RegisterMenusOnTray() {
-  ControlTray().AddAction({
-    id: "toggle-pix-window",
-    label: "Exibir Tela Pix",
-    click: () => {
-      ToggleWindow(Create());
-    },
-  });
+  ControlTray().AddAction(MenuItemTray);
 }
 
 export function WindowPix() {

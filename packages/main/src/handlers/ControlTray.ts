@@ -3,6 +3,7 @@ import { app, BrowserWindow, dialog, Menu, Tray } from "electron";
 import { resolve } from "path";
 import { Global_State } from "../global_state";
 import { WindowConfigurationPanel } from "../windows/configuration";
+import { RemoveAllNotifications } from "./notifications";
 let AppTray: Tray;
 let Menus: MenuItemConstructorOptions[] = [
   {
@@ -60,6 +61,7 @@ let Menus: MenuItemConstructorOptions[] = [
     },
   },
 ];
+
 export default function ControlTray() {
   function Create(path_icon?: string, tool_tip = "") {
     const default_path_icon = resolve(__dirname, "icon.png");
@@ -68,6 +70,11 @@ export default function ControlTray() {
     }
     AppTray.setToolTip(tool_tip);
     AppTray.setContextMenu(BuildMenu(Menus));
+    AppTray.on("click", () => {
+      RemoveAllNotifications();
+      AppTray.popUpContextMenu();
+    });
+
     return AppTray;
   }
 
@@ -88,10 +95,19 @@ export default function ControlTray() {
     Menus = Menus.filter((item) => item.id !== id);
     AppTray.setContextMenu(BuildMenu(Menus));
   }
+  function ReplaceMenuItem(menu: MenuItemConstructorOptions) {
+    const indexITemMenu = Menus.findIndex((item) => item.id === menu.id);
+    if (indexITemMenu >= 0) {
+      Menus.splice(indexITemMenu, 1, menu);
+      AppTray.setContextMenu(BuildMenu(Menus));
+    }
+  }
+
   return {
     Create,
     Tray: AppTray,
     AddAction,
     RemoveMenu,
+    ReplaceMenuItem,
   };
 }

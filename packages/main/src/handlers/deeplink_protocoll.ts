@@ -1,9 +1,8 @@
-import type { App, BrowserWindow } from 'electron';
-import { dialog } from 'electron';
-import parseUrl from 'parse-url';
-import * as path from 'path';
-import { Global_State } from '../global_state';
-import { WindowPix } from '../windows/pix';
+import type { App, BrowserWindow } from "electron";
+import parseUrl from "parse-url";
+import * as path from "path";
+import { Global_State } from "../global_state";
+import { WindowPix } from "../windows/pix";
 
 function HandleDeepLinkProtocoll(
   event: Electron.Event,
@@ -17,15 +16,15 @@ function HandleDeepLinkProtocoll(
   if (deeplinkingUrl) {
     const parsed_url = parseUrl(deeplinkingUrl);
     switch (parsed_url.resource) {
-      case 'qrcode':
+      case "qrcode":
         HandleQrCode(deeplinkingUrl, WindowPix().Window);
         break;
-      default:
-        dialog.showMessageBox(WindowPix().Window, {
-          title: 'Data7',
-          message: `Recurso solicitado indispoível: ${parsed_url.resource}`,
-        });
-        break;
+      // default:
+      //   dialog.showMessageBox(WindowPix().Window, {
+      //     title: "Data7",
+      //     message: `Recurso solicitado indispoível: ${parsed_url.resource}`,
+      //   });
+      //   break;
     }
   }
   return;
@@ -45,7 +44,7 @@ function RegisterDeepLink(app: App) {
   }
 }
 function StringBoolean_To_Boolean(string: string) {
-  if (string === 'true') return true;
+  if (string === "true") return true;
   return false;
 }
 

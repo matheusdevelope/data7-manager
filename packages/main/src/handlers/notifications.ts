@@ -1,12 +1,21 @@
-import type { NotificationConstructorOptions } from 'electron';
-import { Notification } from 'electron';
-import { resolve } from 'path';
+import type { NotificationConstructorOptions } from "electron";
+import { Notification } from "electron";
+import { resolve } from "path";
+
+let notifications: Notification[] = [];
 
 function CreateNotification(options: NotificationConstructorOptions) {
-  return new Notification({
-    icon: resolve(__dirname, 'icon.ico'),
+  const noti = new Notification({
+    icon: resolve(__dirname, "icon.ico"),
     ...options,
-  }).show();
+  });
+  notifications.push(noti);
+  noti.show();
+  return noti;
+}
+function RemoveAllNotifications() {
+  notifications.forEach((notification) => notification.close());
+  notifications = [];
 }
 
-export { CreateNotification };
+export { CreateNotification, RemoveAllNotifications };
