@@ -1,18 +1,14 @@
 #!/usr/bin/env node
 
-import {build, createServer} from 'vite';
-import electronPath from 'electron';
-import {spawn} from 'child_process';
-
+import { build, createServer } from "vite";
+import electronPath from "electron";
+import { spawn } from "child_process";
 
 /** @type 'production' | 'development'' */
-const mode = process.env.MODE = process.env.MODE || 'development';
-
+const mode = (process.env.MODE = process.env.MODE || "development");
 
 /** @type {import('vite').LogLevel} */
-const logLevel = 'warn';
-
-
+const logLevel = "warn";
 
 /**
  * Setup watcher for `main` package
@@ -20,7 +16,7 @@ const logLevel = 'warn';
  * @param {import('vite').ViteDevServer} watchServer Renderer watch server instance.
  * Needs to set up `VITE_DEV_SERVER_URL` environment variable from {@link import('vite').ViteDevServer.resolvedUrls}
  */
-function setupMainPackageWatcher({resolvedUrls}) {
+function setupMainPackageWatcher({ resolvedUrls }) {
   process.env.VITE_DEV_SERVER_URL = resolvedUrls.local[0];
 
   /** @type {ChildProcess | null} */
@@ -29,7 +25,8 @@ function setupMainPackageWatcher({resolvedUrls}) {
   return build({
     mode,
     logLevel,
-    configFile: 'packages/main/vite.config.js',
+    configFile: "packages/main/vite.config.js",
+    publicDir: "assets",
     build: {
       /**
        * Set to {} to enable rollup watcher
@@ -37,29 +34,29 @@ function setupMainPackageWatcher({resolvedUrls}) {
        */
       watch: {},
     },
-    plugins: [{
-      name: 'reload-app-on-main-package-change',
-      writeBundle() {
-        /** Kill electron if process already exist */
-        if (electronApp !== null) {
-          electronApp.removeListener('exit', process.exit);
-          electronApp.kill('SIGINT');
-          electronApp = null;
-        }
+    plugins: [
+      {
+        name: "reload-app-on-main-package-change",
+        writeBundle() {
+          /** Kill electron if process already exist */
+          if (electronApp !== null) {
+            electronApp.removeListener("exit", process.exit);
+            electronApp.kill("SIGINT");
+            electronApp = null;
+          }
 
-        /** Spawn new electron process */
-        electronApp = spawn(String(electronPath), ['.'], {
-          stdio: 'inherit',
-        });
+          /** Spawn new electron process */
+          electronApp = spawn(String(electronPath), ["."], {
+            stdio: "inherit",
+          });
 
-        /** Stops the watch script when the application has been quit */
-        electronApp.addListener('exit', process.exit);
+          /** Stops the watch script when the application has been quit */
+          electronApp.addListener("exit", process.exit);
+        },
       },
-    }],
+    ],
   });
-
 }
-
 
 /**
  * Setup watcher for `preload` package
@@ -67,11 +64,11 @@ function setupMainPackageWatcher({resolvedUrls}) {
  * @param {import('vite').ViteDevServer} watchServer Renderer watch server instance.
  * Required to access the web socket of the page. By sending the `full-reload` command to the socket, it reloads the web page.
  */
-function setupPreloadPackageWatcher({ws}) {
+function setupPreloadPackageWatcher({ ws }) {
   return build({
     mode,
     logLevel,
-    configFile: 'packages/preload/vite.config.js',
+    configFile: "packages/preload/vite.config.js",
     build: {
       /**
        * Set to {} to enable rollup watcher
@@ -79,17 +76,18 @@ function setupPreloadPackageWatcher({ws}) {
        */
       watch: {},
     },
-    plugins: [{
-      name: 'reload-page-on-preload-package-change',
-      writeBundle() {
-        ws.send({
-          type: 'full-reload',
-        });
+    plugins: [
+      {
+        name: "reload-page-on-preload-package-change",
+        writeBundle() {
+          ws.send({
+            type: "full-reload",
+          });
+        },
       },
-    }],
+    ],
   });
 }
-
 
 /**
  * Dev server for Renderer package
@@ -100,8 +98,8 @@ function setupPreloadPackageWatcher({ws}) {
 const rendererWatchServer = await createServer({
   mode,
   logLevel,
-  configFile: 'packages/renderer/vite.config.js',
-}).then(s => s.listen());
+  configFile: "packages/renderer/vite.config.js",
+}).then((s) => s.listen());
 
 await setupPreloadPackageWatcher(rendererWatchServer);
 await setupMainPackageWatcher(rendererWatchServer);

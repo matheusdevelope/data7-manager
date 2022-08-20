@@ -1,12 +1,5 @@
-import type {
-  MenuItemConstructorOptions} from 'electron';
-import {
-  app,
-  BrowserWindow,
-  dialog,
-  Menu,
-  Tray,
-} from 'electron';
+import type { MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, dialog, Menu, Tray } from 'electron';
 import { resolve } from 'path';
 import { Global_State } from '../global_state';
 let AppTray: Tray;
@@ -49,7 +42,7 @@ const Menus: MenuItemConstructorOptions[] = [
 ];
 export default function ControlTray() {
   function Create(path_icon?: string, tool_tip = '') {
-    const default_path_icon = resolve(__dirname, '../', 'assets', 'icon.png');
+    const default_path_icon = resolve(__dirname, 'icon.png');
     if (!AppTray) {
       AppTray = new Tray(path_icon ? path_icon : default_path_icon);
     }

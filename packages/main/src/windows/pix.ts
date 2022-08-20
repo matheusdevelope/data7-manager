@@ -1,4 +1,4 @@
-import type { BrowserWindow} from 'electron';
+import type { BrowserWindow } from 'electron';
 import { screen } from 'electron';
 import { Global_State } from '../global_state';
 import ControlTray from '../handlers/ControlTray';
@@ -91,8 +91,6 @@ function RegisterMenusOnTray() {
   ControlTray().AddAction({
     label: 'Parar/Ativar Serviço PIX',
     click: () => {
-      console.log('Click', Window);
-
       if (Window.isDestroyed()) {
         Create();
       } else {

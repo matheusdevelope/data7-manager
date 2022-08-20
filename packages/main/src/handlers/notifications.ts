@@ -4,7 +4,7 @@ import { resolve } from 'path';
 
 function CreateNotification(options: NotificationConstructorOptions) {
   return new Notification({
-    icon: resolve(__dirname, '../', 'assets', 'icon.ico'),
+    icon: resolve(__dirname, 'icon.ico'),
     ...options,
   }).show();
 }

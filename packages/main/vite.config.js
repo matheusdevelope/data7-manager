@@ -1,8 +1,7 @@
-import {node} from '../../.electron-vendors.cache.json';
-import {join} from 'path';
+import { node } from '../../.electron-vendors.cache.json';
+import { join } from 'path';
 
 const PACKAGE_ROOT = __dirname;
-
 
 /**
  * @type {import('vite').UserConfig}
@@ -17,12 +16,13 @@ const config = {
       '/@/': join(PACKAGE_ROOT, 'src') + '/',
     },
   },
+  publicDir: 'assets',
   build: {
     ssr: true,
     sourcemap: 'inline',
     target: `node${node}`,
     outDir: 'dist',
-    assetsDir: '.',
+
     minify: process.env.MODE !== 'development',
     lib: {
       entry: 'src/index.ts',
