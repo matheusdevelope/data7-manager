@@ -1,70 +1,51 @@
-import { app } from "electron";
-import "./security-restrictions";
-import { restoreOrCreateWindow } from "/@/mainWindow";
+import { app } from 'electron';
+import { Global_State } from './global_state';
+import { RegisterShortcuts } from './handlers/shortcuts';
+import './security-restrictions';
+import { InitializeInterface } from './InitializeInteface';
 
-/**
- * Prevent electron from running multiple instances.
- */
+// Prevent electron from running multiple instances.
 const isSingleInstance = app.requestSingleInstanceLock();
 if (!isSingleInstance) {
   app.quit();
   process.exit(0);
 }
-app.on("second-instance", restoreOrCreateWindow);
+app.on('second-instance', InitializeInterface);
 
-/**
- * Disable Hardware Acceleration to save more system resources.
- */
+// Disable Hardware Acceleration to save more system resources.
 app.disableHardwareAcceleration();
 
-/**
- * Shout down background process if all windows was closed
- */
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
+// Shout down background process if all windows was closed
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    // app.quit();
   }
 });
 
-/**
- * @see https://www.electronjs.org/docs/latest/api/app#event-activate-macos Event: 'activate'.
- */
-app.on("activate", restoreOrCreateWindow);
+app.on('activate', InitializeInterface);
 
-/**
- * Create the application window when the background process is ready.
- */
+app.on('will-quit', () => {
+  RegisterShortcuts().unregisterAll();
+});
+
+// Create the application window when the background process is ready.
 app
   .whenReady()
-  .then(restoreOrCreateWindow)
-  .catch((e) => console.error("Failed create window:", e));
+  .then(InitializeInterface)
+  .catch((e) => console.error('Failed create window:', e));
 
-/**
- * Install Vue.js or any other extension in development mode only.
- * Note: You must install `electron-devtools-installer` manually
- */
-// if (import.meta.env.DEV) {
-//   app.whenReady()
-//     .then(() => import('electron-devtools-installer'))
-//     .then(({default: installExtension, VUEJS3_DEVTOOLS}) => installExtension(VUEJS3_DEVTOOLS, {
-//       loadExtensionOptions: {
-//         allowFileAccess: true,
-//       },
-//     }))
-//     .catch(e => console.error('Failed install extension:', e));
-// }
-
-/**
- * Check for new version of the application - production mode only.
- */
+// Check for new version of the application - production mode only.
 if (import.meta.env.PROD) {
   app
     .whenReady()
-    .then(() => import("electron-updater"))
+    .then(() => import('electron-updater'))
     .then(({ autoUpdater }) => {
-      // IF enable pre relesa the update in the same day don't work.
+      // IF enable pre release the update in the same day don't work.
       autoUpdater.allowPrerelease = false;
-      autoUpdater.checkForUpdatesAndNotify();
+      autoUpdater.checkForUpdatesAndNotify({
+        title: Global_State.name_app,
+        body: Global_State.notification_update,
+      });
     })
-    .catch((e) => console.error("Failed check updates:", e));
+    .catch((e) => console.error('Failed check updates:', e));
 }
