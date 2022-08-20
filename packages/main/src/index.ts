@@ -3,6 +3,7 @@ import { Global_State } from './global_state';
 import { RegisterShortcuts } from './handlers/shortcuts';
 import './security-restrictions';
 import { InitializeInterface } from './InitializeInteface';
+import { HandleDeepLinkProtocoll } from './handlers/deeplink_protocoll';
 
 // Prevent electron from running multiple instances.
 const isSingleInstance = app.requestSingleInstanceLock();
@@ -10,7 +11,9 @@ if (!isSingleInstance) {
   app.quit();
   process.exit(0);
 }
-app.on('second-instance', InitializeInterface);
+app.on('second-instance', (event, commandLine, workingDirectory) => {
+  return HandleDeepLinkProtocoll(event, commandLine, workingDirectory);
+});
 
 app.setLoginItemSettings({
   openAtLogin: true,

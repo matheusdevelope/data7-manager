@@ -181,7 +181,6 @@ export function StartPixSrvice() {
 
         CallQrCode({
           qrcode: lista[0],
-          devices: [],
           callback: () => console.log,
         });
         if (!QrCode.awaiting_payment) {
@@ -190,7 +189,6 @@ export function StartPixSrvice() {
             CallQrCode({
               qrcode:
                 lista.length > 0 ? lista[0] : { ...QrCode, action: 'close' },
-              devices: [],
               callback: () => console.log,
             });
           }, 1200);
@@ -206,7 +204,6 @@ export function StartPixSrvice() {
         action: 'close',
         message: 'Serviço Firestore Desabilitado.',
       },
-      devices: [],
       callback: () => console.log,
     });
   };

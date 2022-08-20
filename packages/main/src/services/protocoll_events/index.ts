@@ -2,7 +2,7 @@ import { exec } from 'child_process';
 import { shell } from 'electron';
 import { apenasNumeros, MakeParamsFromObj } from '../../utils';
 
-function CallQrCode({ qrcode, devices: _, callback }: IOpenQrCode) {
+function CallQrCode({ qrcode, callback }: IOpenQrCode) {
   const params = MakeParamsFromObj(qrcode).join('^&');
   exec(`start data7://qrcode?${params}`);
   return callback({

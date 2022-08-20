@@ -7,7 +7,12 @@ const Menus: MenuItemConstructorOptions[] = [
   {
     label: 'Reiniciar',
     click: () => {
+      BrowserWindow.getAllWindows().map((Window) => {
+        Window.removeAllListeners();
+        Window.destroy();
+      });
       app.relaunch();
+      app.quit();
     },
   },
   {

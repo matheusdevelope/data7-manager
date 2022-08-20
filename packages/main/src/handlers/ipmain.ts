@@ -1,4 +1,3 @@
-import type { BrowserWindow} from 'electron';
 import { app, ipcMain } from 'electron';
 import { toDataURL } from 'qrcode';
 import { Global_State } from '../global_state';
@@ -8,7 +7,6 @@ import { SendMessageOnWhatsapp } from '../services/protocoll_events';
 import { WindowPix } from '../windows/pix';
 
 function RegisterListenersIpcMain() {
-  const Window: BrowserWindow = WindowPix().Window;
   ipcMain.handle(Global_State.events.set_app_pass, (_, password: string) => {
     return SafeStorage.setPassword('application_pass', password);
   });
@@ -22,11 +20,11 @@ function RegisterListenersIpcMain() {
     return Storage.set({ ...Storage.store, config });
   });
   ipcMain.on(Global_State.events.open_qrcode, async () => {
-    Window.show();
+    WindowPix().Window.show();
     return true;
   });
   ipcMain.on(Global_State.events.close_qrcode, async () => {
-    Window.hide();
+    WindowPix().Window.hide();
     return true;
   });
   ipcMain.on(Global_State.events.close_current_window, async () => {
@@ -36,8 +34,8 @@ function RegisterListenersIpcMain() {
   ipcMain.on(Global_State.events.refresh_aplication, async () => {
     console.log('relaunch');
 
-    Window.removeAllListeners();
-    Window.destroy();
+    WindowPix().Window.removeAllListeners();
+    WindowPix().Window.destroy();
 
     app.relaunch();
     setTimeout(app.exit, 2000);

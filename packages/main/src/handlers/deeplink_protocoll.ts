@@ -3,12 +3,12 @@ import { dialog } from 'electron';
 import parseUrl from 'parse-url';
 import * as path from 'path';
 import { Global_State } from '../global_state';
+import { WindowPix } from '../windows/pix';
 
 function HandleDeepLinkProtocoll(
   event: Electron.Event,
   commandLine: string[],
-  workingDirectory: string,
-  Window: Electron.BrowserWindow,
+  _: string,
 ) {
   const deeplinkingUrl = commandLine.find((arg) =>
     arg.startsWith(`${Global_State.protocoll_register}://`),
@@ -18,10 +18,10 @@ function HandleDeepLinkProtocoll(
     const parsed_url = parseUrl(deeplinkingUrl);
     switch (parsed_url.resource) {
       case 'qrcode':
-        HandleQrCode(deeplinkingUrl, Window);
+        HandleQrCode(deeplinkingUrl, WindowPix().Window);
         break;
       default:
-        dialog.showMessageBox(Window, {
+        dialog.showMessageBox(WindowPix().Window, {
           title: 'Data7',
           message: `Recurso solicitado indispoível: ${parsed_url.resource}`,
         });

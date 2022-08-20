@@ -8,7 +8,7 @@ import { Storage } from '../services/local_storage';
 
 let Window: BrowserWindow;
 
-function Create() {
+function Create(cb_ready?: (Window: BrowserWindow) => void) {
   const screenElectron = screen;
   const display = screenElectron.getPrimaryDisplay();
   const dimensions = display.workAreaSize;
@@ -30,6 +30,7 @@ function Create() {
     show: false,
     frame: false,
     fullscreenable: false,
+    transparent: true,
   });
 
   if (!Window) return;
@@ -69,12 +70,6 @@ function Create() {
     // }
   });
 
-  // if (Global_State.isDev) {
-  //   win.loadURL(`http://localhost:3000#/${route}`);
-  // } else {
-  //   win.loadURL(`file://${app.getAppPath()}/dist/index.html#/${route}`);
-  // }
-
   const pageUrl =
     import.meta.env.DEV && import.meta.env.VITE_DEV_SERVER_URL !== undefined
       ? import.meta.env.VITE_DEV_SERVER_URL
@@ -83,8 +78,8 @@ function Create() {
           'file://' + __dirname,
         ).toString();
 
-  Window.loadURL(pageUrl);
-
+  Window.loadURL(pageUrl + '#/qrcode');
+  cb_ready && cb_ready(Window);
   return Window;
 }
 function RegisterMenusOnTray() {
