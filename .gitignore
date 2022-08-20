@@ -1,8 +1,10 @@
 node_modules
 .DS_Store
 dist
+certificates/**
 *.local
 thumbs.db
+firebase.json
 
 .eslintcache
 .browserslistrc
