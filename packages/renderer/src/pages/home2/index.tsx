@@ -1,7 +1,6 @@
-import type { BoxProps, FlexProps } from "@chakra-ui/react";
+/* eslint-disable no-undef */
 import {
   Box,
-  Collapse,
   Drawer,
   DrawerContent,
   DrawerOverlay,
@@ -11,131 +10,167 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  Text,
-  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { FaBell } from "react-icons/fa";
-import { BsGearFill } from "react-icons/bs";
 import { FiMenu, FiSearch } from "react-icons/fi";
+import React, { useState } from "react";
+import SideBarContent from "/@/components/Home/SideBar";
+import { MdHome } from "react-icons/md";
 import { HiCode } from "react-icons/hi";
-import { MdHome, MdKeyboardArrowRight } from "react-icons/md";
-import React from "react";
+import { BsGearFill, BsWhatsapp } from "react-icons/bs";
 import type { IconType } from "react-icons";
-import AuthenticationModal from "/@/components/AuthenticationModal";
+import HomeContent from "/@/components/Home/Content/Home";
+import ConfigContent from "/@/components/Home/Content/Configuration";
+import ServicesContent from "../../components/Home/Content/Services/PIX";
+import ServicesPixContent from "../../components/Home/Content/Services/PIX";
+import ServicesWhatsContent from "/@/components/Home/Content/Services/Whatsapp";
+export interface IMenuItem {
+  id: string;
+  label: string;
+  icon: IconType;
+  order: number;
+  isVisible: boolean;
+  expanded?: boolean;
+  expansible_items?: IMenuItem[];
+  content: JSX.Element;
+  // eslint-disable-next-line no-unused-vars
+  onClick: (index: number, index_sub_menu?: number) => void;
+}
 
 export default function Home2() {
   const sidebar = useDisclosure();
-  const integrations = useDisclosure();
-  const authentication = useDisclosure();
-  const color = useColorModeValue("gray.600", "gray.300");
+  const [Content, setContent] = useState(<HomeContent />);
+  const ServicesMenu: IMenuItem[] = [
+    {
+      id: "pix" + new Date().toISOString(),
+      label: "PIX",
+      icon: MdHome,
+      order: 1,
+      isVisible: false,
+      content: <ServicesPixContent />,
+      onClick: ChangeContent,
+    },
+    {
+      id: "whatsapp" + new Date().toISOString(),
+      label: "Whatsapp",
+      icon: BsWhatsapp,
+      order: 2,
+      isVisible: false,
+      content: <ServicesWhatsContent />,
+      onClick: ChangeContent,
+    },
+  ];
 
-  interface INavItem extends FlexProps {
-    icon?: IconType;
-    children: React.ReactNode;
+  const DefaultMenus: IMenuItem[] = [
+    {
+      id: "home" + new Date().toISOString(),
+      label: "Tela Inicial",
+      icon: MdHome,
+      order: 1,
+      isVisible: true,
+      expanded: false,
+      expansible_items: [],
+      content: <HomeContent />,
+      onClick: ChangeContent,
+    },
+    {
+      id: "services" + new Date().toISOString(),
+      label: "Serviços",
+      icon: HiCode,
+      order: 2,
+      isVisible: false,
+      expanded: true,
+      expansible_items: ServicesMenu,
+      content: <ServicesContent />,
+      onClick: ChangeContent,
+    },
+    {
+      id: "configs" + new Date().toISOString(),
+      label: "Configurações",
+      icon: BsGearFill,
+      order: 3,
+      isVisible: false,
+      expanded: false,
+      expansible_items: [],
+      content: <ConfigContent />,
+      onClick: ChangeContent,
+    },
+  ];
+  const [Menus, setMenus] = useState(DefaultMenus);
+
+  function ChangeContent(index: number, index_sub_menu?: number) {
+    function Subs(menus?: IMenuItem[]) {
+      return menus?.map((sub_menu, key_sub) => {
+        if (
+          Number(Menus[index].expansible_items?.length) > 0 &&
+          sub_menu.isVisible &&
+          index_sub_menu == undefined
+        )
+          return sub_menu;
+
+        if (index_sub_menu !== key_sub)
+          return {
+            ...sub_menu,
+            isVisible: false,
+          };
+        return {
+          ...sub_menu,
+          isVisible: true,
+        };
+      });
+    }
+    setMenus((Menus) =>
+      Menus.map((menu, key) => {
+        const Expanded = menu.expanded;
+        const isExpansible = Number(menu.expansible_items?.length) == 0;
+        if (index_sub_menu != undefined)
+          return {
+            ...menu,
+            isVisible: false,
+            expansible_items: Subs(menu.expansible_items),
+          };
+
+        if (
+          index !== key &&
+          Number(Menus[index].expansible_items?.length) > 0 &&
+          menu.isVisible
+        )
+          return {
+            ...menu,
+            expansible_items: Subs(menu.expansible_items),
+          };
+        if (index !== key)
+          return {
+            ...menu,
+            isVisible: false,
+            expansible_items: Subs(menu.expansible_items),
+          };
+
+        return {
+          ...menu,
+          isVisible: isExpansible,
+          expanded: !Expanded,
+          expansible_items: Subs(menu.expansible_items),
+        };
+      })
+    );
+
+    const SubMenus = Menus[index].expansible_items;
+    if (SubMenus && index_sub_menu !== undefined) {
+      sidebar.onClose();
+      setContent(SubMenus[index_sub_menu].content);
+    } else {
+      if (Number(SubMenus?.length) == 0) {
+        sidebar.onClose();
+        setContent(Menus[index].content);
+      }
+    }
   }
 
-  const NavItem = (props: INavItem) => {
-    const { icon, children, ...rest } = props;
-    return (
-      <Flex
-        align="center"
-        px="4"
-        pl="4"
-        py="3"
-        cursor="pointer"
-        color="inherit"
-        _dark={{ color: "gray.400" }}
-        _hover={{
-          bg: "gray.100",
-          _dark: { bg: "gray.900" },
-          color: "gray.900",
-        }}
-        role="group"
-        fontWeight="semibold"
-        transition=".15s ease"
-        {...rest}
-      >
-        {icon && (
-          <Icon
-            mx="2"
-            boxSize="4"
-            _groupHover={{
-              color: color,
-            }}
-            as={icon}
-          />
-        )}
-        {children}
-      </Flex>
-    );
-  };
-
-  const SidebarContent = (props: BoxProps) => (
-    <Box
-      as="nav"
-      pos="fixed"
-      top="0"
-      left="0"
-      zIndex="sticky"
-      h="full"
-      pb="10"
-      overflowX="hidden"
-      overflowY="auto"
-      bg="white"
-      _dark={{ bg: "gray.800" }}
-      border={"1px"}
-      color="inherit"
-      borderRightWidth="1px"
-      w="60"
-      {...props}
-    >
-      <Flex px="4" py="5" align="center">
-        {/* <Logo /> */}
-        <Text
-          fontSize="2xl"
-          ml="2"
-          color="brand.500"
-          _dark={{ color: "white" }}
-          fontWeight="semibold"
-        >
-          Data7 Manager
-        </Text>
-      </Flex>
-      <Flex
-        direction="column"
-        as="nav"
-        fontSize="sm"
-        color="gray.600"
-        aria-label="Main Navigation"
-      >
-        <NavItem icon={MdHome}>Tela Inicial</NavItem>
-        <NavItem icon={HiCode} onClick={integrations.onToggle}>
-          Serviços
-          <Icon
-            as={MdKeyboardArrowRight}
-            ml="auto"
-            // transform={integrations.isOpen && "rotate(90deg)"}
-            transform={integrations.isOpen ? "rotate(90deg)" : "none"}
-          />
-        </NavItem>
-        <Collapse in={integrations.isOpen}>
-          <NavItem pl="12" py="2">
-            PIX
-          </NavItem>
-          <NavItem pl="12" py="2">
-            Whatsapp
-          </NavItem>
-        </Collapse>
-        <NavItem icon={BsGearFill} onClick={authentication.onOpen}>
-          Configurações
-        </NavItem>
-      </Flex>
-    </Box>
-  );
   return (
     <Box as="section" bg="gray.50" _dark={{ bg: "gray.700" }} minH="100vh">
-      <SidebarContent display={{ base: "none", md: "unset" }} />
+      <SideBarContent items={Menus} display={{ base: "none", md: "unset" }} />
       <Drawer
         isOpen={sidebar.isOpen}
         onClose={sidebar.onClose}
@@ -143,7 +178,7 @@ export default function Home2() {
       >
         <DrawerOverlay />
         <DrawerContent>
-          <SidebarContent w="full" borderRight="none" />
+          <SideBarContent items={Menus} w="full" borderRight="none" />
         </DrawerContent>
       </Drawer>
       <Box ml={{ base: 0, md: 60 }} transition=".3s ease">
@@ -179,13 +214,7 @@ export default function Home2() {
         </Flex>
 
         <Box as="main" p="4">
-          {/* Add content here, remove div below  */}
-          <Box borderWidth="4px" borderStyle="dashed" rounded="md" h="96" />
-          <AuthenticationModal
-            isOpen={authentication.isOpen}
-            onClose={authentication.onClose}
-            onAuthenticated={() => console.log("Foi")}
-          />
+          {Content}
         </Box>
       </Box>
     </Box>
