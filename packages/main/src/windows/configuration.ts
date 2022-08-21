@@ -10,6 +10,7 @@ function Create() {
   }
   Window = createDefaultWindow(null, {
     show: false,
+    alwaysOnTop: import.meta.env.DEV,
     fullscreenable: false,
   });
   Window.on("ready-to-show", () => {

@@ -1,11 +1,11 @@
-import { Global_State } from '../global_state';
-import { apenasNumeros } from '../utils';
-import useFirestore from './firebase';
-import { CallQrCode } from './protocoll_events';
+import { Global_State } from "../global_state";
+import { apenasNumeros } from "../utils";
+import useFirestore from "./firebase";
+import { CallQrCode } from "./protocoll_events";
 
 const Firestore = useFirestore(console.error);
 const LocalConfig = Global_State.localConfig();
-const CollectionUpdate = 'refresh-pix';
+const CollectionUpdate = "refresh-pix";
 const FieldsToLowerCase = [
   LocalConfig.firebase_ip,
   LocalConfig.firebase_machine_name,
@@ -16,24 +16,24 @@ const FieldsToLowerCase = [
 ];
 
 const ID_and_STATUS_original = {
-  status: '',
-  id: '',
+  status: "",
+  id: "",
 };
 
 export function StartPixSrvice() {
   let lista: IDataQrCode[] = [];
   const InitialPix: IDataQrCode = {
-    action: '',
-    id: '',
-    portion: '',
+    action: "",
+    id: "",
+    portion: "",
     price: 0,
-    img: '',
-    link: '',
-    phone: '',
+    img: "",
+    link: "",
+    phone: "",
     awaiting_payment: true,
     confirmed_payment: false,
     canceled: false,
-    message: 'Aguardando Ação',
+    message: "Aguardando Ação",
     created_at: new Date(),
   };
 
@@ -51,7 +51,7 @@ export function StartPixSrvice() {
 
       for (const key in doc) {
         if (Object.prototype.hasOwnProperty.call(doc, key)) {
-          if (typeof doc[key] == 'string') {
+          if (typeof doc[key] == "string") {
             if (LocalConfig.firebase_id == key.toLowerCase()) {
               ID_and_STATUS_original.id = key;
             }
@@ -83,7 +83,7 @@ export function StartPixSrvice() {
 
       for (const key in tempLiberacaoKey) {
         if (Object.prototype.hasOwnProperty.call(tempLiberacaoKey, key)) {
-          if (typeof tempLiberacaoKey[key] == 'string') {
+          if (typeof tempLiberacaoKey[key] == "string") {
             if (FieldsToLowerCase.includes(key.toLowerCase())) {
               LiberacaoKey[key.toLowerCase()] = tempLiberacaoKey[key]
                 .toString()
@@ -109,8 +109,8 @@ export function StartPixSrvice() {
       // appendFileSync("docs.json", JSON.stringify(doc) + ",\n");
       // writeFileSync("config-formated.json", JSON.stringify(LocalConfig));
       if (
-        apenasNumeros(LocalConfig.cnpj.join(',')).includes(
-          apenasNumeros(String(LiberacaoKey[LocalConfig.firebase_cnpj] || '')),
+        apenasNumeros(LocalConfig.cnpj.join(",")).includes(
+          apenasNumeros(String(LiberacaoKey[LocalConfig.firebase_cnpj] || "")),
         ) &&
         (LocalConfig.firebase_validate_ip === true
           ? LiberacaoKey[LocalConfig.firebase_ip] == Global_State.local_ip
@@ -122,29 +122,29 @@ export function StartPixSrvice() {
         //   Global_State.username_machine
       ) {
         const QrCode: IDataQrCode = {
-          action: 'open',
-          id: String(data[LocalConfig.firebase_id] || ''),
+          action: "open",
+          id: String(data[LocalConfig.firebase_id] || ""),
           price: Number(data[LocalConfig.firebase_price]),
-          portion: String(data[LocalConfig.firebase_portion] || ''),
-          img: String(data[LocalConfig.firebase_img] || ''),
-          link: String(data[LocalConfig.firebase_link] || ''),
-          phone: String(data[LocalConfig.firebase_phone] || ''),
+          portion: String(data[LocalConfig.firebase_portion] || ""),
+          img: String(data[LocalConfig.firebase_img] || ""),
+          link: String(data[LocalConfig.firebase_link] || ""),
+          phone: String(data[LocalConfig.firebase_phone] || ""),
           awaiting_payment:
             String(data[LocalConfig.firebase_status]).toLowerCase() ==
             LocalConfig.firebase_status_awaiting_payment.toLowerCase(),
           confirmed_payment:
-            String(data[LocalConfig.firebase_status] || '').toLowerCase() ==
+            String(data[LocalConfig.firebase_status] || "").toLowerCase() ==
             LocalConfig.firebase_status_confirmed_payment.toLowerCase(),
           canceled: [
             LocalConfig.firebase_status_canceled,
             LocalConfig.firebase_status_canceled_system,
             LocalConfig.firebase_status_canceled_client,
           ].includes(
-            String(data[LocalConfig.firebase_status] || '').toLowerCase(),
+            String(data[LocalConfig.firebase_status] || "").toLowerCase(),
           ),
           // String(data[LocalConfig.firebase_status] || "").toLowerCase() ==
           // LocalConfig.firebase_status_canceled.toLowerCase(),
-          message: String(data[LocalConfig.firebase_message] || ''),
+          message: String(data[LocalConfig.firebase_message] || ""),
           created_at: new Date(
             String(data[LocalConfig.firebase_created_at]) ||
               String(data.doc_created_at),
@@ -153,15 +153,15 @@ export function StartPixSrvice() {
         // console.log(QrCode);
 
         if (data[LocalConfig.firebase_error]) {
-          QrCode['error'] = String(data[LocalConfig.firebase_error] || '');
+          QrCode["error"] = String(data[LocalConfig.firebase_error] || "");
         }
         if (
           !QrCode.awaiting_payment &&
           !QrCode.confirmed_payment &&
           !QrCode.canceled
         ) {
-          QrCode.error = 'Nenhum status informado. Tente novamente.';
-          QrCode.message = 'Nenhum status informado. Tente novamente.';
+          QrCode.error = "Nenhum status informado. Tente novamente.";
+          QrCode.message = "Nenhum status informado. Tente novamente.";
         }
 
         if (data.qtd_docs > 1 && !QrCode.awaiting_payment) return;
@@ -188,7 +188,7 @@ export function StartPixSrvice() {
           setTimeout(() => {
             CallQrCode({
               qrcode:
-                lista.length > 0 ? lista[0] : { ...QrCode, action: 'close' },
+                lista.length > 0 ? lista[0] : { ...QrCode, action: "close" },
               callback: () => console.log,
             });
           }, 1200);
@@ -201,8 +201,8 @@ export function StartPixSrvice() {
     CallQrCode({
       qrcode: {
         ...InitialPix,
-        action: 'close',
-        message: 'Serviço Firestore Desabilitado.',
+        action: "close",
+        message: "Serviço Firestore Desabilitado.",
       },
       callback: () => console.log,
     });
@@ -223,12 +223,12 @@ export async function CancelPix(id: string): Promise<ICancelQr> {
     );
     return Promise.resolve({
       canceled: true,
-      message: 'Cancelamento solicitado com sucesso, aguarde!',
+      message: "Cancelamento solicitado com sucesso, aguarde!",
     });
   } catch (error) {
     return Promise.reject({
       canceled: false,
-      message: 'Falha ao solicitar o cancelamento do PIX. Tente novamente.',
+      message: "Falha ao solicitar o cancelamento do PIX. Tente novamente.",
       error: JSON.stringify(error),
     });
   }
@@ -243,12 +243,12 @@ export async function RefreshPix(id: string): Promise<IRefreshQr> {
       canceled: false,
       awaiting_payment: true,
       confirmed_payment: false,
-      message: 'Atualização solicitada...',
+      message: "Atualização solicitada...",
     });
   } catch (error) {
     return Promise.reject({
       canceled: false,
-      message: 'Falha ao solicitar o cancelamento do PIX. Tente novamente.',
+      message: "Falha ao solicitar o cancelamento do PIX. Tente novamente.",
       error: JSON.stringify(error),
     });
   }

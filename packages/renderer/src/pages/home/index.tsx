@@ -1,12 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Dialog, { DefaultDialog } from "../../components/modal_dialog";
 import { Button, Container, Form, Input, Text } from "./style";
-declare global {
-  interface Window {
-    ElectronAPI: IElectronAPI;
-  }
-}
 
 function Home() {
   const [localPass, setLocalPass] = useState<string | boolean>("");
@@ -14,7 +9,7 @@ function Home() {
   const [pass, setPass] = useState("");
   const passRef = useRef<HTMLInputElement>(null);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   async function GetLocalPass() {
     const result = await window.__electron_preload__GetLocalPassApp();
