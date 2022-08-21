@@ -1,6 +1,5 @@
 import type { BoxProps, FlexProps } from "@chakra-ui/react";
 import {
-  Avatar,
   Box,
   Collapse,
   Drawer,
@@ -16,19 +15,19 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaBell, FaClipboardCheck, FaRss } from "react-icons/fa";
-import { AiFillGift } from "react-icons/ai";
+import { FaBell } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import { FiMenu, FiSearch } from "react-icons/fi";
-import { HiCode, HiCollection } from "react-icons/hi";
+import { HiCode } from "react-icons/hi";
 import { MdHome, MdKeyboardArrowRight } from "react-icons/md";
 import React from "react";
 import type { IconType } from "react-icons";
-// import { Logo } from "@choc-ui/logo";
+import AuthenticationModal from "/@/components/AuthenticationModal";
 
 export default function Home2() {
   const sidebar = useDisclosure();
   const integrations = useDisclosure();
+  const authentication = useDisclosure();
   const color = useColorModeValue("gray.600", "gray.300");
 
   interface INavItem extends FlexProps {
@@ -100,7 +99,7 @@ export default function Home2() {
           _dark={{ color: "white" }}
           fontWeight="semibold"
         >
-          Choc UI
+          Data7 Manager
         </Text>
       </Flex>
       <Flex
@@ -110,12 +109,9 @@ export default function Home2() {
         color="gray.600"
         aria-label="Main Navigation"
       >
-        <NavItem icon={MdHome}>Home</NavItem>
-        <NavItem icon={FaRss}>Articles</NavItem>
-        <NavItem icon={HiCollection}>Collections</NavItem>
-        <NavItem icon={FaClipboardCheck}>Checklists</NavItem>
+        <NavItem icon={MdHome}>Tela Inicial</NavItem>
         <NavItem icon={HiCode} onClick={integrations.onToggle}>
-          Integrations
+          Serviços
           <Icon
             as={MdKeyboardArrowRight}
             ml="auto"
@@ -125,17 +121,15 @@ export default function Home2() {
         </NavItem>
         <Collapse in={integrations.isOpen}>
           <NavItem pl="12" py="2">
-            Shopify
+            PIX
           </NavItem>
           <NavItem pl="12" py="2">
-            Slack
-          </NavItem>
-          <NavItem pl="12" py="2">
-            Zapier
+            Whatsapp
           </NavItem>
         </Collapse>
-        <NavItem icon={AiFillGift}>Changelog</NavItem>
-        <NavItem icon={BsGearFill}>Settings</NavItem>
+        <NavItem icon={BsGearFill} onClick={authentication.onOpen}>
+          Configurações
+        </NavItem>
       </Flex>
     </Box>
   );
@@ -181,19 +175,17 @@ export default function Home2() {
 
           <Flex align="center">
             <Icon color="gray.500" as={FaBell} cursor="pointer" />
-            <Avatar
-              ml="4"
-              size="sm"
-              name="anubra266"
-              src="https://avatars.githubusercontent.com/u/30869823?v=4"
-              cursor="pointer"
-            />
           </Flex>
         </Flex>
 
         <Box as="main" p="4">
           {/* Add content here, remove div below  */}
           <Box borderWidth="4px" borderStyle="dashed" rounded="md" h="96" />
+          <AuthenticationModal
+            isOpen={authentication.isOpen}
+            onClose={authentication.onClose}
+            onAuthenticated={() => console.log("Foi")}
+          />
         </Box>
       </Box>
     </Box>
