@@ -23,5 +23,8 @@ declare global {
     ) => void;
     __electron_preload__CloseCurrentWindow: () => void;
     __electron_preload__RefreshAplication: () => void;
+    __electron_preload__MoveWindow: (bounds: IBounds) => void;
+    __electron_preload__MinimizeWindow: () => void;
+    __electron_preload__CloseWindow: () => void;
   }
 }

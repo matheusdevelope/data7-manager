@@ -4,21 +4,13 @@ import {
   Drawer,
   DrawerContent,
   DrawerOverlay,
-  Flex,
-  Icon,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaBell } from "react-icons/fa";
-import { FiMenu, FiSearch } from "react-icons/fi";
 import React from "react";
-import SideBarContent2 from "/@/components/Home/SideBar2";
+import SideBar from "../../components/Home/SideBar";
 import { RouteObject, useRoutes } from "react-router-dom";
 import RoutesNavBar, { IRouteNavBar } from "./routes";
+import WindowBar from "/@/components/WindowBar";
 
 export default function Home3() {
   const sidebar = useDisclosure();
@@ -84,23 +76,28 @@ export default function Home3() {
   const Routes = useRoutes(RoutesObject);
 
   return (
-    <Box as="section" bg="gray.50" _dark={{ bg: "gray.700" }} minH="100vh">
-      <SideBarContent2
-        items={RoutesNavBar}
-        display={{ base: "none", md: "unset" }}
-      />
-      <Drawer
+    <Box
+      as="section"
+      bg=" #F7FAFC"
+      minH="100vh"
+      borderRadius={"8px"}
+      border="1px"
+      borderColor={"#76767671"}
+    >
+      <WindowBar />
+      <SideBar items={RoutesNavBar} display={{ base: "none", md: "unset" }} />
+      {/* <Drawer
         isOpen={sidebar.isOpen}
         onClose={sidebar.onClose}
         placement="left"
       >
         <DrawerOverlay />
         <DrawerContent>
-          <SideBarContent2 items={RoutesNavBar} w="full" borderRight="none" />
+          <SideBar items={RoutesNavBar} w="full" borderRight="none" />
         </DrawerContent>
-      </Drawer>
+      </Drawer> */}
       <Box ml={{ base: 0, md: "250px" }} transition=".3s ease">
-        <Flex
+        {/* <Flex
           as="header"
           align="center"
           justify="space-between"
@@ -109,6 +106,7 @@ export default function Home3() {
           bg="white"
           _dark={{ bg: "gray.800" }}
           borderBottomWidth="1px"
+          borderTopRadius={"4px"}
           color="inherit"
           h="14"
         >
@@ -129,7 +127,7 @@ export default function Home3() {
           <Flex align="center">
             <Icon color="gray.500" as={FaBell} cursor="pointer" />
           </Flex>
-        </Flex>
+        </Flex> */}
 
         <Box p="4" flex={1}>
           {Routes}

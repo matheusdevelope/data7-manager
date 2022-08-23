@@ -6,6 +6,10 @@ enum EnumDevices {
   desktop,
   mobile,
 }
+interface IBounds {
+  x: number;
+  y: number;
+}
 
 interface IObjectConfig {
   key: string;

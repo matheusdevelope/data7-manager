@@ -1,4 +1,5 @@
-import type { BrowserWindow } from "electron";
+import type { BrowserWindow} from "electron";
+import { screen } from "electron";
 import { createDefaultWindow } from "../handlers/ControlWindows";
 
 let Window: BrowserWindow;
@@ -8,11 +9,23 @@ function Create() {
     Focus();
     return Window;
   }
+  const displays = screen.getAllDisplays();
+  const externalDisplay = displays.find((display) => {
+    return display.bounds.x !== 0 || display.bounds.y !== 0;
+  });
   Window = createDefaultWindow(null, {
     show: false,
     alwaysOnTop: import.meta.env.DEV,
     fullscreenable: false,
+    frame: false,
+    transparent: true,
   });
+  if (externalDisplay) {
+    Window.setBounds({
+      x: externalDisplay.bounds.x + 800,
+      y: externalDisplay.bounds.y + 200,
+    });
+  }
   Window.on("ready-to-show", () => {
     Focus();
   });

@@ -1,20 +1,20 @@
-import { app, ipcMain } from 'electron';
-import { toDataURL } from 'qrcode';
-import { Global_State } from '../global_state';
-import { CancelPix, RefreshPix } from '../services/Api_Pix';
-import { SafeStorage, Storage } from '../services/local_storage';
-import { SendMessageOnWhatsapp } from '../services/protocoll_events';
-import { WindowPix } from '../windows/pix';
+import { app, BrowserWindow, ipcMain } from "electron";
+import { toDataURL } from "qrcode";
+import { Global_State } from "../global_state";
+import { CancelPix, RefreshPix } from "../services/Api_Pix";
+import { SafeStorage, Storage } from "../services/local_storage";
+import { SendMessageOnWhatsapp } from "../services/protocoll_events";
+import { WindowPix } from "../windows/pix";
 
 function RegisterListenersIpcMain() {
   ipcMain.handle(Global_State.events.set_app_pass, (_, password: string) => {
-    return SafeStorage.setPassword('application_pass', password);
+    return SafeStorage.setPassword("application_pass", password);
   });
   ipcMain.handle(Global_State.events.get_app_pass, () => {
-    return SafeStorage.getPassword('application_pass');
+    return SafeStorage.getPassword("application_pass");
   });
   ipcMain.handle(Global_State.events.get_app_config, () => {
-    return Storage.get('config');
+    return Storage.get("config");
   });
   ipcMain.handle(Global_State.events.set_app_config, (_, config) => {
     return Storage.set({ ...Storage.store, config });
@@ -32,16 +32,20 @@ function RegisterListenersIpcMain() {
     return true;
   });
   ipcMain.on(Global_State.events.refresh_aplication, async () => {
-    console.log('relaunch');
-
     WindowPix().Window.removeAllListeners();
     WindowPix().Window.destroy();
-
     app.relaunch();
     setTimeout(app.exit, 2000);
-
-    //need handle close window
     return true;
+  });
+  ipcMain.on("move-window", (_, bounds: IBounds) => {
+    BrowserWindow.getFocusedWindow()?.setBounds({ x: bounds.x, y: bounds.y });
+  });
+  ipcMain.on("minimize-window", () => {
+    BrowserWindow.getFocusedWindow()?.minimize();
+  });
+  ipcMain.on("close-window", () => {
+    BrowserWindow.getFocusedWindow()?.close();
   });
   ///ADD HANDLES PRELOAD
   ipcMain.handle(Global_State.events.get_global_state, () => {

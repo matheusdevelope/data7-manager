@@ -9,19 +9,21 @@ interface INavItem extends FlexProps {
 export default function NavItem(props: INavItem) {
   const { icon, children, ...rest } = props;
   const color = useColorModeValue("gray.600", "gray.300");
+  let hoverBg = "#25252533";
   return (
     <Flex
       align="center"
       px="4"
       pl="4"
       py="3"
-      cursor="pointer"
+      // bg="blue"
+      // cursor="pointer"
       color="inherit"
-      _dark={{ color: "gray.400" }}
+      // _dark={{ color: "gray.400" }}
       _hover={{
-        bg: "gray.100",
-        _dark: { bg: "gray.900" },
-        color: "gray.900",
+        bg: hoverBg, //"gray.100",
+        // _dark: { bg: "gray.900" },
+        // color: "gray.900",
       }}
       role="group"
       fontWeight="semibold"
@@ -36,9 +38,7 @@ export default function NavItem(props: INavItem) {
             color: color,
           }}
           as={icon}
-        >
-          {/* {icon} */}
-        </Icon>
+        />
       )}
       {children}
     </Flex>

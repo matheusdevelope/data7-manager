@@ -2,8 +2,8 @@
  * @module preload
  */
 
-export { sha256sum } from './nodeCrypto';
-export { versions } from './versions';
+export { sha256sum } from "./nodeCrypto";
+export { versions } from "./versions";
 export {
   SetLocalPassApp,
   GetLocalPassApp,
@@ -18,4 +18,6 @@ export {
   RegisterEventLoginWithQr,
   CloseCurrentWindow,
   RefreshAplication,
-} from './preload';
+} from "./preload";
+
+export { MoveWindow, MinimizeWindow, CloseWindow } from "./WindowHeaderBar";
