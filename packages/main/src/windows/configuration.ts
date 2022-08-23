@@ -25,7 +25,7 @@ function Create() {
           "file://" + __dirname,
         ).toString();
 
-  Window.loadURL(pageUrl);
+  Window.loadURL(pageUrl + "#/home");
   return Window;
 }
 function Focus() {

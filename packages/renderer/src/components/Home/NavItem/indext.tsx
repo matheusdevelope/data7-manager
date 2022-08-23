@@ -36,7 +36,9 @@ export default function NavItem(props: INavItem) {
             color: color,
           }}
           as={icon}
-        />
+        >
+          {/* {icon} */}
+        </Icon>
       )}
       {children}
     </Flex>
