@@ -1,19 +1,15 @@
 /* eslint-disable no-undef */
-import {
-  Box,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Flex, useDisclosure } from "@chakra-ui/react";
 import React from "react";
-import SideBar from "../../components/Home/SideBar";
+import SideBar from "../../components/Home/SideBar copy";
 import { RouteObject, useRoutes } from "react-router-dom";
 import RoutesNavBar, { IRouteNavBar } from "./routes";
 import WindowBar from "/@/components/WindowBar";
+import { Header } from "/@/components/Home/Header";
+import StackScrollBar from "/@/components/Home/StackScrollBar";
 
 export default function Home3() {
-  const sidebar = useDisclosure();
+  const DrawerSideBar = useDisclosure();
   const getActiveRoute = (routes: IRouteNavBar[]): any => {
     let activeRoute = "Data7 Manager";
     for (let i = 0; i < routes.length; i++) {
@@ -76,63 +72,29 @@ export default function Home3() {
   const Routes = useRoutes(RoutesObject);
 
   return (
-    <Box
-      as="section"
+    <StackScrollBar
       bg=" #F7FAFC"
-      minH="100vh"
+      minH="300px"
       borderRadius={"8px"}
       border="1px"
-      borderColor={"#76767671"}
+      borderColor={"#3333334f"}
     >
       <WindowBar />
-      <SideBar items={RoutesNavBar} display={{ base: "none", md: "unset" }} />
-      {/* <Drawer
-        isOpen={sidebar.isOpen}
-        onClose={sidebar.onClose}
-        placement="left"
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <SideBar items={RoutesNavBar} w="full" borderRight="none" />
-        </DrawerContent>
-      </Drawer> */}
-      <Box ml={{ base: 0, md: "250px" }} transition=".3s ease">
-        {/* <Flex
-          as="header"
-          align="center"
-          justify="space-between"
-          w="full"
-          px="4"
-          bg="white"
-          _dark={{ bg: "gray.800" }}
-          borderBottomWidth="1px"
-          borderTopRadius={"4px"}
-          color="inherit"
-          h="14"
-        >
-          <IconButton
-            aria-label="Menu"
-            display={{ base: "inline-flex", md: "none" }}
-            onClick={sidebar.onOpen}
-            icon={<FiMenu />}
-            size="sm"
+      <Flex minH="calc(100vh - 27px)" borderBottomRadius={"8px"}>
+        <SideBar
+          items={RoutesNavBar}
+          drawerIsOpen={DrawerSideBar.isOpen}
+          drawerOnClose={DrawerSideBar.onClose}
+        />
+
+        <Box w="full">
+          <Header
+            onClickMenu={DrawerSideBar.onOpen}
+            title={getActiveRoute(RoutesNavBar)}
           />
-          <InputGroup w="96" display={{ base: "none", md: "flex" }}>
-            <InputLeftElement color="gray.500">
-              <FiSearch />
-            </InputLeftElement>
-            <Input placeholder={getActiveRoute(RoutesNavBar)} />
-          </InputGroup>
-
-          <Flex align="center">
-            <Icon color="gray.500" as={FaBell} cursor="pointer" />
-          </Flex>
-        </Flex> */}
-
-        <Box p="4" flex={1}>
-          {Routes}
+          <Box flex={1}>{Routes}</Box>
         </Box>
-      </Box>
-    </Box>
+      </Flex>
+    </StackScrollBar>
   );
 }

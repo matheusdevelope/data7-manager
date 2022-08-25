@@ -1,5 +1,5 @@
 import { IconType } from "react-icons";
-import { MdHome } from "react-icons/md";
+import { MdHome, MdPayments } from "react-icons/md";
 import HomeContent from "/@/components/Home/Content/Home";
 import ConfigContent from "/@/components/Home/Content/Configuration";
 import ServicesPixContent from "../../components/Home/Content/Services/PIX";
@@ -24,7 +24,7 @@ const ServicesMenu: IRouteNavBar[] = [
     path: "/pix",
     name: "PIX",
     category: "",
-    icon: MdHome,
+    icon: MdPayments,
     secondaryNavbar: true,
     component: <ServicesPixContent />,
     views: [],
@@ -52,16 +52,19 @@ const RoutesNavBar: IRouteNavBar[] = [
     component: <HomeContent />,
     views: [],
   },
+
   {
     layout: "/home",
-    path: "services",
-    name: "SERVIÇOS",
-    category: "services",
+    path: "services2",
+    name: "SERVIÇOS API",
+    category: "services2",
+    expansible: false,
     icon: HiCode,
     secondaryNavbar: false,
     component: <></>,
     views: ServicesMenu,
   },
+
   {
     layout: "/home",
     path: "general",

@@ -8,8 +8,8 @@ export default function HomeContent() {
       borderStyle="dashed"
       rounded="md"
       h="96"
-      bg={"Background"}
-      color={"black"}
+      // bg={"Background"}
+      // color={"black"}
     >
       <Text>Essa é a home.</Text>
     </Box>
