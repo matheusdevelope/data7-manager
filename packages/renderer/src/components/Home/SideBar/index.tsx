@@ -3,7 +3,7 @@ import { Box, Collapse, Flex, Icon, Text } from "@chakra-ui/react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { IRouteNavBar } from "/@/pages/home3/routes";
+import { IRouteNavBar } from "../../../pages/home/routes";
 
 interface ISideBarContent extends BoxProps {
   items: IRouteNavBar[];

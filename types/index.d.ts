@@ -5,6 +5,7 @@ declare global {
       password: string
     ) => Promise<true | Error>;
     __electron_preload__GetLocalPassApp: () => Promise<string | false | Error>;
+    __electron_preload__GetGlobalState: () => Promise<string>;
     __electron_preload__GetLocalConfig: () => Promise<IObjectConfig[]>;
     __electron_preload__SetLocalConfig: (
       config: IObjectConfig[]

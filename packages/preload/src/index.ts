@@ -18,6 +18,7 @@ export {
   RegisterEventLoginWithQr,
   CloseCurrentWindow,
   RefreshAplication,
+  GetGlobalState,
 } from "./preload";
 
 export { MoveWindow, MinimizeWindow, CloseWindow } from "./WindowHeaderBar";

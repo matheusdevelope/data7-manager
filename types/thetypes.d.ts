@@ -11,13 +11,6 @@ interface IBounds {
   y: number;
 }
 
-interface IObjectConfig {
-  key: string;
-  value: string | number | boolean;
-  label: string;
-  type: React.HTMLInputTypeAttribute;
-  order: number;
-}
 interface IDefaultConfig {
   cnpj: string[];
   firebase_id: string;

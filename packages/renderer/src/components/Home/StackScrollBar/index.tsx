@@ -1,6 +1,6 @@
-import { Stack, StackProps } from "@chakra-ui/react";
+import { HStack, Stack, StackProps } from "@chakra-ui/react";
 
-export default function StackScrollBar({ children, ...props }: StackProps) {
+export function StackScrollBar({ children, ...props }: StackProps) {
   return (
     <Stack
       overflowX="hidden"
@@ -21,5 +21,29 @@ export default function StackScrollBar({ children, ...props }: StackProps) {
     >
       {children}
     </Stack>
+  );
+}
+
+export function HStackScrollBar({ children, ...props }: StackProps) {
+  return (
+    <HStack
+      overflowX="auto"
+      overflowY="hidden"
+      __css={{
+        "&::-webkit-scrollbar": {
+          h: "1",
+        },
+        "&::-webkit-scrollbar-track": {
+          h: "1",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          borderRadius: "10",
+          bg: `gray.100`,
+        },
+      }}
+      {...props}
+    >
+      {children}
+    </HStack>
   );
 }

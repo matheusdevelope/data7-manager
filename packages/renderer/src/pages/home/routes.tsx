@@ -76,7 +76,7 @@ const RoutesNavBar: IRouteNavBar[] = [
     views: [
       {
         layout: "/home",
-        path: "/config",
+        path: "/config/*",
         name: "Configurações",
         category: "",
         icon: BsGearFill,

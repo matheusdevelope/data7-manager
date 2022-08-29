@@ -1,23 +1,23 @@
-import { ipcRenderer } from 'electron';
+import { ipcRenderer } from "electron";
 
 const Global_State = {
   events: {
-    get_global_state: 'get_global_state',
-    set_app_pass: 'set_app_pass',
-    get_app_pass: 'get_app_pass',
-    get_app_config: 'get_app_config',
-    set_app_config: 'set_app_config',
-    open_qrcode: 'open-qrcode',
-    close_qrcode: 'close-qrcode',
-    update_qrcode: 'update-qrcode',
-    send_message_whats: 'send-message-whats',
-    login_with_qrcode: 'login_with_qrcode',
-    close_current_window: 'close_current_window',
-    refresh_aplication: 'refresh_aplication',
-    get_gererator_qrcode: 'get_gererator_qrcode',
-    get_fc_refresh_pix: 'get_fc_refresh_pix',
-    get_fc_cancel_pix: 'get_fc_cancel_pix',
-    get_fc_send_message_on_whatsapp: 'get_fc_send_message_on_whatsapp',
+    get_global_state: "get_global_state",
+    set_app_pass: "set_app_pass",
+    get_app_pass: "get_app_pass",
+    get_app_config: "get_app_config",
+    set_app_config: "set_app_config",
+    open_qrcode: "open-qrcode",
+    close_qrcode: "close-qrcode",
+    update_qrcode: "update-qrcode",
+    send_message_whats: "send-message-whats",
+    login_with_qrcode: "login_with_qrcode",
+    close_current_window: "close_current_window",
+    refresh_aplication: "refresh_aplication",
+    get_gererator_qrcode: "get_gererator_qrcode",
+    get_fc_refresh_pix: "get_fc_refresh_pix",
+    get_fc_cancel_pix: "get_fc_cancel_pix",
+    get_fc_send_message_on_whatsapp: "get_fc_send_message_on_whatsapp",
   },
 };
 
@@ -58,7 +58,7 @@ export function RegisterEventLoginWithQr(cb: (data: string) => void) {
         .then((image_base64_qrcode_login: string) => {
           return cb(image_base64_qrcode_login);
         })
-        .catch(() => cb('none'));
+        .catch(() => cb("none"));
     },
   );
 }
@@ -73,7 +73,7 @@ export async function CancelQr(id_qrcode: string): Promise<ICancelQr> {
   } catch (e) {
     return Promise.resolve({
       canceled: false,
-      message: 'Houve um erro ao solicitar o cancelamento do PIX',
+      message: "Houve um erro ao solicitar o cancelamento do PIX",
       error: String(e),
     });
   }
@@ -104,7 +104,7 @@ export async function RefreshQr(id_qrcode: string): Promise<IRefreshQr> {
       awaiting_payment: false,
       confirmed_payment: false,
       canceled: false,
-      message: 'Houve um erro ao solicitar a situação do PIX',
+      message: "Houve um erro ao solicitar a situação do PIX",
       error: String(e),
     });
   }
@@ -117,4 +117,7 @@ export function CloseCurrentWindow(origin?: string) {
 }
 export function RefreshAplication(origin?: string) {
   ipcRenderer.send(Global_State.events.refresh_aplication, origin);
+}
+export function GetGlobalState(): Promise<string> {
+  return ipcRenderer.invoke(Global_State.events.get_global_state);
 }

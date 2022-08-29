@@ -1,17 +1,18 @@
-import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Text } from "@chakra-ui/react";
+import { StackScrollBar } from "../../StackScrollBar";
 
 export default function HomeContent() {
+  // const [config, setConfig] = useState<IGlobalState>();
+  // useEffect(() => {
+  //   window.__electron_preload__GetGlobalState().then((text_config) => {
+  //     setConfig(JSON.parse(text_config));
+  //   });
+  // }, []);
+
   return (
-    <Box
-      borderWidth="4px"
-      borderStyle="dashed"
-      rounded="md"
-      h="96"
-      // bg={"Background"}
-      // color={"black"}
-    >
-      <Text>Essa é a home.</Text>
-    </Box>
+    <StackScrollBar>
+      <Text>Home Page </Text>
+    </StackScrollBar>
   );
 }

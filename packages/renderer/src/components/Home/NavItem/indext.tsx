@@ -11,7 +11,7 @@ import React from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { NavLink, useLocation } from "react-router-dom";
 import Separator from "../Separator";
-import { IRouteNavBar } from "/@/pages/home3/routes";
+import { IRouteNavBar } from "../../../pages/home/routes";
 
 export default function CreateMenus(
   menus: IRouteNavBar[],
@@ -23,7 +23,9 @@ export default function CreateMenus(
   let inactiveTextColor = "#393939";
 
   const activeRoute = (routeName: string) => {
-    return useLocation().pathname === routeName;
+    return useLocation()
+      .pathname.replace("*", "")
+      .includes(routeName.replace("*", ""));
   };
   function TextDefault({ children, ...props }: TextProps) {
     return (

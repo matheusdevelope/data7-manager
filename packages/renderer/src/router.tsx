@@ -1,6 +1,6 @@
 import React, { HashRouter, Route, Routes } from "react-router-dom";
 import Config_Panel from "./pages/config_panel";
-import Home3 from "./pages/home3";
+import Home3 from "./pages/home";
 import QrCode from "./pages/qrcode";
 import QrCodeToLogin from "./pages/qrcode_login_mobile";
 

@@ -1,111 +1,109 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Dialog, { DefaultDialog } from "../../components/modal_dialog";
-import { Button, Container, Form, Input, Text } from "./style";
+/* eslint-disable no-undef */
+import { Box, Flex, useDisclosure } from "@chakra-ui/react";
+import React from "react";
+import SideBar from "../../components/Home/SideBar copy";
+import { RouteObject, useRoutes } from "react-router-dom";
+import RoutesNavBar, { IRouteNavBar } from "./routes";
+import WindowBar from "/@/components/WindowBar";
+import { Header } from "/@/components/Home/Header";
+import { StackScrollBar } from "/@/components/Home/StackScrollBar";
 
-function Home() {
-  const [localPass, setLocalPass] = useState<string | boolean>("");
-  const [dialogState, setDialogState] = useState<IDialog>(DefaultDialog);
-  const [pass, setPass] = useState("");
-  const passRef = useRef<HTMLInputElement>(null);
+export default function Home3() {
+  const DrawerSideBar = useDisclosure();
 
-  const navigate = useNavigate();
-
-  async function GetLocalPass() {
-    const result = await window.__electron_preload__GetLocalPassApp();
-    if (typeof result == "string") return setLocalPass(result);
-    if (!result) return setLocalPass(false);
-    return setDialogState({
-      ...DefaultDialog,
-      isOpen: true,
-      message:
-        "Houve um erro ao buscar a senha local!\nError: " +
-        JSON.stringify(result),
-    });
-  }
-  async function SetLocalPass(pass: string) {
-    const result = await window.__electron_preload__SetLocalPassApp(pass);
-    if (result === true) {
-      setDialogState({
-        ...DefaultDialog,
-        isOpen: true,
-        onClickOK: CloseDialog,
-        message: "Senha definida com sucesso!",
-      });
-      navigate("/config_panel");
-      return;
+  const getActiveRoute = (routes: IRouteNavBar[]): any => {
+    let activeRoute = "Data7 Manager";
+    for (let i = 0; i < routes.length; i++) {
+      if (routes[i].category) {
+        let categoryActiveRoute = getActiveRoute(routes[i].views);
+        if (categoryActiveRoute !== activeRoute) {
+          return categoryActiveRoute;
+        }
+      } else {
+        if (
+          window.location.href.includes(
+            (routes[i].layout + routes[i].path)
+              .replace("*", "")
+              .replace("//", "/")
+          )
+        ) {
+          return routes[i].name;
+        }
+      }
     }
+    return activeRoute;
+  };
 
-    return setDialogState({
-      ...DefaultDialog,
-      isOpen: true,
-      onClickOK: CloseDialog,
-      message:
-        "Houve um erro ao salvar a senha local!\nError: " +
-        JSON.stringify(result),
-    });
-  }
-  function CloseDialog() {
-    setDialogState({
-      ...DefaultDialog,
-    });
-    passRef.current?.focus();
-  }
+  // This changes navbar state(fixed or not)
+  const getActiveNavbar = (routes: IRouteNavBar[]): any => {
+    let activeNavbar = false;
+    for (let i = 0; i < routes.length; i++) {
+      if (routes[i].category) {
+        let categoryActiveNavbar = getActiveNavbar(routes[i].views);
+        if (categoryActiveNavbar !== activeNavbar) {
+          return categoryActiveNavbar;
+        }
+      } else {
+        if (
+          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
+        ) {
+          if (routes[i].secondaryNavbar) {
+            return routes[i].secondaryNavbar;
+          }
+        }
+      }
+    }
+    return activeNavbar;
+  };
 
-  function OnSubmitForm(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (pass.length < 8)
-      return setDialogState({
-        ...DefaultDialog,
-        isOpen: true,
-        onClickOK: CloseDialog,
-        message: "A senha precisa ter pelo menos 8 digitos.",
-      });
-    if (!localPass) {
-      SetLocalPass(pass);
-    } else {
-      if (localPass !== pass)
-        return setDialogState({
-          ...DefaultDialog,
-          isOpen: true,
-          onClickOK: CloseDialog,
-          message: "Senha Incorreta!",
+  const RoutesObject: RouteObject[] = [];
+
+  const getRoutes = (routes: IRouteNavBar[]): any => {
+    return routes.map((prop, key) => {
+      if (prop.category) {
+        return getRoutes(prop.views);
+      }
+      if (prop.layout === "/home") {
+        return RoutesObject.push({
+          element: prop.component,
+          path: prop.path,
         });
-      navigate("/config_panel");
-      return;
-    }
-  }
+      } else {
+        return null;
+      }
+    });
+  };
+  getRoutes(RoutesNavBar);
+  const Routes = useRoutes(RoutesObject);
 
-  useEffect(() => {
-    GetLocalPass();
-    passRef.current?.focus();
-  }, []);
   return (
-    <Container>
-      <Form onSubmit={OnSubmitForm}>
-        {!localPass ? (
-          <Text>Crie uma senha de acesso:</Text>
-        ) : (
-          <Text>Insira a sua senha:</Text>
-        )}
-        <Input
-          type={"password"}
-          value={pass}
-          onChange={(e) => {
-            setPass(e.target.value);
-          }}
-          ref={passRef}
+    <StackScrollBar
+      bg=" #F7FAFC"
+      borderRadius={"8px"}
+      border="1px"
+      borderColor={"#3333334f"}
+      maxW="100vw"
+      minH="300px"
+    >
+      <WindowBar />
+
+      <Flex minH="calc(100vh - 27px)" borderBottomRadius={"8px"}>
+        <SideBar
+          items={RoutesNavBar}
+          drawerIsOpen={DrawerSideBar.isOpen}
+          drawerOnClose={DrawerSideBar.onClose}
         />
-        <Button
-          type="submit"
-          style={{ backgroundColor: pass.length < 8 ? "#ddd" : "#348ccb" }}
-        >
-          {!localPass ? "Criar" : "Entrar"}
-        </Button>
-      </Form>
-      <Dialog {...dialogState} />
-    </Container>
+
+        <Box flex="1" maxW={{ md: "calc(100vw - 250px)", base: "100vw" }}>
+          <Header
+            onClickMenu={DrawerSideBar.onOpen}
+            title={getActiveRoute(RoutesNavBar)}
+          />
+          <StackScrollBar minH="calc(100vh - 68px)" maxH="calc(100vh - 68px)">
+            {Routes}
+          </StackScrollBar>
+        </Box>
+      </Flex>
+    </StackScrollBar>
   );
 }
-
-export default Home;

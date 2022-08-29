@@ -9,9 +9,9 @@ import {
 import { Box } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { IRouteNavBar } from "/@/pages/home3/routes";
+import { IRouteNavBar } from "../../../pages/home/routes";
 import Brand from "../Brand";
-import StackScrollBar from "../StackScrollBar";
+import { StackScrollBar } from "../StackScrollBar";
 import Separator from "../Separator";
 import CreateMenus from "../NavItem/indext";
 
