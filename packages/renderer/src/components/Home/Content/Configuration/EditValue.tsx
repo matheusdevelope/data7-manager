@@ -13,6 +13,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { MdAdd, MdDelete, MdDone, MdSave } from "react-icons/md";
 import { EnumTypesOptions } from "../../../../../../../types/enums";
+import { ValidateCNPJ, ValidateCPF } from "./validation";
 
 const Color = {
   background: "#FFF",
@@ -36,6 +37,9 @@ export default function RenderEditValue({
   const [value, setValue] = useState<string | number | boolean>();
   const [validation, setValidation] = useState("");
   const [isEdited, setIsEdited] = useState(false);
+  if (option.type === EnumTypesOptions.boolean)
+    console.log(option.key, option.value);
+
   function OnlyNumber(value: string) {
     return value.replace(/[^0-9]/g, "");
   }
@@ -45,10 +49,9 @@ export default function RenderEditValue({
     function RetArray(opt_value: string | number | boolean | string[]) {
       if (Array.isArray(opt_value)) {
         if (value) {
-          const newValue =
-            option.key.includes("cnpj") || option.key.includes("cpf")
-              ? OnlyNumber(String(value))
-              : String(value);
+          const newValue = option.key.includes("cnpj_cpf")
+            ? OnlyNumber(String(value))
+            : String(value);
           if (!opt_value.find((opt) => opt == newValue)) {
             return [...opt_value, newValue];
           }
@@ -75,6 +78,13 @@ export default function RenderEditValue({
             option.min_value_lenght?.join(", ") +
             " caracteres."
         );
+      }
+      if (
+        option.key.includes("cnpj_cpf") &&
+        !ValidateCPF(OnlyNumber(String(value))) &&
+        !ValidateCNPJ(OnlyNumber(String(value)))
+      ) {
+        setValidation("CNPJ / CPF Inválido.");
       } else {
         changeOptions({ ...option, value: [...RetArray(option.value)] });
       }
@@ -88,7 +98,8 @@ export default function RenderEditValue({
     !isEdited && setIsEdited(true);
     validation.length > 0 && setValidation("");
     if (option.type === EnumTypesOptions.boolean) {
-      setValue(e.target.checked);
+      //  setValue(e.target.checked);
+      changeOptions({ ...option, value: e.target.checked });
     } else {
       if (option.type === EnumTypesOptions.array) {
         setValue(e.target.value.substring(0, 18));
@@ -112,7 +123,6 @@ export default function RenderEditValue({
     v = v.replace(/(\d{4})(\d)/, "$1-$2"); //Coloca um hífen depois do bloco de quatro dígitos
     return v;
   }
-
   function cpf(v: string) {
     v = v.replace(/\D/g, ""); //Remove tudo o que não é dígito
     v = v.replace(/(\d{3})(\d)/, "$1.$2"); //Coloca um ponto entre o terceiro e o quarto dígitos
@@ -122,7 +132,12 @@ export default function RenderEditValue({
     return v;
   }
   useEffect(() => {
-    Array.isArray(option.value) ? setValue("") : setValue(option.value);
+    if (Array.isArray(option.value)) {
+      setValue("");
+    } else {
+      setValue(option.value);
+    }
+    return () => setValue(undefined);
   }, [option]);
 
   if (option.type === EnumTypesOptions.array)
@@ -136,8 +151,9 @@ export default function RenderEditValue({
             borderRadius="8px"
           >
             <Input
+              isDisabled={option.disabled === true}
               value={
-                option.key.includes("cnpj") || option.key.includes("cpf")
+                option.key.includes("cnpj_cpf")
                   ? String(value).length <= 15
                     ? cpf(String(value))
                     : cnpj(String(value))
@@ -155,7 +171,11 @@ export default function RenderEditValue({
               m="1"
               boxSize={"6"}
               children={
-                <Button type="submit" p="0">
+                <Button
+                  type="submit"
+                  p="0"
+                  isDisabled={option.disabled === true}
+                >
                   <MdAdd color="green.500" />
                 </Button>
               }
@@ -171,31 +191,37 @@ export default function RenderEditValue({
               justifyContent="space-between"
               p="1"
               px="3"
-              paddingRight="1.5"
+              paddingRight="1"
               alignItems={"center"}
             >
               <Text>
-                {option.key.includes("cnpj") || option.key.includes("cpf")
+                {option.key.includes("cnpj_cpf")
                   ? String(value).length <= 15
                     ? cpf(String(value))
                     : cnpj(String(value))
                   : String(value)}
               </Text>
-              <Icon
-                color="gray.500"
-                boxSize={"5"}
-                as={MdDelete}
+              <Button
+                size={"xs"}
                 m="0"
+                p="0"
+                isDisabled={option.disabled === true}
                 onClick={() => OnDeleteFromArray(key)}
-              />
+              >
+                <Icon color="gray.500" boxSize={"5"} as={MdDelete} m="0" />
+              </Button>
             </Flex>
           ))}
       </form>
     );
-  if (option.type === EnumTypesOptions.boolean && typeof value === "boolean")
+  if (
+    option.type === EnumTypesOptions.boolean &&
+    typeof option.value === "boolean"
+  )
     return (
       <Switch
-        defaultChecked={value}
+        isDisabled={option.disabled === true}
+        isChecked={option.value}
         onChange={OnChange}
         mx="auto"
         sx={{
@@ -239,15 +265,10 @@ export default function RenderEditValue({
           />
         ) : (
           <InputRightElement
-            // bg={"gray.300"}
             borderRadius="6"
             m="1"
             boxSize={"6"}
-            children={
-              // <Button type="submit" p="0">
-              <MdDone color="green" />
-              // </Button>
-            }
+            children={<MdDone color="green" />}
           />
         )}
       </InputGroup>

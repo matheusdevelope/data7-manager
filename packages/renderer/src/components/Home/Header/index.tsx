@@ -10,27 +10,13 @@ interface IHeader extends FlexProps {
 
 export function Header({ title, onClickMenu, ...props }: IHeader) {
   return (
-    <Flex
-      align="center"
-      justify="space-between"
-      w="full"
-      px="4"
-      borderBottomWidth="1px"
-      borderBottomColor={"gray.300"}
-      {...props}
-    >
+    <Flex align="center" justify="space-between" w="full" px="4" {...props}>
       <Icon
         as={FiMenu}
         display={{ base: "flex", md: "none" }}
         onClick={onClickMenu}
       />
-      {/* <IconButton
-        display={{ base: "flex", md: "none" }}
-        aria-label="Menu"
-        onClick={onClickMenu}
-        icon={<FiMenu />}
-        // size="md"
-      /> */}
+
       <Brand title={title} fontSize="md" />
       <Flex align="center">
         <Icon as={FaBell} cursor="pointer" />

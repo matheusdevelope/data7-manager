@@ -1,6 +1,8 @@
 import { safeStorage } from "electron";
 import type { Schema } from "electron-store";
 import Store from "electron-store";
+import { ForceRedefinitionValues } from "./configs/firebase";
+import { DefaultConfigTabs } from "./configuration_panel";
 
 const DefaultConfig: IObjectConfig[] = [
   {
@@ -196,6 +198,7 @@ const Schema_Storage: Schema<Record<string, string>> = {
       },
     },
   },
+
   dimensions: {
     type: "object",
     properties: {
@@ -233,6 +236,39 @@ if (Storage.has("config")) {
   Storage.set("config", Config.concat(NewConfig));
 }
 
+function CreateTabsConfig() {
+  if (Storage.has("config_tabs")) {
+    const OldConfig = Storage.get("config_tabs") as unknown as IOptionConfig2[];
+    const NewConfig = DefaultConfigTabs.map((Tab) => {
+      const OldTab = OldConfig.find(
+        (oldTab) =>
+          oldTab.category === Tab.category &&
+          oldTab.key === Tab.key &&
+          (oldTab.sub_category && Tab.sub_category
+            ? oldTab.sub_category === Tab.sub_category
+            : true),
+      );
+      const NeedRefinitionValue = ForceRedefinitionValues.find(
+        (oldTab) =>
+          oldTab.category === Tab.category &&
+          oldTab.key === Tab.key &&
+          (oldTab.sub_category && Tab.sub_category
+            ? oldTab.sub_category === Tab.sub_category
+            : true),
+      );
+      if (OldTab && !NeedRefinitionValue) {
+        return { ...Tab, value: OldTab.value };
+      } else {
+        return Tab;
+      }
+    });
+    Storage.set("config_tabs", NewConfig);
+  } else {
+    Storage.set("config_tabs", DefaultConfigTabs);
+  }
+}
+CreateTabsConfig();
+
 const SafeStorage = {
   setPassword(key: string, password: string) {
     try {
@@ -268,4 +304,14 @@ function GetConfig(): IObjectConfig[] | false {
   }
 }
 
-export { SafeStorage, Storage, GetConfig };
+function GetConfigTabs(): ITabsConfig[] | false {
+  if (!Storage.has("config_tabs")) return [];
+  try {
+    const Config = Storage.get("config_tabs") as unknown as ITabsConfig[];
+    return Config;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+}
+export { SafeStorage, Storage, GetConfig, GetConfigTabs };

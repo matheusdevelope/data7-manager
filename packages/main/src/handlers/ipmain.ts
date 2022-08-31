@@ -13,12 +13,13 @@ function RegisterListenersIpcMain() {
   ipcMain.handle(Global_State.events.get_app_pass, () => {
     return SafeStorage.getPassword("application_pass");
   });
-  ipcMain.handle(Global_State.events.get_app_config, () => {
-    return Storage.get("config");
+  ipcMain.handle(Global_State.events.get_app_config_tabs, () => {
+    return Storage.get("config_tabs");
   });
-  ipcMain.handle(Global_State.events.set_app_config, (_, config) => {
-    return Storage.set({ ...Storage.store, config });
+  ipcMain.handle(Global_State.events.set_app_config_tabs, (_, config_tabs) => {
+    return Storage.set("config_tabs", [...config_tabs]);
   });
+
   ipcMain.on(Global_State.events.open_qrcode, async () => {
     WindowPix().Window.show();
     return true;

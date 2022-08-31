@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { Box, Flex, useDisclosure } from "@chakra-ui/react";
 import React from "react";
-import SideBar from "../../components/Home/SideBar copy";
+import SideBar from "../../components/Home/SideBar";
 import { RouteObject, useRoutes } from "react-router-dom";
 import RoutesNavBar, { IRouteNavBar } from "./routes";
 import WindowBar from "/@/components/WindowBar";

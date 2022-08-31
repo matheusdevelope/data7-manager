@@ -10,6 +10,10 @@ declare global {
     __electron_preload__SetLocalConfig: (
       config: IObjectConfig[]
     ) => Promise<void | Error>;
+    __electron_preload__GetLocalConfigTabs: () => Promise<IOptionConfig2[]>;
+    __electron_preload__SetLocalConfigTabs: (
+      config: IOptionConfig2[]
+    ) => Promise<void | Error>;
     __electron_preload__RegisterEventUpdateQr: (
       event: string,
       cb: (dataQrCode: IDataQrCode) => void

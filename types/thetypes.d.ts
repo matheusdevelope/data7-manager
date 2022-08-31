@@ -43,6 +43,8 @@ interface IEventsGlobalState {
   get_app_pass: string;
   get_app_config: string;
   set_app_config: string;
+  get_app_config_tabs: string;
+  set_app_config_tabs: string;
   open_qrcode: string;
   close_qrcode: string;
   update_qrcode: string;

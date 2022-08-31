@@ -7,6 +7,8 @@ const Global_State = {
     get_app_pass: "get_app_pass",
     get_app_config: "get_app_config",
     set_app_config: "set_app_config",
+    get_app_config_tabs: "get_app_config_tabs",
+    set_app_config_tabs: "set_app_config_tabs",
     open_qrcode: "open-qrcode",
     close_qrcode: "close-qrcode",
     update_qrcode: "update-qrcode",
@@ -33,6 +35,14 @@ export function GetLocalConfig(): Promise<IObjectConfig[]> {
 }
 export function SetLocalConfig(config: IObjectConfig[]): Promise<void | Error> {
   return ipcRenderer.invoke(Global_State.events.set_app_config, config);
+}
+export function GetLocalConfigTabs(): Promise<ITabsConfig[]> {
+  return ipcRenderer.invoke(Global_State.events.get_app_config_tabs);
+}
+export function SetLocalConfigTabs(
+  config: ITabsConfig[],
+): Promise<void | Error> {
+  return ipcRenderer.invoke(Global_State.events.set_app_config_tabs, config);
 }
 
 export function RegisterEventUpdateQr(
