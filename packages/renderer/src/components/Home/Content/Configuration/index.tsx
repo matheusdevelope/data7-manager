@@ -11,7 +11,7 @@ export default function MainConfig() {
   let hoverBg = "#25252533";
 
   useEffect(() => {
-    // authentication.onOpen();
+    authentication.onOpen();
   }, []);
 
   function GroupTabs(Tabs: IOptionConfig2[]) {
@@ -82,14 +82,13 @@ export default function MainConfig() {
   }
 
   useEffect(() => {
-    //  if (!auth.current) {
-    window.__electron_preload__GetLocalConfigTabs().then((config) => {
-      setTabs([...GroupTabs(config)]);
-    });
-    //}
+    if (!auth.current) {
+      window.__electron_preload__GetLocalConfigTabs().then((config) => {
+        setTabs([...GroupTabs(config)]);
+      });
+    }
   }, [auth.current]);
-  if (auth.current) {
-    // if (!auth.current) {
+  if (!auth.current) {
     return (
       <Box
         display="flex"

@@ -28,7 +28,6 @@ export default function ConfigContent({
 }: IProps) {
   const [currentTab, setCurrentTab] = useState<ITabsConfig>();
   const [messageModal, setMessageModal] = useState("");
-  // const ModalControl = useDisclosure();
   useEffect(() => {
     if (tabs) setCurrentTab({ ...tabs[0] });
   }, []);
@@ -113,7 +112,6 @@ export default function ConfigContent({
         }
       }
     }
-    console.log("aqui", CanGo);
     return CanGo;
   }
 
