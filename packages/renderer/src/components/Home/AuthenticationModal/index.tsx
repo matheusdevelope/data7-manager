@@ -35,10 +35,9 @@ export default function AuthenticationModal({
 
   async function GetLocalPass() {
     const result = await window.__electron_preload__GetLocalPassApp();
-    if (!result || typeof result !== "string") {
-      setError("Falha ao buscar senha para autenticação.");
-      return;
-    }
+
+    if (!result || typeof result !== "string") return;
+
     return setLocalPass(result);
   }
   function ValidatePassword(pass: string) {
@@ -53,7 +52,30 @@ export default function AuthenticationModal({
   }
   function OnSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     if (initialRef.current) {
+      if (!localPass) {
+        if (initialRef.current.value.trim().length < 8) {
+          setError("A senha precisa conter pelo menos 8 digitos.");
+          setValidation(true);
+          initialRef.current?.focus();
+          return;
+        } else {
+          window
+            .__electron_preload__SetLocalPassApp(
+              initialRef.current.value.trim()
+            )
+            .then((ret) => {
+              if (ret) {
+                setValidation(false);
+                onAuthenticated();
+                onClose();
+              } else {
+                setError("Erro ao gravar a senha localmente, tente novamente.");
+              }
+            });
+        }
+      }
       ValidatePassword(initialRef.current.value);
     }
   }
@@ -75,6 +97,8 @@ export default function AuthenticationModal({
           <ModalHeader color={error ? "red.500" : "white"}>
             {error
               ? error
+              : !localPass
+              ? "Cadastre uma nova senha para ter acesso às configurações."
               : " Insira a senha para ter acesso às configurações."}
           </ModalHeader>
           <ModalCloseButton />
@@ -84,7 +108,7 @@ export default function AuthenticationModal({
                 <InputGroup>
                   <Input
                     ref={initialRef}
-                    placeholder="Senha"
+                    placeholder={"Digite a senha"}
                     type={showPass ? "text" : "password"}
                   />
                   <InputRightElement>
@@ -97,7 +121,7 @@ export default function AuthenticationModal({
                 </InputGroup>
 
                 <FormErrorMessage>
-                  Senha incorreta, tente novamente.
+                  {!localPass ? "" : " Senha incorreta, tente novamente."}
                 </FormErrorMessage>
               </FormControl>
             </form>

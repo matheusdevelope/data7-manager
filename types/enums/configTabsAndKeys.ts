@@ -3,6 +3,7 @@ export enum EnumTypesOptions {
   text = "text",
   number = "number",
   boolean = "boolean",
+  button = "button",
 }
 export enum EnumTabs {
   terminal_data = "terminal_data",

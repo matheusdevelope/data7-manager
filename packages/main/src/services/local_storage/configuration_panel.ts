@@ -4,7 +4,7 @@ import {
   EnumServices,
   EnumTabs,
   EnumTypesOptions,
-} from "../../../../../types/enums";
+} from "../../../../../types/enums/configTabsAndKeys";
 import { ServiceFirebase } from "./configs/firebase";
 
 export const categoryService = {
@@ -42,7 +42,7 @@ const OptionsTerminalData: IOptionConfig2[] = [
     ...CategoryTerminal,
     key: EnumKeys.whatsapp_integrated,
     value: false,
-    disabled: false,
+    disabled: true,
     tip: "",
     label: "Whatsapp Integrado",
     description:

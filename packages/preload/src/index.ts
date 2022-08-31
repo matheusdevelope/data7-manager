@@ -21,6 +21,7 @@ export {
   GetGlobalState,
   GetLocalConfigTabs,
   SetLocalConfigTabs,
+  ResetLocalConfigTabs,
 } from "./preload";
 
 export { MoveWindow, MinimizeWindow, CloseWindow } from "./WindowHeaderBar";

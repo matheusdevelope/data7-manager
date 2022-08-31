@@ -1,4 +1,5 @@
 import { ipcRenderer } from "electron";
+import { EnumIpcEvents } from "../../../types/enums/GlobalState";
 
 const Global_State = {
   events: {
@@ -39,12 +40,14 @@ export function SetLocalConfig(config: IObjectConfig[]): Promise<void | Error> {
 export function GetLocalConfigTabs(): Promise<ITabsConfig[]> {
   return ipcRenderer.invoke(Global_State.events.get_app_config_tabs);
 }
+export function ResetLocalConfigTabs(): any {
+  return ipcRenderer.send(EnumIpcEvents.reset_config_tabs);
+}
 export function SetLocalConfigTabs(
   config: ITabsConfig[],
 ): Promise<void | Error> {
   return ipcRenderer.invoke(Global_State.events.set_app_config_tabs, config);
 }
-
 export function RegisterEventUpdateQr(
   event: string,
   cb: (data: IDataQrCode) => void,
@@ -58,7 +61,6 @@ interface IDataToLoginWithQrCode {
   port: string;
   token: string;
 }
-
 export function RegisterEventLoginWithQr(cb: (data: string) => void) {
   ipcRenderer.on(
     Global_State.events.login_with_qrcode,

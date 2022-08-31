@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { MdAdd, MdDelete, MdDone, MdSave } from "react-icons/md";
-import { EnumTypesOptions } from "../../../../../../../types/enums";
+import { EnumTypesOptions } from "../../../../../../../types/enums/configTabsAndKeys";
 import { ValidateCNPJ, ValidateCPF } from "./validation";
 
 const Color = {

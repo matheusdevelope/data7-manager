@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Button, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import AuthenticationModal from "../../AuthenticationModal";
 import ConfigContent from "./RenderTabs";
+import ConfirmationModal from "../../Confirmation";
 
 export default function MainConfig() {
   const auth = useRef(false);
   const authentication = useDisclosure();
+  const reset = useDisclosure();
+  const refresh = useDisclosure();
   const [Tabs, setTabs] = useState<ITabsConfig[]>();
+
+  const [refreshh, setRefresh] = useState(false);
   let activeBg = "#9d9d9d55";
   let hoverBg = "#25252533";
-
-  useEffect(() => {
-    authentication.onOpen();
-  }, []);
 
   function GroupTabs(Tabs: IOptionConfig2[]) {
     const KeysCategory = [...new Set(Tabs.map((obj) => obj.category))];
@@ -80,6 +81,17 @@ export default function MainConfig() {
 
     return Mount(KeysCategory, Tabs, false);
   }
+  useEffect(() => {
+    authentication.onOpen();
+  }, []);
+  useEffect(() => {
+    if (refreshh) {
+      window.__electron_preload__GetLocalConfigTabs().then((config) => {
+        setTabs([...GroupTabs(config)]);
+        setRefresh(false);
+      });
+    }
+  }, [refreshh]);
 
   useEffect(() => {
     if (!auth.current) {
@@ -88,6 +100,8 @@ export default function MainConfig() {
       });
     }
   }, [auth.current]);
+  console.log("refresh", Tabs);
+
   if (!auth.current) {
     return (
       <Box
@@ -121,7 +135,37 @@ export default function MainConfig() {
     );
   }
   if (Tabs) {
-    return <ConfigContent tabs={Tabs} mainCategory="" />;
+    return (
+      <Flex flex={1} direction={"column"} justifyContent="space-between">
+        {!refreshh && <ConfigContent tabs={Tabs} mainCategory="" />}
+
+        <Button
+          bg="gray.300"
+          mx="auto"
+          my="2"
+          size={"xs"}
+          onClick={reset.onOpen}
+        >
+          Resetar Configurações {String(refreshh)}
+        </Button>
+        <ConfirmationModal
+          isOpen={reset.isOpen}
+          onClose={reset.onClose}
+          labels={{
+            title: "Tem certeza que deseja prosseguir?",
+            message:
+              " Essa ação irá redefinir TODAS as configurações da aplicação para os padrões iniciais e não pode ser desfeita.",
+            buttonLeft: "Cancelar",
+            buttonRight: "Redefinir",
+          }}
+          onClickRight={() => {
+            window.__electron_preload__ResetLocalConfigTabs();
+            // refresh.onToggle();
+            setRefresh(true);
+          }}
+        />
+      </Flex>
+    );
   }
   return <Text>Loading...</Text>;
 }

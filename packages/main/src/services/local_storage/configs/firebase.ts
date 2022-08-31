@@ -4,7 +4,7 @@ import {
   EnumServices,
   EnumTabs,
   EnumTypesOptions,
-} from "../../../../../../types/enums";
+} from "../../../../../../types/enums/configTabsAndKeys";
 
 const SubCategoryFirebase = {
   category: EnumTabs.services,
@@ -24,7 +24,7 @@ export const ServiceFirebase: IOptionConfig2[] = [
   {
     ...SubCategoryFirebase,
     key: EnumKeys.status,
-    value: false,
+    value: true,
     label: "Usar serviço Firebase",
     description:
       "Define se o serviço Firebase será executado. \nLembre-se: Para usar o serviço de PIX esse serviço precisa estar ativo.",

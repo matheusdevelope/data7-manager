@@ -1,38 +1,43 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { toDataURL } from "qrcode";
+import { EnumIpcEvents } from "../../../../types/enums/GlobalState";
 import { Global_State } from "../global_state";
 import { CancelPix, RefreshPix } from "../services/Api_Pix";
 import { SafeStorage, Storage } from "../services/local_storage";
+import { DefaultConfigTabs } from "../services/local_storage/configuration_panel";
 import { SendMessageOnWhatsapp } from "../services/protocoll_events";
 import { WindowPix } from "../windows/pix";
 
 function RegisterListenersIpcMain() {
-  ipcMain.handle(Global_State.events.set_app_pass, (_, password: string) => {
+  ipcMain.handle(EnumIpcEvents.set_app_pass, (_, password: string) => {
     return SafeStorage.setPassword("application_pass", password);
   });
-  ipcMain.handle(Global_State.events.get_app_pass, () => {
+  ipcMain.handle(EnumIpcEvents.get_app_pass, () => {
     return SafeStorage.getPassword("application_pass");
   });
-  ipcMain.handle(Global_State.events.get_app_config_tabs, () => {
+  ipcMain.handle(EnumIpcEvents.get_app_config_tabs, () => {
     return Storage.get("config_tabs");
   });
-  ipcMain.handle(Global_State.events.set_app_config_tabs, (_, config_tabs) => {
+  ipcMain.handle(EnumIpcEvents.set_app_config_tabs, (_, config_tabs) => {
     return Storage.set("config_tabs", [...config_tabs]);
   });
+  ipcMain.on(EnumIpcEvents.reset_config_tabs, () => {
+    return Storage.set("config_tabs", [...DefaultConfigTabs]);
+  });
 
-  ipcMain.on(Global_State.events.open_qrcode, async () => {
+  ipcMain.on(EnumIpcEvents.open_qrcode, async () => {
     WindowPix().Window.show();
     return true;
   });
-  ipcMain.on(Global_State.events.close_qrcode, async () => {
+  ipcMain.on(EnumIpcEvents.close_qrcode, async () => {
     WindowPix().Window.hide();
     return true;
   });
-  ipcMain.on(Global_State.events.close_current_window, async () => {
+  ipcMain.on(EnumIpcEvents.close_current_window, async () => {
     //need handle close window
     return true;
   });
-  ipcMain.on(Global_State.events.refresh_aplication, async () => {
+  ipcMain.on(EnumIpcEvents.refresh_aplication, async () => {
     WindowPix().Window.removeAllListeners();
     WindowPix().Window.destroy();
     app.relaunch();
@@ -49,29 +54,26 @@ function RegisterListenersIpcMain() {
     BrowserWindow.getFocusedWindow()?.close();
   });
   ///ADD HANDLES PRELOAD
-  ipcMain.handle(Global_State.events.get_global_state, () => {
+  ipcMain.handle(EnumIpcEvents.get_global_state, () => {
     return JSON.stringify(Global_State); //   { ...Global_State }
   });
   ipcMain.handle(
-    Global_State.events.get_gererator_qrcode,
+    EnumIpcEvents.get_gererator_qrcode,
     async (event, image_base64_qrcode_login: string) => {
       return await toDataURL(image_base64_qrcode_login);
     },
   );
+  ipcMain.handle(EnumIpcEvents.get_fc_cancel_pix, async (event, id: string) => {
+    return JSON.stringify(await CancelPix(id));
+  });
   ipcMain.handle(
-    Global_State.events.get_fc_cancel_pix,
-    async (event, id: string) => {
-      return JSON.stringify(await CancelPix(id));
-    },
-  );
-  ipcMain.handle(
-    Global_State.events.get_fc_refresh_pix,
+    EnumIpcEvents.get_fc_refresh_pix,
     async (event, id: string) => {
       return JSON.stringify(await RefreshPix(id));
     },
   );
   ipcMain.handle(
-    Global_State.events.get_fc_send_message_on_whatsapp,
+    EnumIpcEvents.get_fc_send_message_on_whatsapp,
     (event, data_to_message: IWhatsAppMessage) => {
       return SendMessageOnWhatsapp(data_to_message);
     },
