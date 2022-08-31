@@ -37,8 +37,6 @@ export default function RenderEditValue({
   const [value, setValue] = useState<string | number | boolean>();
   const [validation, setValidation] = useState("");
   const [isEdited, setIsEdited] = useState(false);
-  if (option.type === EnumTypesOptions.boolean)
-    console.log(option.key, option.value);
 
   function OnlyNumber(value: string) {
     return value.replace(/[^0-9]/g, "");

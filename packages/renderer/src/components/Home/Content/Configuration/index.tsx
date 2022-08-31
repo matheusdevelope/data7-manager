@@ -100,7 +100,6 @@ export default function MainConfig() {
       });
     }
   }, [auth.current]);
-  console.log("refresh", Tabs);
 
   if (!auth.current) {
     return (
