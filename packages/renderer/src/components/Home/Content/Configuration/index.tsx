@@ -145,7 +145,7 @@ export default function MainConfig() {
           size={"xs"}
           onClick={reset.onOpen}
         >
-          Resetar Configurações {String(refreshh)}
+          Resetar Configurações
         </Button>
         <ConfirmationModal
           isOpen={reset.isOpen}
@@ -159,7 +159,6 @@ export default function MainConfig() {
           }}
           onClickRight={() => {
             window.__electron_preload__ResetLocalConfigTabs();
-            // refresh.onToggle();
             setRefresh(true);
           }}
         />

@@ -83,7 +83,7 @@ const ServicesTab: IOptionConfig2[] = [
     sub_category_label: "Whatsapp",
     key: EnumKeys.status,
     value: false,
-    disabled: true,
+    disabled: false,
     tip: "",
     label: "Envio arquivos via Whatsapp",
     description:

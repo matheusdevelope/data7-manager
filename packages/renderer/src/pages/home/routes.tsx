@@ -6,16 +6,19 @@ import ServicesPixContent from "../../components/Home/Content/Services/PIX";
 import ServicesWhatsContent from "/@/components/Home/Content/Services/Whatsapp";
 import { HiCode } from "react-icons/hi";
 import { BsGearFill, BsWhatsapp } from "react-icons/bs";
+import { EnumServices } from "../../../../../types/enums/configTabsAndKeys";
 export interface IRouteNavBar {
   layout: string;
   path: string;
   name: string;
+  show?: boolean;
   category: string;
   expansible?: boolean;
   icon: IconType;
   secondaryNavbar: boolean;
   component: JSX.Element;
   views: IRouteNavBar[];
+  service?: EnumServices;
 }
 
 const ServicesMenu: IRouteNavBar[] = [
@@ -28,6 +31,7 @@ const ServicesMenu: IRouteNavBar[] = [
     secondaryNavbar: true,
     component: <ServicesPixContent />,
     views: [],
+    service: EnumServices.pix,
   },
   {
     layout: "/home",
@@ -38,6 +42,7 @@ const ServicesMenu: IRouteNavBar[] = [
     secondaryNavbar: true,
     component: <ServicesWhatsContent />,
     views: [],
+    service: EnumServices.whatsapp,
   },
 ];
 
@@ -55,9 +60,9 @@ const RoutesNavBar: IRouteNavBar[] = [
 
   {
     layout: "/home",
-    path: "services2",
-    name: "SERVIÇOS API",
-    category: "services2",
+    path: "services",
+    name: "SERVIÇOS",
+    category: "services",
     expansible: false,
     icon: HiCode,
     secondaryNavbar: false,

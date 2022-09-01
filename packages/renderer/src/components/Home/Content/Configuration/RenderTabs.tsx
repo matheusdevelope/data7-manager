@@ -8,7 +8,7 @@ const Color = {
   background: "#FFF",
   blackFont1: "#111423",
   blackFont2: "#101220",
-  grayFont: "#8E93A5",
+  grayFont: "#61678C",
   colorFont: "#51608C",
   activeFont: "#383EA6",
   bgToggle: "#434CE7",

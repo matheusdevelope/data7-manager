@@ -25,7 +25,8 @@ export default function Sidebar(props: ISideBarContent) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate(menus[0].layout + menus[0].path, { replace: true });
+    menus.length > 0 &&
+      navigate(menus[0].layout + menus[0].path, { replace: true });
   }, []);
 
   function ContentSideBar(props: StackProps) {
@@ -52,7 +53,7 @@ export default function Sidebar(props: ISideBarContent) {
       >
         <DrawerOverlay mt="27px" />
         <DrawerContent
-          bg="white"
+          bg=" #F7FAFC"
           mt="27px"
           borderBottomRadius={"8px"}
           maxW="250px"

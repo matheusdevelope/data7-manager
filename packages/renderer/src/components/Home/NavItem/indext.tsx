@@ -115,6 +115,7 @@ export default function CreateMenus(
   }
 
   return menus.map((menu, key) => {
+    // if (!menu) return null;
     if (menu.category) {
       if (menu.expansible) return RenderNavItemCategoryExpansible(menu);
       return RenderNavItemCategory(menu);

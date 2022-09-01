@@ -1,4 +1,4 @@
-import { Flex, FlexProps, Icon, IconButton } from "@chakra-ui/react";
+import { Flex, FlexProps, Icon } from "@chakra-ui/react";
 import { FaBell } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import Brand from "../Brand";
