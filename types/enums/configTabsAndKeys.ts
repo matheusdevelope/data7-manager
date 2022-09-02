@@ -35,7 +35,7 @@ export enum EnumKeysFirebase {
   img = "img",
   link = "link",
   phone = "phone",
-  status = "status",
+  status_field = "status_field",
   message = "mensagem",
   created_at = "created_at",
   error = "error",

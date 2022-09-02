@@ -8,7 +8,7 @@ let AppTray: Tray;
 let Menus: MenuItemConstructorOptions[] = [
   {
     id: "config-window",
-    label: "Configurações",
+    label: "Painel",
     click: WindowConfigurationPanel().Create,
   },
   {

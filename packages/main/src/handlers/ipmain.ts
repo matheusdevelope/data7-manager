@@ -7,6 +7,8 @@ import { SafeStorage, Storage } from "../services/local_storage";
 import { DefaultConfigTabs } from "../services/local_storage/configuration_panel";
 import { SendMessageOnWhatsapp } from "../services/protocoll_events";
 import { WindowPix } from "../windows/pix";
+import { ToggleWindow, WindowsCreated } from "./ControlWindows";
+import { DataToLoginMobile } from "./login_mobile";
 
 function RegisterListenersIpcMain() {
   ipcMain.handle(EnumIpcEvents.set_app_pass, (_, password: string) => {
@@ -24,7 +26,6 @@ function RegisterListenersIpcMain() {
   ipcMain.on(EnumIpcEvents.reset_config_tabs, () => {
     return Storage.set("config_tabs", [...DefaultConfigTabs]);
   });
-
   ipcMain.on(EnumIpcEvents.open_qrcode, async () => {
     WindowPix().Window.show();
     return true;
@@ -53,7 +54,6 @@ function RegisterListenersIpcMain() {
   ipcMain.on("close-window", () => {
     BrowserWindow.getFocusedWindow()?.close();
   });
-  ///ADD HANDLES PRELOAD
   ipcMain.handle(EnumIpcEvents.get_global_state, () => {
     return JSON.stringify(Global_State); //   { ...Global_State }
   });
@@ -63,21 +63,35 @@ function RegisterListenersIpcMain() {
       return await toDataURL(image_base64_qrcode_login);
     },
   );
-  ipcMain.handle(EnumIpcEvents.get_fc_cancel_pix, async (event, id: string) => {
+  ipcMain.handle(EnumIpcEvents.get_fc_cancel_pix, async (_, id: string) => {
     return JSON.stringify(await CancelPix(id));
   });
-  ipcMain.handle(
-    EnumIpcEvents.get_fc_refresh_pix,
-    async (event, id: string) => {
-      return JSON.stringify(await RefreshPix(id));
-    },
-  );
+  ipcMain.handle(EnumIpcEvents.get_fc_refresh_pix, async (_, id: string) => {
+    return JSON.stringify(await RefreshPix(id));
+  });
   ipcMain.handle(
     EnumIpcEvents.get_fc_send_message_on_whatsapp,
-    (event, data_to_message: IWhatsAppMessage) => {
+    (_, data_to_message: IWhatsAppMessage) => {
       return SendMessageOnWhatsapp(data_to_message);
     },
   );
+  ipcMain.handle(EnumIpcEvents.get_data_to_qrcode_to_login_mobile, (_) => {
+    return DataToLoginMobile;
+  });
+  ipcMain.handle(EnumIpcEvents.toggle_window, (_, id_window: string) => {
+    const Window = WindowsCreated.find((obj) => obj.id === id_window)?.window;
+    if (Window) {
+      return ToggleWindow(Window);
+    }
+    return false;
+  });
+  ipcMain.handle(EnumIpcEvents.visibility_window, (_, id_window: string) => {
+    const Window = WindowsCreated.find((obj) => obj.id === id_window)?.window;
+    if (Window) {
+      return Window.isVisible();
+    }
+    return false;
+  });
 }
 
 export { RegisterListenersIpcMain };

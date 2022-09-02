@@ -5,6 +5,7 @@ import {
   EnumTabs,
   EnumTypesOptions,
 } from "../../../../../types/enums/configTabsAndKeys";
+import { EnumWindowsID } from "../../../../../types/enums/windows";
 import { ServiceFirebase } from "./configs/firebase";
 
 export const categoryService = {
@@ -42,9 +43,10 @@ const OptionsTerminalData: IOptionConfig2[] = [
     ...CategoryTerminal,
     key: EnumKeys.whatsapp_integrated,
     value: false,
-    disabled: true,
+    disabled: false,
     tip: "",
     label: "Whatsapp Integrado",
+    id_window: EnumWindowsID.whatsapp,
     description:
       "Esse recurso permite que os serviços de comunicação com o Whatsapp usem o bot interno de whatsapp para fazer o envio de mensagens abrir o app/site. \nAtenção: Esse recurso oferece risco de suspensão se do numero de whatsapp por não se tratar de uma integração oficial da plataforma, recomenda-se usar um número exclusivo para envio afim de evitar possíveis perca de números oficias da empresa.",
     type: EnumTypesOptions.boolean,
@@ -61,6 +63,7 @@ const ServicesTab: IOptionConfig2[] = [
     disabled: false,
     tip: "",
     label: "Pagamento via PIX",
+    id_window: EnumWindowsID.pix,
     description:
       "Esse serviço habilita a integração para o processamento de pagamento via PIX na máquina local.",
     type: EnumTypesOptions.boolean,

@@ -1,5 +1,6 @@
-import type { BrowserWindow} from "electron";
+import type { BrowserWindow } from "electron";
 import { screen } from "electron";
+import { EnumWindowsID } from "../../../../types/enums/windows";
 import { createDefaultWindow } from "../handlers/ControlWindows";
 
 let Window: BrowserWindow;
@@ -13,12 +14,15 @@ function Create() {
   const externalDisplay = displays.find((display) => {
     return display.bounds.x !== 0 || display.bounds.y !== 0;
   });
-  Window = createDefaultWindow(null, {
-    show: false,
-    alwaysOnTop: import.meta.env.DEV,
-    fullscreenable: false,
-    frame: false,
-    transparent: true,
+  Window = createDefaultWindow({
+    id: EnumWindowsID.panel_config,
+    WindowOptions: {
+      show: false,
+      alwaysOnTop: import.meta.env.DEV,
+      fullscreenable: false,
+      frame: false,
+      transparent: true,
+    },
   });
   if (externalDisplay) {
     Window.setBounds({

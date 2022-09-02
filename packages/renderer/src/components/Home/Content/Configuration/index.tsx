@@ -8,10 +8,9 @@ export default function MainConfig() {
   const auth = useRef(false);
   const authentication = useDisclosure();
   const reset = useDisclosure();
-  const refresh = useDisclosure();
   const [Tabs, setTabs] = useState<ITabsConfig[]>();
 
-  const [refreshh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   let activeBg = "#9d9d9d55";
   let hoverBg = "#25252533";
 
@@ -65,6 +64,7 @@ export default function MainConfig() {
                 description: opt.description,
                 type: opt.type,
                 validate_keys: opt.validate_keys,
+                id_window: opt.id_window,
               };
               return NewOpt;
             }),
@@ -85,13 +85,13 @@ export default function MainConfig() {
     authentication.onOpen();
   }, []);
   useEffect(() => {
-    if (refreshh) {
+    if (refresh) {
       window.__electron_preload__GetLocalConfigTabs().then((config) => {
         setTabs([...GroupTabs(config)]);
         setRefresh(false);
       });
     }
-  }, [refreshh]);
+  }, [refresh]);
 
   useEffect(() => {
     if (!auth.current) {
@@ -136,7 +136,7 @@ export default function MainConfig() {
   if (Tabs) {
     return (
       <Flex flex={1} direction={"column"} justifyContent="space-between">
-        {!refreshh && <ConfigContent tabs={Tabs} mainCategory="" />}
+        {!refresh && <ConfigContent tabs={Tabs} mainCategory="" />}
 
         <Button
           bg="gray.300"

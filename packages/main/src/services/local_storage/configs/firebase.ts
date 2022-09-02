@@ -153,9 +153,9 @@ export const ServiceFirebase: IOptionConfig2[] = [
   },
   {
     ...SubCategoryFirebase,
-    key: EnumKeysFirebase.status,
+    key: EnumKeysFirebase.status_field,
     value: "status",
-    label: EnumKeysFirebase.status,
+    label: EnumKeysFirebase.status_field,
     description: "Campo Status do Pix",
     type: EnumTypesOptions.text,
   },

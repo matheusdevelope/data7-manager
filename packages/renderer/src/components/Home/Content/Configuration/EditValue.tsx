@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { MdAdd, MdDelete, MdDone, MdSave } from "react-icons/md";
 import { EnumTypesOptions } from "../../../../../../../types/enums/configTabsAndKeys";
 import { ValidateCNPJ, ValidateCPF } from "./validation";
+import { MaskCnpj, MaskCpf } from "/@/utils/masks";
 
 const Color = {
   background: "#FFF",
@@ -113,22 +114,7 @@ export default function RenderEditValue({
       changeOptions({ ...option, value: newValue });
     }
   }
-  function cnpj(v: string) {
-    v = v.replace(/\D/g, ""); //Remove tudo o que não é dígito
-    v = v.replace(/^(\d{2})(\d)/, "$1.$2"); //Coloca ponto entre o segundo e o terceiro dígitos
-    v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3"); //Coloca ponto entre o quinto e o sexto dígitos
-    v = v.replace(/\.(\d{3})(\d)/, ".$1/$2"); //Coloca uma barra entre o oitavo e o nono dígitos
-    v = v.replace(/(\d{4})(\d)/, "$1-$2"); //Coloca um hífen depois do bloco de quatro dígitos
-    return v;
-  }
-  function cpf(v: string) {
-    v = v.replace(/\D/g, ""); //Remove tudo o que não é dígito
-    v = v.replace(/(\d{3})(\d)/, "$1.$2"); //Coloca um ponto entre o terceiro e o quarto dígitos
-    v = v.replace(/(\d{3})(\d)/, "$1.$2"); //Coloca um ponto entre o terceiro e o quarto dígitos
-    //de novo (para o segundo bloco de números)
-    v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); //Coloca um hífen entre o terceiro e o quarto dígitos
-    return v;
-  }
+
   useEffect(() => {
     if (Array.isArray(option.value)) {
       setValue("");
@@ -153,8 +139,8 @@ export default function RenderEditValue({
               value={
                 option.key.includes("cnpj_cpf")
                   ? String(value).length <= 15
-                    ? cpf(String(value))
-                    : cnpj(String(value))
+                    ? MaskCpf(String(value))
+                    : MaskCnpj(String(value))
                   : String(value)
               }
               onChange={OnChange}
@@ -194,9 +180,9 @@ export default function RenderEditValue({
             >
               <Text>
                 {option.key.includes("cnpj_cpf")
-                  ? String(value).length <= 15
-                    ? cpf(String(value))
-                    : cnpj(String(value))
+                  ? String(value).length <= 13
+                    ? MaskCpf(String(value))
+                    : MaskCnpj(String(value))
                   : String(value)}
               </Text>
               <Button

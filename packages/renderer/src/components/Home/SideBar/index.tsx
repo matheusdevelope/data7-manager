@@ -27,7 +27,7 @@ export default function Sidebar(props: ISideBarContent) {
   useEffect(() => {
     menus.length > 0 &&
       navigate(menus[0].layout + menus[0].path, { replace: true });
-  }, []);
+  }, [menus]);
 
   function ContentSideBar(props: StackProps) {
     return (

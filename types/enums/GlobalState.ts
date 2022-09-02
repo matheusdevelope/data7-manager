@@ -18,4 +18,7 @@ export enum EnumIpcEvents {
   get_fc_cancel_pix = "get_fc_cancel_pix",
   get_fc_send_message_on_whatsapp = "get_fc_send_message_on_whatsapp",
   reset_config_tabs = "reset_config_tabs",
+  get_data_to_qrcode_to_login_mobile = "get_data_to_qrcode_to_login_mobile",
+  toggle_window = "toggle_window",
+  visibility_window = "visibility_window",
 }

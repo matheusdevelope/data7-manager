@@ -1,3 +1,5 @@
+import type { QRCodeToDataURLOptions } from "qrcode";
+
 export {};
 declare global {
   interface Window {
@@ -32,5 +34,17 @@ declare global {
     __electron_preload__MinimizeWindow: () => void;
     __electron_preload__CloseWindow: () => void;
     __electron_preload__ResetLocalConfigTabs: () => void;
+    __electron_preload__GenerateQrCode: (
+      string_to_base64: string,
+      QRCodeToDataURLOptions?: QRCodeToDataURLOptions
+    ) => Promise<string>;
+    __electron_preload__ToggleWindow: (id_window: string) => Promise<boolean>;
+    __electron_preload__VisibilityWindow: (
+      id_window: string
+    ) => Promise<boolean>;
+    __electron_preload__RegisterEventVisibiliteWindow: (
+      event: string,
+      cb: () => void
+    ) => void;
   }
 }

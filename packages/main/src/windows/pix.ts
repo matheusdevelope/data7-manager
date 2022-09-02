@@ -35,18 +35,21 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
         height: Math.floor(dimensions.height * 0.45),
       };
 
-  Window = createDefaultWindow(null, {
-    width: DimensionsUSer.width,
-    height: DimensionsUSer.height,
-    minWidth: 400,
-    minHeight: 460,
-    maxWidth: dimensions.width,
-    maxHeight: dimensions.height,
-    closable: false,
-    frame: false,
-    fullscreenable: false,
-    transparent: true,
-    alwaysOnTop: import.meta.env.DEV,
+  Window = createDefaultWindow({
+    id: "pix",
+    WindowOptions: {
+      width: DimensionsUSer.width,
+      height: DimensionsUSer.height,
+      minWidth: 400,
+      minHeight: 460,
+      maxWidth: dimensions.width,
+      maxHeight: dimensions.height,
+      closable: false,
+      frame: false,
+      fullscreenable: false,
+      transparent: true,
+      alwaysOnTop: import.meta.env.DEV,
+    },
   });
 
   Window.on("minimize", function (event: { preventDefault: () => void }) {
@@ -77,7 +80,26 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
       title: Global_State.name_app,
       body: "O serviço PIX está ativo, aguardando atualizações.",
     });
-    RegisterMenusOnTray();
+    // CallQrCode({
+    //   qrcode: {
+    //     action: "open",
+    //     id: "123456789",
+    //     link: "http://google.com",
+    //     phone: "66996971841",
+    //     awaiting_payment: true,
+    //     confirmed_payment: false,
+    //     canceled: false,
+    //     portion: "1",
+    //     price: 1,
+    //     created_at: new Date(),
+    //     message: "Aguardando pagamento Pix..!",
+    //     img: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAAB0CAYAAABUmhYnAAAAAklEQVR4AewaftIAAAKwSURBVO3BQa7jSAwFwXyE7n/lHC+5KkCQ7OlPMCJ+sMYo1ijFGqVYoxRrlGKNUqxRijVKsUYp1ijFGqVYoxRrlGKNUqxRijXKxUNJ+CWVJ5LQqZwk4ZdUnijWKMUapVijXLxM5U1JuCMJnUqn8oTKm5LwpmKNUqxRijXKxZcl4Q6VO5JwkoQTlSeScIfKNxVrlGKNUqxRLoZT6ZLQJaFT+cuKNUqxRinWKMUapVijFGuUYo1y8WUqv6TSJaFT6ZLwhMq/pFijFGuUYo1y8bIkTJaEf1mxRinWKMUaJX7whyXhTSp/WbFGKdYoxRrl4qEkdCpdEt6k0qmcJKFT6ZJwkoQ3qXxTsUYp1ijFGuXiIZUTlS4JncodSehUuiS8SaVLQqfSJeGOJHQqTxRrlGKNUqxR4gcvSkKn0iXhRKVLQqfSJeEJlS4JncpJEp5QeVOxRinWKMUaJX7woiScqDyRhE7lJAmdyhNJeELlm4o1SrFGKdYo8YMHktCpdEn4JZWTJHQqXRI6lZMknKh0SehU3lSsUYo1SrFGiR/8YUk4UemS8CaVkyTcofJEsUYp1ijFGuXioST8kkqn0iWhS0Kn0iWhU+mScEcSOpUuCZ3Km4o1SrFGKdYoFy9TeVMSTpJwotIl4SQJJyp3JKFT6ZLQqTxRrFGKNUqxRrn4siTcofJNKl0SOpWTJHQqJypdEjqVNxVrlGKNUqxRLoZR+SaVLgknSehUvqlYoxRrlGKNcjFMEjqVLgmdSpeETqVLQqdykoRfKtYoxRqlWKNcfJnKN6ncoXKicqJykoT/U7FGKdYoxRrl4mVJ+KUkdCpdEk5UuiR0KneonCShU3lTsUYp1ijFGiV+sMYo1ijFGqVYoxRrlGKNUqxRijVKsUYp1ijFGqVYoxRrlGKNUqxRijXKf3weEuTKsbeUAAAAAElFTkSuQmCC",
+    //   },
+    //   callback: (a) => {
+    //     console.log("callback: ", a);
+    //   },
+    // });
+    // RegisterMenusOnTray();
     // if (import.meta.env.DEV) {
     //   Window?.webContents.openDevTools({ mode: "detach" });
     // }
@@ -108,9 +130,9 @@ const MenuItemTray = {
   },
 };
 
-function RegisterMenusOnTray() {
-  ControlTray().AddAction(MenuItemTray);
-}
+// function RegisterMenusOnTray() {
+//   ControlTray().AddAction(MenuItemTray);
+// }
 
 export function WindowPix() {
   return {

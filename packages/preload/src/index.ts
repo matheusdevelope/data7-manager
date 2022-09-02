@@ -22,6 +22,10 @@ export {
   GetLocalConfigTabs,
   SetLocalConfigTabs,
   ResetLocalConfigTabs,
+  ToggleWindow,
+  VisibilityWindow,
 } from "./preload";
 
 export { MoveWindow, MinimizeWindow, CloseWindow } from "./WindowHeaderBar";
+
+export { GenerateQrCode } from "./generate_qrcode";

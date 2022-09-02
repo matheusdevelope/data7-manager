@@ -1,3 +1,5 @@
+// import { EnumWindowsID } from "./enums/windows";
+
 interface ITabsConfig {
   category: string;
   label: string;
@@ -15,6 +17,7 @@ interface IOptionConfig {
   description: string;
   type: EnumTypesOptions;
   validate_keys?: IObjValidationKey[];
+  id_window?: EnumWindowsID;
 }
 interface IObjValidationKey {
   category: string;
@@ -35,6 +38,7 @@ interface IOptionConfig2 extends ITabsConfig2 {
   description: string;
   type: EnumTypesOptions;
   validate_keys?: IObjValidationKey[];
+  id_window?: EnumWindowsID;
 }
 
 interface ITabsConfig2 {

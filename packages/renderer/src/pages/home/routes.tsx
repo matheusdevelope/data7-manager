@@ -58,17 +58,17 @@ const RoutesNavBar: IRouteNavBar[] = [
     views: [],
   },
 
-  {
-    layout: "/home",
-    path: "services",
-    name: "SERVIÇOS",
-    category: "services",
-    expansible: false,
-    icon: HiCode,
-    secondaryNavbar: false,
-    component: <></>,
-    views: ServicesMenu,
-  },
+  // {
+  //   layout: "/home",
+  //   path: "services",
+  //   name: "SERVIÇOS",
+  //   category: "services",
+  //   expansible: false,
+  //   icon: HiCode,
+  //   secondaryNavbar: false,
+  //   component: <></>,
+  //   views: ServicesMenu,
+  // },
 
   {
     layout: "/home",

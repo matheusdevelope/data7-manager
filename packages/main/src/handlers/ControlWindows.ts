@@ -1,10 +1,22 @@
 import type { BrowserWindow, BrowserWindowConstructorOptions } from "electron";
 import { join } from "path";
 
-export const createDefaultWindow = (
-  path_preload?: string | null,
-  WindowOptions?: BrowserWindowConstructorOptions,
-) => {
+interface CreatedWindows {
+  window: BrowserWindow;
+  id: string;
+}
+export const WindowsCreated: CreatedWindows[] = [];
+
+interface ICreateDefaultWindow {
+  id: string;
+  WindowOptions?: BrowserWindowConstructorOptions;
+  path_preload?: string | null;
+}
+export const createDefaultWindow = ({
+  id,
+  path_preload,
+  WindowOptions,
+}: ICreateDefaultWindow) => {
   const { BrowserWindow } = require("electron");
   const mainWindow = new BrowserWindow({
     show: false,
@@ -20,6 +32,11 @@ export const createDefaultWindow = (
     },
     ...WindowOptions,
   });
+
+  WindowsCreated.push({
+    window: mainWindow,
+    id: id,
+  });
   return mainWindow;
 };
 
@@ -30,9 +47,11 @@ export function ToggleWindow(
   if (Window.isVisible()) {
     Window.hide();
     cb && cb(false);
+    return Window.isVisible();
   } else {
     Window.show();
     Window.focus();
     cb && cb(true);
+    return Window.isVisible();
   }
 }

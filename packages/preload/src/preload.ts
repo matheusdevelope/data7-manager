@@ -40,7 +40,7 @@ export function SetLocalConfig(config: IObjectConfig[]): Promise<void | Error> {
 export function GetLocalConfigTabs(): Promise<ITabsConfig[]> {
   return ipcRenderer.invoke(Global_State.events.get_app_config_tabs);
 }
-export function ResetLocalConfigTabs(): any {
+export function ResetLocalConfigTabs() {
   return ipcRenderer.send(EnumIpcEvents.reset_config_tabs);
 }
 export function SetLocalConfigTabs(
@@ -132,4 +132,10 @@ export function RefreshAplication(origin?: string) {
 }
 export function GetGlobalState(): Promise<string> {
   return ipcRenderer.invoke(Global_State.events.get_global_state);
+}
+export function ToggleWindow(id_window: string): Promise<boolean> {
+  return ipcRenderer.invoke(EnumIpcEvents.toggle_window, id_window || "");
+}
+export function VisibilityWindow(id_window: string): Promise<boolean> {
+  return ipcRenderer.invoke(EnumIpcEvents.visibility_window, id_window || "");
 }
