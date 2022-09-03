@@ -1,8 +1,8 @@
 import { Global_State } from "../global_state";
 import { apenasNumeros } from "../utils";
 import useFirestore from "./firebase";
+import { GetValuesFirebase } from "./local_storage";
 import { CallQrCode } from "./protocoll_events";
-
 const Firestore = useFirestore(console.error);
 const LocalConfig = Global_State.localConfig();
 const CollectionUpdate = "refresh-pix";
@@ -14,6 +14,7 @@ const FieldsToLowerCase = [
   LocalConfig.firebase_status_canceled,
   LocalConfig.firebase_status,
 ];
+console.log(GetValuesFirebase());
 
 const ID_and_STATUS_original = {
   status: "",

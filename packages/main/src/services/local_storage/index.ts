@@ -3,6 +3,7 @@ import type { Schema } from "electron-store";
 import Store from "electron-store";
 import {
   EnumKeys,
+  EnumServices,
   EnumTabs,
 } from "../../../../../types/enums/configTabsAndKeys";
 import { ForceRedefinitionValues } from "./configs/firebase";
@@ -330,5 +331,30 @@ function GetServices(): IOptionConfig2[] {
   }
   return [];
 }
+interface ObjFirebase {
+  [key: string]: string | boolean | number;
+}
+function GetValuesFirebase(): ObjFirebase | null {
+  const Config = GetConfigTabs();
+  if (Config) {
+    const ConfigFirebase = Config.filter(
+      (opt) => opt.sub_category === EnumServices.firebase,
+    );
+    let ObjFirebase: ObjFirebase;
+    ConfigFirebase.forEach((config) => {
+      if (!Array.isArray(config.value)) {
+        ObjFirebase[config.key] = config.value;
+      }
+    });
+  }
+  return null;
+}
 
-export { SafeStorage, Storage, GetConfig, GetConfigTabs, GetServices };
+export {
+  SafeStorage,
+  Storage,
+  GetConfig,
+  GetConfigTabs,
+  GetServices,
+  GetValuesFirebase,
+};
