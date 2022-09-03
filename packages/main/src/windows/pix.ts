@@ -117,6 +117,12 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
   cb_ready && cb_ready(Window);
   return Window;
 }
+function Stop() {
+  if (Window && !Window.isDestroyed()) {
+    Window.removeAllListeners();
+    Window.destroy();
+  }
+}
 const MenuItemTray = {
   id: "toggle-pix-window",
   label: "Mostrar área PIX",
@@ -138,5 +144,6 @@ export function WindowPix() {
   return {
     Window,
     Create,
+    Stop,
   };
 }

@@ -39,18 +39,6 @@ const OptionsTerminalData: IOptionConfig2[] = [
       "Para usar serviços como PIX ou Whastapp esse campo precisa ser informado.",
     type: EnumTypesOptions.array,
   },
-  {
-    ...CategoryTerminal,
-    key: EnumKeys.whatsapp_integrated,
-    value: false,
-    disabled: false,
-    tip: "",
-    label: "Whatsapp Integrado",
-    id_window: EnumWindowsID.whatsapp,
-    description:
-      "Esse recurso permite que os serviços de comunicação com o Whatsapp usem o bot interno de whatsapp para fazer o envio de mensagens abrir o app/site. \nAtenção: Esse recurso oferece risco de suspensão se do numero de whatsapp por não se tratar de uma integração oficial da plataforma, recomenda-se usar um número exclusivo para envio afim de evitar possíveis perca de números oficias da empresa.",
-    type: EnumTypesOptions.boolean,
-  },
 ];
 
 const ServicesTab: IOptionConfig2[] = [
@@ -62,7 +50,7 @@ const ServicesTab: IOptionConfig2[] = [
     value: false,
     disabled: false,
     tip: "",
-    label: "Pagamento via PIX",
+    label: "Ativo",
     id_window: EnumWindowsID.pix,
     description:
       "Esse serviço habilita a integração para o processamento de pagamento via PIX na máquina local.",
@@ -83,14 +71,28 @@ const ServicesTab: IOptionConfig2[] = [
   {
     ...categoryService,
     sub_category: EnumServices.whatsapp,
-    sub_category_label: "Whatsapp",
+    sub_category_label: "Envio Arquivos Whatsapp",
     key: EnumKeys.status,
     value: false,
     disabled: false,
     tip: "",
-    label: "Envio arquivos via Whatsapp",
+    label: "Ativo",
     description:
       "Esse serviço habilita a integração para o processamento e envio de arquivos através do Data7. ",
+    type: EnumTypesOptions.boolean,
+  },
+  {
+    ...categoryService,
+    sub_category: EnumServices.whatsapp_integrated,
+    sub_category_label: "Whatsapp Integrado",
+    key: EnumKeys.status,
+    value: false,
+    disabled: false,
+    tip: "",
+    label: "Ativo",
+    id_window: EnumWindowsID.whatsapp,
+    description:
+      "Esse recurso permite que os serviços de comunicação com o Whatsapp usem o bot interno de whatsapp para fazer o envio de mensagens abrir o app/site. \nAtenção: Esse recurso oferece risco de suspensão se do numero de whatsapp por não se tratar de uma integração oficial da plataforma, recomenda-se usar um número exclusivo para envio afim de evitar possíveis perca de números oficias da empresa.",
     type: EnumTypesOptions.boolean,
   },
 ];

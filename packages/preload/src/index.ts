@@ -24,6 +24,7 @@ export {
   ResetLocalConfigTabs,
   ToggleWindow,
   VisibilityWindow,
+  ToggleService,
 } from "./preload";
 
 export { MoveWindow, MinimizeWindow, CloseWindow } from "./WindowHeaderBar";

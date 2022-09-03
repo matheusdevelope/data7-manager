@@ -25,7 +25,7 @@ export const ServiceFirebase: IOptionConfig2[] = [
     ...SubCategoryFirebase,
     key: EnumKeys.status,
     value: true,
-    label: "Usar serviço Firebase",
+    label: "Ativo",
     description:
       "Define se o serviço Firebase será executado. \nLembre-se: Para usar o serviço de PIX esse serviço precisa estar ativo.",
     type: EnumTypesOptions.boolean,

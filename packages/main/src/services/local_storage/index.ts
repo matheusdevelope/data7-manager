@@ -1,6 +1,10 @@
 import { safeStorage } from "electron";
 import type { Schema } from "electron-store";
 import Store from "electron-store";
+import {
+  EnumKeys,
+  EnumTabs,
+} from "../../../../../types/enums/configTabsAndKeys";
 import { ForceRedefinitionValues } from "./configs/firebase";
 import { DefaultConfigTabs } from "./configuration_panel";
 
@@ -304,14 +308,27 @@ function GetConfig(): IObjectConfig[] | false {
   }
 }
 
-function GetConfigTabs(): ITabsConfig[] | false {
+function GetConfigTabs(): IOptionConfig2[] | false {
   if (!Storage.has("config_tabs")) return [];
   try {
-    const Config = Storage.get("config_tabs") as unknown as ITabsConfig[];
+    const Config = Storage.get("config_tabs") as unknown as IOptionConfig2[];
     return Config;
   } catch (err) {
     console.error(err);
     return false;
   }
 }
-export { SafeStorage, Storage, GetConfig, GetConfigTabs };
+function GetServices(): IOptionConfig2[] {
+  const config = GetConfigTabs();
+  if (config) {
+    return config.filter(
+      (opt) =>
+        opt.category === EnumTabs.services &&
+        opt.key === EnumKeys.status &&
+        opt.value === true,
+    );
+  }
+  return [];
+}
+
+export { SafeStorage, Storage, GetConfig, GetConfigTabs, GetServices };

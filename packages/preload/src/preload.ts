@@ -139,3 +139,9 @@ export function ToggleWindow(id_window: string): Promise<boolean> {
 export function VisibilityWindow(id_window: string): Promise<boolean> {
   return ipcRenderer.invoke(EnumIpcEvents.visibility_window, id_window || "");
 }
+export function ToggleService(service: string, active: string) {
+  console.log("ToggleService: ", service);
+  console.log("ToggleService: ", active);
+
+  service && ipcRenderer.send(EnumIpcEvents.active_service, service, active);
+}

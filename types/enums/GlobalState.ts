@@ -21,4 +21,5 @@ export enum EnumIpcEvents {
   get_data_to_qrcode_to_login_mobile = "get_data_to_qrcode_to_login_mobile",
   toggle_window = "toggle_window",
   visibility_window = "visibility_window",
+  active_service = "active_service",
 }

@@ -46,5 +46,9 @@ declare global {
       event: string,
       cb: () => void
     ) => void;
+    __electron_preload__ToggleService: (
+      service: string,
+      active: boolean
+    ) => void;
   }
 }

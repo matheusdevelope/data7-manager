@@ -1,7 +1,12 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { toDataURL } from "qrcode";
+import type { EnumServices } from "../../../../types/enums/configTabsAndKeys";
 import { EnumIpcEvents } from "../../../../types/enums/GlobalState";
 import { Global_State } from "../global_state";
+import {
+  ActivateServicesByConfiguration,
+  StopServicesByConfiguration,
+} from "../InitializeInteface";
 import { CancelPix, RefreshPix } from "../services/Api_Pix";
 import { SafeStorage, Storage } from "../services/local_storage";
 import { DefaultConfigTabs } from "../services/local_storage/configuration_panel";
@@ -79,19 +84,30 @@ function RegisterListenersIpcMain() {
     return DataToLoginMobile;
   });
   ipcMain.handle(EnumIpcEvents.toggle_window, (_, id_window: string) => {
-    const Window = WindowsCreated.find((obj) => obj.id === id_window)?.window;
+    const Window = WindowsCreated.find(
+      (obj) => obj.id === id_window && !obj.window.isDestroyed(),
+    )?.window;
     if (Window) {
       return ToggleWindow(Window);
     }
     return false;
   });
   ipcMain.handle(EnumIpcEvents.visibility_window, (_, id_window: string) => {
-    const Window = WindowsCreated.find((obj) => obj.id === id_window)?.window;
+    const Window = WindowsCreated.find(
+      (obj) => obj.id === id_window && !obj.window.isDestroyed(),
+    )?.window;
     if (Window) {
       return Window.isVisible();
     }
     return false;
   });
+  ipcMain.on(
+    EnumIpcEvents.active_service,
+    (_, service: EnumServices, active: boolean) => {
+      if (active) return ActivateServicesByConfiguration(service);
+      return StopServicesByConfiguration(service);
+    },
+  );
 }
 
 export { RegisterListenersIpcMain };

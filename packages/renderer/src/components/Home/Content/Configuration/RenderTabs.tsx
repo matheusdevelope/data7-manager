@@ -3,6 +3,7 @@ import { Box, BoxProps, Button } from "@chakra-ui/react";
 import { HStackScrollBar } from "../../StackScrollBar";
 import RenderOption from "./option";
 import ConfirmationModal from "../../Confirmation";
+import { EnumKeys } from "../../../../../../../types/enums/configTabsAndKeys";
 
 const Color = {
   background: "#FFF",
@@ -70,6 +71,17 @@ export default function ConfigContent({
       ActualConfig.splice(index, 1, { ...ActualConfig[index], value: value });
 
       window.__electron_preload__SetLocalConfigTabs([...ActualConfig]);
+      if (
+        ActualConfig[index].key === EnumKeys.status &&
+        typeof value === "boolean"
+      ) {
+        console.log(ActualConfig[index]);
+
+        window.__electron_preload__ToggleService(
+          ActualConfig[index].id_window,
+          value
+        );
+      }
     } else {
       const index = ActualConfig.findIndex((opt) => {
         return opt.key === key;
@@ -78,6 +90,17 @@ export default function ConfigContent({
       ActualConfig.splice(index, 1, { ...ActualConfig[index], value: value });
 
       window.__electron_preload__SetLocalConfigTabs([...ActualConfig]);
+      if (
+        ActualConfig[index].key === EnumKeys.status &&
+        typeof value === "boolean"
+      ) {
+        console.log(ActualConfig[index]);
+
+        window.__electron_preload__ToggleService(
+          ActualConfig[index].id_window,
+          value
+        );
+      }
     }
   }
 

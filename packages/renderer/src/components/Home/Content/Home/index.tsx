@@ -15,10 +15,9 @@ export default function HomeContent() {
   const Services =
     config?.filter(
       (opt) =>
-        (opt.category === EnumTabs.services &&
-          opt.key === EnumKeys.status &&
-          opt.value === true) ||
-        (opt.key === EnumKeys.whatsapp_integrated && opt.value === true)
+        opt.category === EnumTabs.services &&
+        opt.key === EnumKeys.status &&
+        opt.value === true
     ) || [];
 
   function OrderList(data: IOptionConfig2[], desc?: boolean) {
