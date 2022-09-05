@@ -44,10 +44,14 @@ function RegisterListenersIpcMain() {
     return true;
   });
   ipcMain.on(EnumIpcEvents.refresh_aplication, async () => {
-    WindowPix().Window.removeAllListeners();
-    WindowPix().Window.destroy();
+    WindowsCreated.forEach((win) => {
+      win.window.removeAllListeners();
+      win.window.close();
+    });
     app.relaunch();
-    setTimeout(app.exit, 2000);
+    // setTimeout(
+    app.exit(); //, 2000
+    // );
     return true;
   });
   ipcMain.on("move-window", (_, bounds: IBounds) => {

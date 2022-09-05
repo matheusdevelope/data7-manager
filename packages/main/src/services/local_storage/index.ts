@@ -3,6 +3,7 @@ import type { Schema } from "electron-store";
 import Store from "electron-store";
 import {
   EnumKeys,
+  EnumKeysFirebase,
   EnumServices,
   EnumTabs,
 } from "../../../../../types/enums/configTabsAndKeys";
@@ -334,20 +335,31 @@ function GetServices(): IOptionConfig2[] {
 interface ObjFirebase {
   [key: string]: string | boolean | number;
 }
-function GetValuesFirebase(): ObjFirebase | null {
+function GetValuesFirebase(): IFirebaseTypeValues {
+  const ObjFirebase: ObjFirebase = {};
+  // console.log(Object.values(EnumKeysFirebase));
+
   const Config = GetConfigTabs();
   if (Config) {
     const ConfigFirebase = Config.filter(
       (opt) => opt.sub_category === EnumServices.firebase,
     );
-    let ObjFirebase: ObjFirebase;
+
     ConfigFirebase.forEach((config) => {
       if (!Array.isArray(config.value)) {
         ObjFirebase[config.key] = config.value;
       }
     });
+    return ObjFirebase as unknown as IFirebaseTypeValues;
   }
-  return null;
+  Object.values(EnumKeysFirebase).forEach((prop) => {
+    const ObjConfig = DefaultConfigTabs.find(
+      (obj) => obj.sub_category === EnumServices.firebase && obj.key === prop,
+    );
+    if (!ObjConfig) return;
+    ObjFirebase[prop] = !Array.isArray(ObjConfig.value) ? ObjConfig.value : "";
+  });
+  return ObjFirebase as unknown as IFirebaseTypeValues;
 }
 
 export {

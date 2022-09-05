@@ -1,20 +1,13 @@
+import type { Timestamp } from "firebase-admin/firestore";
+import { EnumKeys } from "../../../../types/enums/configTabsAndKeys";
 import { Global_State } from "../global_state";
 import { apenasNumeros } from "../utils";
 import useFirestore from "./firebase";
-import { GetValuesFirebase } from "./local_storage";
+import { GetConfigTabs, GetValuesFirebase } from "./local_storage";
 import { CallQrCode } from "./protocoll_events";
+
 const Firestore = useFirestore(console.error);
-const LocalConfig = Global_State.localConfig();
 const CollectionUpdate = "refresh-pix";
-const FieldsToLowerCase = [
-  LocalConfig.firebase_ip,
-  LocalConfig.firebase_machine_name,
-  LocalConfig.firebase_status_awaiting_payment,
-  LocalConfig.firebase_status_confirmed_payment,
-  LocalConfig.firebase_status_canceled,
-  LocalConfig.firebase_status,
-];
-console.log(GetValuesFirebase());
 
 const ID_and_STATUS_original = {
   status: "",
@@ -22,6 +15,21 @@ const ID_and_STATUS_original = {
 };
 
 export function StartPixSrvice() {
+  const Config = GetConfigTabs();
+  const FieldsFirebase = GetValuesFirebase();
+  const ObjCNPJ = Config
+    ? Config.find((obj) => obj.key === EnumKeys.cnpj_cpf)
+    : undefined;
+  const CNPJs = ObjCNPJ && Array.isArray(ObjCNPJ.value) ? ObjCNPJ.value : [];
+  const FieldsToLowerCase = [
+    FieldsFirebase.ip,
+    FieldsFirebase.machine_name,
+    FieldsFirebase.status_awaiting_payment,
+    FieldsFirebase.status_confirmed_payment,
+    FieldsFirebase.status_canceled,
+    FieldsFirebase.status_field,
+  ];
+
   let lista: IDataQrCode[] = [];
   const InitialPix: IDataQrCode = {
     action: "",
@@ -39,8 +47,8 @@ export function StartPixSrvice() {
   };
 
   const unsubscriber = Firestore.Listen(
-    LocalConfig.firebase_collection,
-    LocalConfig.firebase_created_at,
+    FieldsFirebase.collection,
+    FieldsFirebase.created_at,
     (doc) => {
       const data: {
         [key: string]:
@@ -50,13 +58,15 @@ export function StartPixSrvice() {
           | { [key: string]: string | boolean | number };
       } = {};
 
+      console.log(doc);
+
       for (const key in doc) {
         if (Object.prototype.hasOwnProperty.call(doc, key)) {
           if (typeof doc[key] == "string") {
-            if (LocalConfig.firebase_id == key.toLowerCase()) {
+            if (FieldsFirebase.id == key.toLowerCase()) {
               ID_and_STATUS_original.id = key;
             }
-            if (LocalConfig.firebase_status == key.toLowerCase()) {
+            if (FieldsFirebase.status_field == key.toLowerCase()) {
               ID_and_STATUS_original.status = key;
             }
             if (FieldsToLowerCase.includes(key.toLowerCase())) {
@@ -69,8 +79,7 @@ export function StartPixSrvice() {
           }
         }
       }
-
-      if (!data[LocalConfig.firebase_liberation_key]) return;
+      if (!data[FieldsFirebase.liberation_key]) return;
 
       const LiberacaoKey: {
         [key: string]: string | boolean | number;
@@ -78,7 +87,7 @@ export function StartPixSrvice() {
 
       const tempLiberacaoKey: {
         [key: string]: string | boolean | number;
-      } = data[LocalConfig.firebase_liberation_key] as {
+      } = data[FieldsFirebase.liberation_key] as {
         [key: string]: string | boolean | number;
       };
 
@@ -97,64 +106,60 @@ export function StartPixSrvice() {
           }
         }
       }
+
       if (
         ![
-          LocalConfig.firebase_status_awaiting_payment,
-          LocalConfig.firebase_status_confirmed_payment,
-          LocalConfig.firebase_status_canceled,
-          LocalConfig.firebase_status_canceled_system,
-          LocalConfig.firebase_status_canceled_client,
-        ].includes(String(data[LocalConfig.firebase_status]))
+          FieldsFirebase.status_awaiting_payment,
+          FieldsFirebase.status_confirmed_payment,
+          FieldsFirebase.status_canceled,
+          FieldsFirebase.status_canceled_system,
+          FieldsFirebase.status_canceled_client,
+        ].includes(String(data[FieldsFirebase.status_field]))
       )
         return;
-      // appendFileSync("docs.json", JSON.stringify(doc) + ",\n");
-      // writeFileSync("config-formated.json", JSON.stringify(LocalConfig));
+
       if (
-        apenasNumeros(LocalConfig.cnpj.join(",")).includes(
-          apenasNumeros(String(LiberacaoKey[LocalConfig.firebase_cnpj] || "")),
+        apenasNumeros(CNPJs.join(",")).includes(
+          apenasNumeros(String(LiberacaoKey[FieldsFirebase.cnpj] || "")),
         ) &&
-        (LocalConfig.firebase_validate_ip === true
-          ? LiberacaoKey[LocalConfig.firebase_ip] == Global_State.local_ip
+        (FieldsFirebase.validate_ip === true
+          ? String(LiberacaoKey[FieldsFirebase.ip]) == Global_State.local_ip
           : true) &&
-        LiberacaoKey[LocalConfig.firebase_machine_name] ==
-          Global_State.hostname.toLowerCase()
-        //    &&
-        // LiberacaoKey[LocalConfig.firebase_username] ==
-        //   Global_State.username_machine
+        String(LiberacaoKey[FieldsFirebase.machine_name]).toLowerCase() ==
+          Global_State.hostname.toLowerCase() &&
+        String(LiberacaoKey[FieldsFirebase.username]).toLowerCase() ==
+          Global_State.username_machine.toLowerCase()
       ) {
+        const TheTimestamp =
+          (data[FieldsFirebase.created_at] as unknown as Timestamp) ||
+          (data.doc_created_at as unknown as Timestamp);
+
         const QrCode: IDataQrCode = {
           action: "open",
-          id: String(data[LocalConfig.firebase_id] || ""),
-          price: Number(data[LocalConfig.firebase_price]),
-          portion: String(data[LocalConfig.firebase_portion] || ""),
-          img: String(data[LocalConfig.firebase_img] || ""),
-          link: String(data[LocalConfig.firebase_link] || ""),
-          phone: String(data[LocalConfig.firebase_phone] || ""),
+          id: String(data[FieldsFirebase.id] || ""),
+          price: Number(data[FieldsFirebase.price]),
+          portion: String(data[FieldsFirebase.portion] || ""),
+          img: String(data[FieldsFirebase.img] || ""),
+          link: String(data[FieldsFirebase.link] || ""),
+          phone: String(data[FieldsFirebase.phone] || ""),
           awaiting_payment:
-            String(data[LocalConfig.firebase_status]).toLowerCase() ==
-            LocalConfig.firebase_status_awaiting_payment.toLowerCase(),
+            String(data[FieldsFirebase.status_field]).toLowerCase() ==
+            FieldsFirebase.status_awaiting_payment.toLowerCase(),
           confirmed_payment:
-            String(data[LocalConfig.firebase_status] || "").toLowerCase() ==
-            LocalConfig.firebase_status_confirmed_payment.toLowerCase(),
+            String(data[FieldsFirebase.status_field] || "").toLowerCase() ==
+            FieldsFirebase.status_confirmed_payment.toLowerCase(),
           canceled: [
-            LocalConfig.firebase_status_canceled,
-            LocalConfig.firebase_status_canceled_system,
-            LocalConfig.firebase_status_canceled_client,
+            FieldsFirebase.status_canceled,
+            FieldsFirebase.status_canceled_system,
+            FieldsFirebase.status_canceled_client,
           ].includes(
-            String(data[LocalConfig.firebase_status] || "").toLowerCase(),
+            String(data[FieldsFirebase.status_field] || "").toLowerCase(),
           ),
-          // String(data[LocalConfig.firebase_status] || "").toLowerCase() ==
-          // LocalConfig.firebase_status_canceled.toLowerCase(),
-          message: String(data[LocalConfig.firebase_message] || ""),
-          created_at: new Date(
-            String(data[LocalConfig.firebase_created_at]) ||
-              String(data.doc_created_at),
-          ),
+          message: String(data[FieldsFirebase.message] || ""),
+          created_at: TheTimestamp.toDate(),
         };
-        // console.log(QrCode);
-
-        if (data[LocalConfig.firebase_error]) {
-          QrCode["error"] = String(data[LocalConfig.firebase_error] || "");
+        if (data[FieldsFirebase.error]) {
+          QrCode["error"] = String(data[FieldsFirebase.error] || "");
         }
         if (
           !QrCode.awaiting_payment &&
@@ -211,15 +216,17 @@ export function StartPixSrvice() {
 }
 
 export async function CancelPix(id: string): Promise<ICancelQr> {
+  // const Config = GetConfigTabs();
+  const FieldsFirebase = GetValuesFirebase();
   const data: { [key: string]: string } = {};
   data[ID_and_STATUS_original.status] =
-    LocalConfig.firebase_status_canceled_client.toUpperCase();
+    FieldsFirebase.status_canceled_client.toUpperCase();
   data[ID_and_STATUS_original.id] = id;
 
   try {
     await Firestore.Update(
-      LocalConfig.firebase_collection,
-      ID_and_STATUS_original.id, // LocalConfig.firebase_id,
+      FieldsFirebase.collection,
+      ID_and_STATUS_original.id, // FieldsFirebase.id,
       data,
     );
     return Promise.resolve({
@@ -235,8 +242,9 @@ export async function CancelPix(id: string): Promise<ICancelQr> {
   }
 }
 export async function RefreshPix(id: string): Promise<IRefreshQr> {
+  const FieldsFirebase = GetValuesFirebase();
   const data: { [key: string]: boolean | string } = {};
-  data[LocalConfig.firebase_id] = id;
+  data[FieldsFirebase.id] = id;
 
   try {
     await Firestore.Add(CollectionUpdate, data);

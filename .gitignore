@@ -5,6 +5,7 @@ certificates/**
 *.local
 thumbs.db
 firebase.json
+firebase_ok.json
 
 .eslintcache
 .browserslistrc

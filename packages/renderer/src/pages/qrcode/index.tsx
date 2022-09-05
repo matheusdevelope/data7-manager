@@ -7,7 +7,6 @@ import CancelAnimation from "../../svg/animations/canceled.json";
 import ErrorAnimation from "../../svg/animations/error.json";
 import {
   AreaQrCode,
-  Button,
   ButtonHeader,
   Column,
   Container,
@@ -15,11 +14,10 @@ import {
   Form,
   Header,
   ImgQrCode,
-  Input,
-  LineInput,
   SubHeader,
 } from "./style";
 import Dialog from "../../components/modal_dialog";
+import { InputGroup, Input, Button, InputLeftElement } from "@chakra-ui/react";
 const { innerHeight: height } = window;
 const InitialPix: IDataQrCode = {
   action: "",
@@ -160,7 +158,7 @@ export default function QrCode() {
     );
   }
 
-  function CloseWindow(time: number = 1200) {
+  function CloseWindow(time: number = 500) {
     setTimeout(() => {
       window.__electron_preload__CloseQr();
       setDataQrcode(InitialPix);
@@ -291,9 +289,11 @@ export default function QrCode() {
       {dataQrCode.link && (
         <Footer>
           <Form onSubmit={SendMessageToWhats}>
-            <LineInput>
-              <WhatsIcon />
+            <InputGroup size={"sm"} variant="filled">
+              <InputLeftElement children={<WhatsIcon />} />
+
               <Input
+                borderRadius={"4"}
                 ref={phoneRef}
                 value={phone}
                 onChange={(e) => {
@@ -301,9 +301,20 @@ export default function QrCode() {
                 }}
                 type="text"
                 placeholder="Whatsapp"
+                fontSize={"18"}
               />
-            </LineInput>
-            <Button type="submit">Enviar Link</Button>
+            </InputGroup>
+
+            <Button
+              _hover={{ bg: "gray.300" }}
+              px="8"
+              mx="4"
+              bg="gray.200"
+              size={"sm"}
+              type="submit"
+            >
+              Enviar Link
+            </Button>
           </Form>
         </Footer>
       )}

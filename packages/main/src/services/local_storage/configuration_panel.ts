@@ -74,7 +74,7 @@ const ServicesTab: IOptionConfig2[] = [
     sub_category_label: "Envio Arquivos Whatsapp",
     key: EnumKeys.status,
     value: false,
-    disabled: false,
+    disabled: true,
     tip: "",
     label: "Ativo",
     description:
@@ -87,7 +87,7 @@ const ServicesTab: IOptionConfig2[] = [
     sub_category_label: "Whatsapp Integrado",
     key: EnumKeys.status,
     value: false,
-    disabled: false,
+    disabled: true,
     tip: "",
     label: "Ativo",
     id_window: EnumWindowsID.whatsapp,

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
@@ -80,6 +80,7 @@ export const Form = styled.form`
 export const LineInput = styled.div`
   display: flex;
   max-width: 60%;
+  background-color: "#FFF";
 `;
 export const Input = styled.input`
   border-radius: 4px;

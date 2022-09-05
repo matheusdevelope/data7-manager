@@ -93,8 +93,8 @@ export default function AuthenticationModal({
         isCentered
       >
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader color={error ? "red.500" : "white"}>
+        <ModalContent bg={"white"}>
+          <ModalHeader color={error ? "red.500" : "black"}>
             {error
               ? error
               : !localPass
@@ -102,11 +102,12 @@ export default function AuthenticationModal({
               : " Insira a senha para ter acesso às configurações."}
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6}>
+          <ModalBody pb={6} color="black">
             <form onSubmit={OnSubmit}>
               <FormControl isInvalid={validation}>
                 <InputGroup>
                   <Input
+                    _placeholder={{ color: "black" }}
                     ref={initialRef}
                     placeholder={"Digite a senha"}
                     type={showPass ? "text" : "password"}
@@ -128,7 +129,13 @@ export default function AuthenticationModal({
           </ModalBody>
 
           <ModalFooter>
-            <Button ref={buttonRef} mr={3} onClick={OnSubmit}>
+            <Button
+              ref={buttonRef}
+              mr={3}
+              onClick={OnSubmit}
+              bg="gray.300"
+              _hover={{ bg: "gray.400" }}
+            >
               Prosseguir
             </Button>
           </ModalFooter>

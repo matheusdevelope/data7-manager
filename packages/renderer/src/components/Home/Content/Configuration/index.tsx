@@ -3,6 +3,7 @@ import { Box, Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import AuthenticationModal from "../../AuthenticationModal";
 import ConfigContent from "./RenderTabs";
 import ConfirmationModal from "../../Confirmation";
+console.log("Aquiiii");
 
 export default function MainConfig() {
   const auth = useRef(false);
@@ -159,7 +160,8 @@ export default function MainConfig() {
           }}
           onClickRight={() => {
             window.__electron_preload__ResetLocalConfigTabs();
-            setRefresh(true);
+            window.__electron_preload__RefreshAplication();
+            // setRefresh(true);
           }}
         />
       </Flex>

@@ -1,17 +1,22 @@
 import type { BrowserWindow } from "electron";
 import { dialog } from "electron";
 import { screen } from "electron";
+import { EnumKeys } from "../../../../types/enums/configTabsAndKeys";
 import { Global_State } from "../global_state";
-import ControlTray from "../handlers/ControlTray";
-import { createDefaultWindow, ToggleWindow } from "../handlers/ControlWindows";
+import { createDefaultWindow } from "../handlers/ControlWindows";
 import { CreateNotification } from "../handlers/notifications";
-import { Storage } from "../services/local_storage";
+import { GetConfigTabs, Storage } from "../services/local_storage";
 import { WindowConfigurationPanel } from "./configuration";
 
 let Window: BrowserWindow;
 
 function Create(cb_ready?: (Window: BrowserWindow) => void) {
-  if (Global_State.localConfig().cnpj.length == 0) {
+  const Config = GetConfigTabs();
+  const ObjCNPJ = Config
+    ? Config.find((obj) => obj.key === EnumKeys.cnpj_cpf)
+    : undefined;
+  const CNPJs = ObjCNPJ && Array.isArray(ObjCNPJ.value) ? ObjCNPJ.value : [];
+  if (CNPJs.length == 0) {
     dialog
       .showMessageBox({
         type: "info",
@@ -20,9 +25,10 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
           "Você não possui nenhum CNPJ cadastrado, por gentileza acesse as configurações e informe o CNPJ. \nSem o CNPJ você será incapaz de receber PIX nesse terminal.",
       })
       .then(() => {
-        WindowConfigurationPanel().Create();
+        WindowConfigurationPanel().Create().focus();
       });
   }
+  if (CNPJs.length == 0) return;
   if (Window && !Window.isDestroyed()) return Window;
   const screenElectron = screen;
   const display = screenElectron.getPrimaryDisplay();
@@ -48,7 +54,7 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
       frame: false,
       fullscreenable: false,
       transparent: true,
-      alwaysOnTop: import.meta.env.DEV,
+      alwaysOnTop: true,
     },
   });
 
@@ -80,29 +86,7 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
       title: Global_State.name_app,
       body: "O serviço PIX está ativo, aguardando atualizações.",
     });
-    // CallQrCode({
-    //   qrcode: {
-    //     action: "open",
-    //     id: "123456789",
-    //     link: "http://google.com",
-    //     phone: "66996971841",
-    //     awaiting_payment: true,
-    //     confirmed_payment: false,
-    //     canceled: false,
-    //     portion: "1",
-    //     price: 1,
-    //     created_at: new Date(),
-    //     message: "Aguardando pagamento Pix..!",
-    //     img: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAAB0CAYAAABUmhYnAAAAAklEQVR4AewaftIAAAKwSURBVO3BQa7jSAwFwXyE7n/lHC+5KkCQ7OlPMCJ+sMYo1ijFGqVYoxRrlGKNUqxRijVKsUYp1ijFGqVYoxRrlGKNUqxRijXKxUNJ+CWVJ5LQqZwk4ZdUnijWKMUapVijXLxM5U1JuCMJnUqn8oTKm5LwpmKNUqxRijXKxZcl4Q6VO5JwkoQTlSeScIfKNxVrlGKNUqxRLoZT6ZLQJaFT+cuKNUqxRinWKMUapVijFGuUYo1y8WUqv6TSJaFT6ZLwhMq/pFijFGuUYo1y8bIkTJaEf1mxRinWKMUaJX7whyXhTSp/WbFGKdYoxRrl4qEkdCpdEt6k0qmcJKFT6ZJwkoQ3qXxTsUYp1ijFGuXiIZUTlS4JncodSehUuiS8SaVLQqfSJeGOJHQqTxRrlGKNUqxR4gcvSkKn0iXhRKVLQqfSJeEJlS4JncpJEp5QeVOxRinWKMUaJX7woiScqDyRhE7lJAmdyhNJeELlm4o1SrFGKdYo8YMHktCpdEn4JZWTJHQqXRI6lZMknKh0SehU3lSsUYo1SrFGiR/8YUk4UemS8CaVkyTcofJEsUYp1ijFGuXioST8kkqn0iWhS0Kn0iWhU+mScEcSOpUuCZ3Km4o1SrFGKdYoFy9TeVMSTpJwotIl4SQJJyp3JKFT6ZLQqTxRrFGKNUqxRrn4siTcofJNKl0SOpWTJHQqJypdEjqVNxVrlGKNUqxRLoZR+SaVLgknSehUvqlYoxRrlGKNcjFMEjqVLgmdSpeETqVLQqdykoRfKtYoxRqlWKNcfJnKN6ncoXKicqJykoT/U7FGKdYoxRrl4mVJ+KUkdCpdEk5UuiR0KneonCShU3lTsUYp1ijFGiV+sMYo1ijFGqVYoxRrlGKNUqxRijVKsUYp1ijFGqVYoxRrlGKNUqxRijXKf3weEuTKsbeUAAAAAElFTkSuQmCC",
-    //   },
-    //   callback: (a) => {
-    //     console.log("callback: ", a);
-    //   },
-    // });
-    // RegisterMenusOnTray();
-    // if (import.meta.env.DEV) {
-    //   Window?.webContents.openDevTools({ mode: "detach" });
-    // }
+    cb_ready && cb_ready(Window);
   });
 
   const pageUrl =
@@ -114,7 +98,7 @@ function Create(cb_ready?: (Window: BrowserWindow) => void) {
         ).toString();
 
   Window.loadURL(pageUrl + "#/qrcode");
-  cb_ready && cb_ready(Window);
+
   return Window;
 }
 function Stop() {
@@ -123,18 +107,19 @@ function Stop() {
     Window.destroy();
   }
 }
-const MenuItemTray = {
-  id: "toggle-pix-window",
-  label: "Mostrar área PIX",
-  click: () => {
-    ToggleWindow(Create(), (isVisible) => {
-      ControlTray().ReplaceMenuItem({
-        ...MenuItemTray,
-        label: isVisible ? "Ocultar área PIX" : MenuItemTray.label,
-      });
-    });
-  },
-};
+// const MenuItemTray = {
+//   id: "toggle-pix-window",
+//   label: "Mostrar área PIX",
+//   click: () => {
+
+//     ToggleWindow(Create(), (isVisible) => {
+//       ControlTray().ReplaceMenuItem({
+//         ...MenuItemTray,
+//         label: isVisible ? "Ocultar área PIX" : MenuItemTray.label,
+//       });
+//     });
+//   },
+// };
 
 // function RegisterMenusOnTray() {
 //   ControlTray().AddAction(MenuItemTray);

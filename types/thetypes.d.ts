@@ -1,14 +1,30 @@
-enum EnumTypeOfCallback {
-  error,
-  success,
-}
-enum EnumDevices {
-  desktop,
-  mobile,
-}
 interface IBounds {
   x: number;
   y: number;
+}
+interface IFirebaseTypeValues {
+  validate_ip: boolean;
+  collection: string;
+  liberation_key: string;
+  cnpj: string;
+  ip: string;
+  username: string;
+  machine_name: string;
+  id: string;
+  price: string;
+  portion: string;
+  img: string;
+  link: string;
+  phone: string;
+  status_field: string;
+  message: string;
+  created_at: string;
+  error: string;
+  status_awaiting_payment: string;
+  status_confirmed_payment: string;
+  status_canceled: string;
+  status_canceled_system: string;
+  status_canceled_client: string;
 }
 
 interface IDefaultConfig {
@@ -184,14 +200,6 @@ interface IElectronAPI {
   __electron_preload__RefreshAplication: () => void;
 }
 
-enum EnumTypeOfCallback {
-  error,
-  success,
-}
-enum EnumDevices {
-  desktop,
-  mobile,
-}
 interface ICallback {
   type: EnumTypeOfCallback;
   message: string;

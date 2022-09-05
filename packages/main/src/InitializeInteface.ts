@@ -1,18 +1,21 @@
 import { EnumServices } from "../../../types/enums/configTabsAndKeys";
+import { Global_State } from "./global_state";
 import ControlTray from "./handlers/ControlTray";
 import { RegisterListenersIpcMain } from "./handlers/ipmain";
+import { CreateNotification } from "./handlers/notifications";
 import { StartPixSrvice } from "./services/Api_Pix";
 import { GetServices } from "./services/local_storage";
 import { WindowConfigurationPanel } from "./windows/configuration";
 import { WindowPix } from "./windows/pix";
 
 function PixService() {
-  try {
-    StartPixSrvice();
-  } catch (e) {
-    console.error(e);
-  }
-  WindowPix().Create();
+  WindowPix().Create(() => {
+    try {
+      StartPixSrvice();
+    } catch (e) {
+      console.error(e);
+    }
+  });
 }
 
 export function ActivateServicesByConfiguration(service?: EnumServices) {
@@ -38,6 +41,10 @@ export function InitializeInterface() {
   RegisterListenersIpcMain();
   ControlTray().Create();
   WindowConfigurationPanel().Create();
-  WindowConfigurationPanel().Focus();
+  !import.meta.env.DEV &&
+    CreateNotification({
+      title: "Atenção",
+      body: `O serviço ${Global_State.name_app} está sendo executado.`,
+    });
   ActivateServicesByConfiguration();
 }

@@ -46,8 +46,8 @@ export default function ConfirmationModal({
         isCentered
       >
         <ModalOverlay />
-        <ModalContent color={"white"}>
-          <ModalHeader color={"white"}>
+        <ModalContent bg={"white"} color={"black"}>
+          <ModalHeader>
             {labels && labels.title ? labels.title : "Atenção!"}
           </ModalHeader>
 
@@ -62,12 +62,22 @@ export default function ConfirmationModal({
                   onClickLeft && onClickLeft();
                   onClose();
                 }}
+                bg="gray.300"
+                _hover={{ bg: "gray.400" }}
               >
                 {labels.buttonLeft}
               </Button>
             )}
 
-            <Button ref={buttonRef} size={"sm"} mr={3} onClick={OnSubmit}>
+            <Button
+              ref={buttonRef}
+              size={"sm"}
+              mr={3}
+              onClick={OnSubmit}
+              bg="gray.300"
+              _hover={{ bg: "gray.400" }}
+              _focus={{ bg: "gray.400" }}
+            >
               {labels && labels.buttonRight ? labels.buttonRight : "Ok"}
             </Button>
           </ModalFooter>

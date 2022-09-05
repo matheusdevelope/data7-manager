@@ -17,14 +17,14 @@ const SubCategoryFirebase = {
 export const ForceRedefinitionValues = [
   {
     ...SubCategoryFirebase,
-    key: EnumKeysFirebase.collection,
+    key: EnumKeysFirebase.liberation_key,
   },
 ];
 export const ServiceFirebase: IOptionConfig2[] = [
   {
     ...SubCategoryFirebase,
     key: EnumKeys.status,
-    value: true,
+    value: false,
     label: "Ativo",
     description:
       "Define se o serviço Firebase será executado. \nLembre-se: Para usar o serviço de PIX esse serviço precisa estar ativo.",

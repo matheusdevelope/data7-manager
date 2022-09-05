@@ -1,5 +1,6 @@
 import { exec } from "child_process";
 import { shell } from "electron";
+import { EnumTypeOfCallback } from "../../../../../types/enums/QrCode";
 import { apenasNumeros, MakeParamsFromObj } from "../../utils";
 
 function CallQrCode({ qrcode, callback }: IOpenQrCode) {

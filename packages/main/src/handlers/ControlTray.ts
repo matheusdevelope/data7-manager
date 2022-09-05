@@ -19,7 +19,7 @@ let Menus: MenuItemConstructorOptions[] = [
         Window.destroy();
       });
       app.relaunch();
-      app.quit();
+      app.exit();
     },
   },
   {
