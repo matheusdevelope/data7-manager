@@ -14,7 +14,7 @@ export default function useFirestore(
     collection: string,
     order_by_field: string,
     onChange: (Doc: FirebaseFirestore.DocumentData) => void,
-    limit = 20,
+    limit = 50,
   ) {
     const doc_collection = db
       .collection(collection)
