@@ -7,22 +7,15 @@
     "skipLibCheck": true,
     "strict": true,
     "isolatedModules": true,
-
-    "types" : ["node"],
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"],
 
     "baseUrl": ".",
     "paths": {
-      "/@/*": [
-        "./src/*"
-      ]
-    },
+      "/@/*": ["./src/*"]
+    }
   },
-  "include": [
-    "src/**/*.ts",
-    "../../types/**/*.d.ts"
-  ],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ]
+  "include": ["src/**/*.ts", "../../types/**/*.d.ts", "../../types/**/*.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }

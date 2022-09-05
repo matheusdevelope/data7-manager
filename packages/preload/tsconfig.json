@@ -8,16 +8,10 @@
     "strict": true,
     "isolatedModules": true,
 
-    "types" : ["node"],
+    "types": ["node"],
 
-    "baseUrl": ".",
+    "baseUrl": "."
   },
-  "include": [
-    "src/**/*.ts",
-    "../../types/**/*.d.ts"
-  ],
-  "exclude": [
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ]
+  "include": ["src/**/*.ts", "../../types/**/*.d.ts", "../../types/**/*.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }

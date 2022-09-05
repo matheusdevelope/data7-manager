@@ -41,6 +41,6 @@
     /**
      * Just for beauty
      */
-    "quotes": ["warn", "single", { "avoidEscape": true }]
+    "quotes": ["warn", "double", { "avoidEscape": true }]
   }
 }
