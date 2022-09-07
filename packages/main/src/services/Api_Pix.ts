@@ -58,8 +58,6 @@ export function StartPixSrvice() {
           | { [key: string]: string | boolean | number };
       } = {};
 
-      console.log(doc);
-
       for (const key in doc) {
         if (Object.prototype.hasOwnProperty.call(doc, key)) {
           if (typeof doc[key] == "string") {

@@ -50,5 +50,6 @@ declare global {
       service: string,
       active: boolean
     ) => void;
+    __electron_preload__GetURLLoginMobile: () => Promise<string>;
   }
 }

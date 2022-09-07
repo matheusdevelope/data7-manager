@@ -13,7 +13,7 @@ import { DefaultConfigTabs } from "../services/local_storage/configuration_panel
 import { SendMessageOnWhatsapp } from "../services/protocoll_events";
 import { WindowPix } from "../windows/pix";
 import { ToggleWindow, WindowsCreated } from "./ControlWindows";
-import { DataToLoginMobile } from "./login_mobile";
+import { DataToLoginMobile, URL_Login_Mobile } from "./login_mobile";
 
 function RegisterListenersIpcMain() {
   ipcMain.handle(EnumIpcEvents.set_app_pass, (_, password: string) => {
@@ -84,8 +84,8 @@ function RegisterListenersIpcMain() {
       return SendMessageOnWhatsapp(data_to_message);
     },
   );
-  ipcMain.handle(EnumIpcEvents.get_data_to_qrcode_to_login_mobile, (_) => {
-    return DataToLoginMobile;
+  ipcMain.handle(EnumIpcEvents.get_url_login_mobile, (_) => {
+    return URL_Login_Mobile(DataToLoginMobile());
   });
   ipcMain.handle(EnumIpcEvents.toggle_window, (_, id_window: string) => {
     const Window = WindowsCreated.find(

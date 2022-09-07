@@ -25,6 +25,7 @@ export {
   ToggleWindow,
   VisibilityWindow,
   ToggleService,
+  GetURLLoginMobile,
 } from "./preload";
 
 export { MoveWindow, MinimizeWindow, CloseWindow } from "./WindowHeaderBar";

@@ -91,10 +91,12 @@ interface IDimensions {
 }
 
 interface IDataToLoginMobile {
-  ip: string;
+  id_machine: string;
+  hostname: string;
   username_machine: string;
-  port: number;
-  token: string;
+  ip: string;
+  terminal_identification: string;
+  cnpj_cpf: string[];
 }
 
 interface ICancelQr {

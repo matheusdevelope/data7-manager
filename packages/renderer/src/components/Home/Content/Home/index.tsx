@@ -19,6 +19,10 @@ export default function HomeContent() {
         opt.key === EnumKeys.status &&
         opt.value === true
     ) || [];
+  const ObjCNPJ = config
+    ? config.find((obj) => obj.key === EnumKeys.cnpj_cpf)
+    : undefined;
+  const CNPJs = ObjCNPJ && Array.isArray(ObjCNPJ.value) ? ObjCNPJ.value : [];
 
   function OrderList(data: IOptionConfig2[], desc?: boolean) {
     let list = data;
@@ -57,20 +61,12 @@ export default function HomeContent() {
   async function GetGlobalState(): Promise<IGlobalState> {
     return JSON.parse(await window.__electron_preload__GetGlobalState());
   }
-  async function GenerateQrCode(config: IOptionConfig2[]) {
-    const GlobalConfig = await GetGlobalState();
-    const DataToQrCode = {
-      hostname: GlobalConfig.hostname,
-      username_machine: GlobalConfig.username_machine,
-      ip: GlobalConfig.local_ip,
-      terminal_identification:
-        config.find((obj) => obj.key === EnumKeys.identification)?.value || "",
-      cnpj_cpf:
-        config.find((obj) => obj.key === EnumKeys.cnpj_cpf)?.value || [],
-    };
-    window
-      .__electron_preload__GenerateQrCode(JSON.stringify(DataToQrCode))
-      .then(setQrCode);
+  async function GenerateQrCode() {
+    const URL_Login = await window.__electron_preload__GetURLLoginMobile();
+    const dataQrCode = await window.__electron_preload__GenerateQrCode(
+      URL_Login
+    );
+    setQrCode(dataQrCode);
   }
   function RenderCNPJ_CPF() {
     const CNPJ_CPF = config?.find(
@@ -110,7 +106,7 @@ export default function HomeContent() {
   useEffect(() => {
     window.__electron_preload__GetLocalConfigTabs().then((config) => {
       setConfig(config);
-      GenerateQrCode(config);
+      GenerateQrCode();
     });
   }, []);
 
@@ -139,12 +135,20 @@ export default function HomeContent() {
             )}
           </Flex>
         </Flex>
-        <Box>
-          <Text align={"center"} fontWeight="bold">
-            Login Mobile
-          </Text>
-          <Image src={qrcode} boxSize="150" border={"1px"} borderRadius="8px" />
-        </Box>
+
+        {CNPJs.length > 0 && (
+          <Box>
+            <Text align={"center"} fontWeight="bold">
+              Login Mobile
+            </Text>
+            <Image
+              src={qrcode}
+              boxSize="150"
+              border={"1px"}
+              borderRadius="8px"
+            />
+          </Box>
+        )}
       </Flex>
     </Flex>
   );
