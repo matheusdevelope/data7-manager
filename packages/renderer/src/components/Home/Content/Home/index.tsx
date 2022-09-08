@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import {
   EnumKeys,
+  EnumServices,
   EnumTabs,
 } from "../../../../../../../types/enums/configTabsAndKeys";
 import { MaskCnpj, MaskCpf } from "/@/utils/masks";
@@ -58,9 +59,6 @@ export default function HomeContent() {
     hoverButton: "#EDF3FF",
   };
 
-  async function GetGlobalState(): Promise<IGlobalState> {
-    return JSON.parse(await window.__electron_preload__GetGlobalState());
-  }
   async function GenerateQrCode() {
     const URL_Login = await window.__electron_preload__GetURLLoginMobile();
     const dataQrCode = await window.__electron_preload__GenerateQrCode(
@@ -136,19 +134,24 @@ export default function HomeContent() {
           </Flex>
         </Flex>
 
-        {CNPJs.length > 0 && (
-          <Box>
-            <Text align={"center"} fontWeight="bold">
-              Login Mobile
-            </Text>
-            <Image
-              src={qrcode}
-              boxSize="150"
-              border={"1px"}
-              borderRadius="8px"
-            />
-          </Box>
-        )}
+        {CNPJs.length > 0 &&
+          config?.find(
+            (obj) =>
+              obj.sub_category === EnumServices.pix &&
+              obj.key === EnumKeys.status
+          )?.value && (
+            <Box>
+              <Text align={"center"} fontWeight="bold">
+                Terminal Mobile
+              </Text>
+              <Image
+                src={qrcode}
+                boxSize="150"
+                border={"1px"}
+                borderRadius="8px"
+              />
+            </Box>
+          )}
       </Flex>
     </Flex>
   );

@@ -72,7 +72,9 @@ export default function ControlTray() {
     AppTray.setContextMenu(BuildMenu(Menus));
     AppTray.on("click", () => {
       RemoveAllNotifications();
-      AppTray.popUpContextMenu();
+      !WindowConfigurationPanel().Window.isVisible()
+        ? WindowConfigurationPanel().Create()
+        : WindowConfigurationPanel().Window.hide();
     });
 
     return AppTray;
