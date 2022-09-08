@@ -125,9 +125,7 @@ export function StartPixSrvice() {
           ? String(LiberacaoKey[FieldsFirebase.ip]) == Global_State.local_ip
           : true) &&
         String(LiberacaoKey[FieldsFirebase.machine_name]).toLowerCase() ==
-          Global_State.hostname.toLowerCase() &&
-        String(LiberacaoKey[FieldsFirebase.username]).toLowerCase() ==
-          Global_State.username_machine.toLowerCase()
+          Global_State.hostname.toLowerCase()
       ) {
         const TheTimestamp =
           (data[FieldsFirebase.created_at] as unknown as Timestamp) ||
