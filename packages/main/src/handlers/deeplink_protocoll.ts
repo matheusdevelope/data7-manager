@@ -64,6 +64,7 @@ function HandleQrCode(deeplinkingUrl: string, Window: BrowserWindow) {
     img: query.img,
     error: query.error,
     created_at: query.created_at,
+    doc_id: query.doc_id,
   };
 
   Window.webContents.send(Global_State.events.update_qrcode, qrcode);

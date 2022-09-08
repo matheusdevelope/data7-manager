@@ -126,6 +126,7 @@ interface IDataQrCode {
   error?: string;
   message: string;
   created_at: Date;
+  doc_id: string;
 }
 
 interface ICallback {
@@ -142,18 +143,7 @@ interface ICloseQrCode {
   devices: EnumDevices[];
   callback: (callback: ICallback) => void;
 }
-interface IDataQrCode {
-  action: ActionsQrCode;
-  id: string;
-  img: string;
-  link: string;
-  phone: string;
-  awaiting_payment: boolean;
-  confirmed_payment: boolean;
-  canceled: boolean;
-  error?: string;
-  message: string;
-}
+
 interface IDevice {
   id: string;
   identificacao: string;
@@ -179,28 +169,6 @@ interface IObjectConfig {
   type: React.HTMLInputTypeAttribute;
   order: number;
 }
-interface IElectronAPI {
-  __electron_preload__SetLocalPassApp: (
-    password: string
-  ) => Promise<true | Error>;
-  __electron_preload__GetLocalPassApp: () => Promise<string | false | Error>;
-  __electron_preload__GetLocalConfig: () => Promise<IObjectConfig[]>;
-  __electron_preload__SetLocalConfig: (
-    config: IObjectConfig[]
-  ) => Promise<void | Error>;
-  __electron_preload__RegisterEventUpdateQr: (
-    event: string,
-    cb: () => void
-  ) => void;
-  __electron_preload__CancelQr: (id_qrcode: string) => Promise<ICancelQr>;
-  __electron_preload__OpenQr: () => void;
-  __electron_preload__CloseQr: () => void;
-  __electron_preload__RefreshQr: (id_qrcode: string) => Promise<IRefreshQr>;
-  __electron_preload__SendWhats: (data: IWhatsAppMessage) => void;
-  __electron_preload__RegisterEventLoginWithQr: (cb: () => void) => void;
-  __electron_preload__CloseCurrentWindow: () => void;
-  __electron_preload__RefreshAplication: () => void;
-}
 
 interface ICallback {
   type: EnumTypeOfCallback;
@@ -216,21 +184,21 @@ interface ICallback {
 interface ICloseQrCode {
   callback: (callback: ICallback) => void;
 }
-interface IDataQrCode {
-  action: string;
-  id: string;
-  portion: string;
-  price: number;
-  img: string;
-  link: string;
-  phone: string;
-  awaiting_payment: boolean;
-  confirmed_payment: boolean;
-  canceled: boolean;
-  error?: string;
-  message: string;
-  created_at: Date;
-}
+// interface IDataQrCode {
+//   action: string;
+//   id: string;
+//   portion: string;
+//   price: number;
+//   img: string;
+//   link: string;
+//   phone: string;
+//   awaiting_payment: boolean;
+//   confirmed_payment: boolean;
+//   canceled: boolean;
+//   error?: string;
+//   message: string;
+//   created_at: Date;
+// }
 
 interface IDialog {
   isOpen: boolean;

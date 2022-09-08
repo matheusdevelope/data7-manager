@@ -44,6 +44,7 @@ export function StartPixSrvice() {
     canceled: false,
     message: "Aguardando Ação",
     created_at: new Date(),
+    doc_id: "",
   };
 
   const unsubscriber = Firestore.Listen(
@@ -155,6 +156,7 @@ export function StartPixSrvice() {
           ),
           message: String(data[FieldsFirebase.message] || ""),
           created_at: TheTimestamp.toDate(),
+          doc_id: String(data.doc_id),
         };
         if (data[FieldsFirebase.error]) {
           QrCode["error"] = String(data[FieldsFirebase.error] || "");

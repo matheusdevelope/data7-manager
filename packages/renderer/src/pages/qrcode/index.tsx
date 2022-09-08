@@ -32,6 +32,7 @@ const InitialPix: IDataQrCode = {
   canceled: false,
   message: "Aguardando Ação",
   created_at: new Date(),
+  doc_id: "",
 };
 const DefaultDialog: IDialog = {
   isOpen: false,
@@ -199,9 +200,7 @@ export default function QrCode() {
       if (result.canceled) {
         setDataQrcode({
           ...NewStatus(result.message),
-          // canceled: result.canceled,
         });
-        // CloseWindow();
       }
     }
   }
@@ -243,8 +242,9 @@ export default function QrCode() {
       AlertDialog("Telefone Inválido, verifique!");
       return;
     }
+
     window.__electron_preload__SendWhats({
-      message: `Olá, seque abaixo o link copia e cola do seu PIX, basta copiar e efetuar o pagamento no seu aplicativo preferido. 👇🏻\n\n${dataQrCode.link}`,
+      message: `Olá, acesse o link abaixo e terá acesso ao código do seu PIX, basta copiar e efetuar o pagamento no seu aplicativo preferido. 👇🏻\n\nhttps://data7-pix-web.vercel.app//?id=${dataQrCode.doc_id}`,
       phone: phone,
     });
   }
