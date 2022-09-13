@@ -3,13 +3,17 @@ import { app, BrowserWindow, dialog, Menu, Tray } from "electron";
 import { resolve } from "path";
 import { Global_State } from "../global_state";
 import { WindowConfigurationPanel } from "../windows/configuration";
+import { ToggleWindow } from "./ControlWindows";
 import { RemoveAllNotifications } from "./notifications";
 let AppTray: Tray;
 let Menus: MenuItemConstructorOptions[] = [
   {
     id: "config-window",
     label: "Painel",
-    click: WindowConfigurationPanel().Create,
+    click: () => {
+      WindowConfigurationPanel().Create();
+      WindowConfigurationPanel().Focus();
+    },
   },
   {
     label: "Reiniciar",
@@ -72,9 +76,7 @@ export default function ControlTray() {
     AppTray.setContextMenu(BuildMenu(Menus));
     AppTray.on("click", () => {
       RemoveAllNotifications();
-      !WindowConfigurationPanel().Window.isVisible()
-        ? WindowConfigurationPanel().Create()
-        : WindowConfigurationPanel().Window.hide();
+      ToggleWindow(WindowConfigurationPanel().Create());
     });
 
     return AppTray;

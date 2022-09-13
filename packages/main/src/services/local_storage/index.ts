@@ -310,14 +310,14 @@ function GetConfig(): IObjectConfig[] | false {
   }
 }
 
-function GetConfigTabs(): IOptionConfig2[] | false {
+function GetConfigTabs(): IOptionConfig2[] {
   if (!Storage.has("config_tabs")) return [];
   try {
     const Config = Storage.get("config_tabs") as unknown as IOptionConfig2[];
     return Config;
   } catch (err) {
     console.error(err);
-    return false;
+    return DefaultConfigTabs;
   }
 }
 function GetServices(): IOptionConfig2[] {

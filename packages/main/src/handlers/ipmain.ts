@@ -106,7 +106,7 @@ function RegisterListenersIpcMain() {
     return false;
   });
   ipcMain.on(
-    EnumIpcEvents.active_service,
+    EnumIpcEvents.toggle_service,
     (_, service: EnumServices, active: boolean) => {
       if (active) return ActivateServicesByConfiguration(service);
       return StopServicesByConfiguration(service);

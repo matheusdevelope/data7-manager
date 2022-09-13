@@ -20,6 +20,7 @@ interface IRender {
 
 export default function RenderOption({ option, key, ChangeValue }: IRender) {
   const [numberOfLines, setNumberOfLines] = useState(2);
+
   return (
     <Box>
       <Flex

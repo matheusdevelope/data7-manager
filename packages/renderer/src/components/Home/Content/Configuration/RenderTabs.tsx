@@ -41,6 +41,7 @@ export default function ConfigContent({
           onClick={() => setCurrentTab(tab)}
           key={key}
           mx="1"
+          minW={"min-content"}
           color={
             currentTab?.category == tab.category
               ? Color.activeFont
@@ -59,7 +60,6 @@ export default function ConfigContent({
 
   async function SetValueOnStorage({ key, value }: IOptionConfig) {
     const ActualConfig = await window.__electron_preload__GetLocalConfigTabs();
-
     if (isSubCategory) {
       const index = ActualConfig.findIndex((opt) => {
         return (
@@ -71,14 +71,13 @@ export default function ConfigContent({
       ActualConfig.splice(index, 1, { ...ActualConfig[index], value: value });
 
       window.__electron_preload__SetLocalConfigTabs([...ActualConfig]);
+
       if (
         ActualConfig[index].key === EnumKeys.status &&
         typeof value === "boolean"
       ) {
-        console.log(ActualConfig[index]);
-
         window.__electron_preload__ToggleService(
-          ActualConfig[index].id_window,
+          ActualConfig[index].key,
           value
         );
       }
@@ -94,10 +93,8 @@ export default function ConfigContent({
         ActualConfig[index].key === EnumKeys.status &&
         typeof value === "boolean"
       ) {
-        console.log(ActualConfig[index]);
-
         window.__electron_preload__ToggleService(
-          ActualConfig[index].id_window,
+          ActualConfig[index].key,
           value
         );
       }
@@ -158,7 +155,7 @@ export default function ConfigContent({
   return (
     <Box flex={1} p="3" pt="2" bg={Color.background} {...props}>
       <Box border={"1px"} borderRadius="8px" p="1">
-        <HStackScrollBar>{CreateTabs(tabs)}</HStackScrollBar>
+        <HStackScrollBar pb="1">{CreateTabs(tabs)}</HStackScrollBar>
       </Box>
 
       {currentTab?.options?.map((option, key) => (

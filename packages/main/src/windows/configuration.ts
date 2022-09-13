@@ -7,7 +7,6 @@ let Window: BrowserWindow;
 
 function Create() {
   if (Window && !Window.isDestroyed()) {
-    Focus();
     return Window;
   }
 
@@ -30,9 +29,6 @@ function Create() {
       y: externalDisplay.bounds.y + 200,
     });
   }
-  Window.on("ready-to-show", () => {
-    // Focus();
-  });
 
   const pageUrl =
     import.meta.env.DEV && import.meta.env.VITE_DEV_SERVER_URL !== undefined

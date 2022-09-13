@@ -117,7 +117,7 @@ export function VisibilityWindow(id_window: string): Promise<boolean> {
   return ipcRenderer.invoke(EnumIpcEvents.visibility_window, id_window || "");
 }
 export function ToggleService(service: string, active: string) {
-  service && ipcRenderer.send(EnumIpcEvents.active_service, service, active);
+  service && ipcRenderer.send(EnumIpcEvents.toggle_service, service, active);
 }
 export function GetURLLoginMobile(): Promise<string> {
   return ipcRenderer.invoke(EnumIpcEvents.get_url_login_mobile);

@@ -7,6 +7,7 @@ import {
 } from "../../../../../types/enums/configTabsAndKeys";
 import { EnumWindowsID } from "../../../../../types/enums/windows";
 import { ServiceFirebase } from "./configs/firebase";
+import { ServiceHttpServer } from "./configs/http_server";
 
 export const categoryService = {
   category: EnumTabs.services,
@@ -101,4 +102,5 @@ export const DefaultConfigTabs: IOptionConfig2[] = [
   ...OptionsTerminalData,
   ...ServicesTab,
   ...ServiceFirebase,
+  ...ServiceHttpServer,
 ];

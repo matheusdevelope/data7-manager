@@ -18,6 +18,7 @@ export default function CreateMenus(
   drawerOnClose: () => void
 ): any {
   const [state, setState] = React.useState("");
+  const location_url = useLocation().pathname;
   let activeBg = "#9d9d9d55";
   let hoverBg = "#25252533";
   let inactiveTextColor = "#393939";
@@ -101,21 +102,24 @@ export default function CreateMenus(
               mr="12px"
               ml="auto"
               transform={
-                !(state === nameRoute) ? "rotate(90deg)" : "rotate(270deg)"
+                !location_url.includes(nameRoute)
+                  ? "rotate(90deg)"
+                  : "rotate(270deg)"
               }
             />
           )}
         </Flex>
-        <Collapse in={state === nameRoute}>
+        <Collapse in={location_url.includes(nameRoute) || state === nameRoute}>
           {CreateMenus(menu.views, drawerOnClose)}
         </Collapse>
-        <Separator display={state === nameRoute ? "inherit" : "none"} />
+        <Separator
+          display={location_url.includes(nameRoute) ? "inherit" : "none"}
+        />
       </Box>
     );
   }
 
   return menus.map((menu, key) => {
-    // if (!menu) return null;
     if (menu.category) {
       if (menu.expansible) return RenderNavItemCategoryExpansible(menu);
       return RenderNavItemCategory(menu);

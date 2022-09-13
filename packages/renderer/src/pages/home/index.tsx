@@ -66,18 +66,18 @@ export default function Home3() {
       if (prop.category) {
         return getRoutes(prop.views);
       }
-      if (prop.layout === "/home") {
-        return RoutesObject.push({
-          element: prop.component,
-          path: prop.path,
-        });
-      } else {
-        return null;
-      }
+      // if (prop.layout === "/home") {
+      return RoutesObject.push({
+        element: prop.component,
+        path: prop.path,
+      });
+      // } else {
+      //   return null;
+      // }
     });
   };
   getRoutes(routesNavBar);
-
+  console.log(RoutesObject);
   const Routes = useRoutes(RoutesObject);
 
   async function FilterServicesActive(routes: IRouteNavBar[]) {
@@ -105,6 +105,7 @@ export default function Home3() {
         })
         .filter((tab) => tab !== undefined);
     };
+
     setRoutesNavBar(getRoutes(routes));
   }
 

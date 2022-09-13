@@ -5,8 +5,9 @@ import ConfigContent from "/@/components/Home/Content/Configuration";
 import ServicesPixContent from "../../components/Home/Content/Services/PIX";
 import ServicesWhatsContent from "/@/components/Home/Content/Services/Whatsapp";
 import { HiCode } from "react-icons/hi";
-import { BsGearFill, BsWhatsapp } from "react-icons/bs";
+import { BsGearFill, BsHddNetwork, BsWhatsapp } from "react-icons/bs";
 import { EnumServices } from "../../../../../types/enums/configTabsAndKeys";
+import ServicesHttpServerContent from "/@/components/Home/Content/Services/HttpServer";
 export interface IRouteNavBar {
   layout: string;
   path: string;
@@ -24,7 +25,7 @@ export interface IRouteNavBar {
 const ServicesMenu: IRouteNavBar[] = [
   {
     layout: "/home",
-    path: "/pix",
+    path: "/services/pix",
     name: "PIX",
     category: "",
     icon: MdPayments,
@@ -35,7 +36,7 @@ const ServicesMenu: IRouteNavBar[] = [
   },
   {
     layout: "/home",
-    path: "/whatsapp",
+    path: "/services/whatsapp",
     name: "Whatsapp",
     category: "",
     icon: BsWhatsapp,
@@ -43,6 +44,17 @@ const ServicesMenu: IRouteNavBar[] = [
     component: <ServicesWhatsContent />,
     views: [],
     service: EnumServices.whatsapp,
+  },
+  {
+    layout: "/home",
+    path: "/services/http_server",
+    name: "Servidor HTTP",
+    category: "",
+    icon: BsHddNetwork,
+    secondaryNavbar: true,
+    component: <ServicesHttpServerContent />,
+    views: [],
+    service: EnumServices.http_server,
   },
 ];
 
@@ -58,38 +70,26 @@ const RoutesNavBar: IRouteNavBar[] = [
     views: [],
   },
 
-  // {
-  //   layout: "/home",
-  //   path: "services",
-  //   name: "SERVIÇOS",
-  //   category: "services",
-  //   expansible: false,
-  //   icon: HiCode,
-  //   secondaryNavbar: false,
-  //   component: <></>,
-  //   views: ServicesMenu,
-  // },
-
   {
     layout: "/home",
-    path: "general",
-    name: "GERAL",
-    category: "general",
+    path: "/services",
+    name: "SERVIÇOS",
+    category: "services",
+    expansible: true,
     icon: HiCode,
     secondaryNavbar: false,
     component: <></>,
-    views: [
-      {
-        layout: "/home",
-        path: "/config/*",
-        name: "Configurações",
-        category: "",
-        icon: BsGearFill,
-        secondaryNavbar: false,
-        component: <ConfigContent />,
-        views: [],
-      },
-    ],
+    views: ServicesMenu,
+  },
+  {
+    layout: "/home",
+    path: "/config/*",
+    name: "Configurações",
+    category: "",
+    icon: BsGearFill,
+    secondaryNavbar: false,
+    component: <ConfigContent />,
+    views: [],
   },
 ];
 

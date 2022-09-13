@@ -14,12 +14,16 @@ export enum EnumServices {
   pix = "pix",
   whatsapp = "whatsapp",
   firebase = "firebase",
+  http_server = "http_server",
   whatsapp_integrated = "whatsapp_integrated",
 }
 export enum EnumKeys {
   status = "status",
   identification = "identification",
   cnpj_cpf = "cnpj_cpf",
+}
+export enum EnumKeysHttpServer {
+  port = "port",
 }
 export enum EnumKeysFirebase {
   validate_ip = "validate_ip",

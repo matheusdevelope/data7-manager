@@ -32,6 +32,7 @@
     "postinstall": "cross-env ELECTRON_RUN_AS_NODE=1 electron scripts/update-electron-vendors.mjs"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.12",
     "@types/ip": "^1.1.0",
     "@types/node": "^18.7.7",
     "@types/qrcode": "^1.5.0",
@@ -63,8 +64,10 @@
     "@emotion/styled": "^11.10.0",
     "@fontsource/roboto": "^4.5.8",
     "@lottiefiles/react-lottie-player": "^3.4.7",
+    "cors": "^2.8.5",
     "electron-store": "^8.0.2",
     "electron-updater": "5.2.1",
+    "express": "^4.18.1",
     "firebase-admin": "^11.0.0",
     "framer-motion": "^7.2.0",
     "ip": "^1.1.8",

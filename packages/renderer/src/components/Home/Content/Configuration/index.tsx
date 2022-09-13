@@ -3,14 +3,12 @@ import { Box, Button, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import AuthenticationModal from "../../AuthenticationModal";
 import ConfigContent from "./RenderTabs";
 import ConfirmationModal from "../../Confirmation";
-console.log("Aquiiii");
 
 export default function MainConfig() {
   const auth = useRef(false);
   const authentication = useDisclosure();
   const reset = useDisclosure();
   const [Tabs, setTabs] = useState<ITabsConfig[]>();
-
   const [refresh, setRefresh] = useState(false);
   let activeBg = "#9d9d9d55";
   let hoverBg = "#25252533";
