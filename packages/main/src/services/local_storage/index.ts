@@ -347,7 +347,10 @@ function GetValuesFirebase(): IFirebaseTypeValues {
 
     ConfigFirebase.forEach((config) => {
       if (!Array.isArray(config.value)) {
-        ObjFirebase[config.key] = config.value;
+        ObjFirebase[config.key] =
+          typeof config.value === "string"
+            ? config.value.toLowerCase()
+            : config.value;
       }
     });
     return ObjFirebase as unknown as IFirebaseTypeValues;
@@ -357,7 +360,11 @@ function GetValuesFirebase(): IFirebaseTypeValues {
       (obj) => obj.sub_category === EnumServices.firebase && obj.key === prop,
     );
     if (!ObjConfig) return;
-    ObjFirebase[prop] = !Array.isArray(ObjConfig.value) ? ObjConfig.value : "";
+    ObjFirebase[prop] = !Array.isArray(ObjConfig.value)
+      ? ObjConfig.value === "string"
+        ? ObjConfig.value.toLowerCase()
+        : ObjConfig.value
+      : "";
   });
   return ObjFirebase as unknown as IFirebaseTypeValues;
 }

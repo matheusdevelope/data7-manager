@@ -7,7 +7,7 @@ import {
   ActivateServicesByConfiguration,
   StopServicesByConfiguration,
 } from "../InitializeInteface";
-import { CancelPix, RefreshPix } from "../services/Api_Pix";
+import { CancelPix, RefreshPix } from "../services/ManageQueuePIX";
 import { SafeStorage, Storage } from "../services/local_storage";
 import { DefaultConfigTabs } from "../services/local_storage/configuration_panel";
 import { SendMessageOnWhatsapp } from "../services/protocoll_events";

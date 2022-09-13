@@ -6,6 +6,7 @@ interface IFirebaseTypeValues {
   validate_ip: boolean;
   collection: string;
   liberation_key: string;
+  collection_refresh: string;
   cnpj: string;
   ip: string;
   username: string;
@@ -22,6 +23,7 @@ interface IFirebaseTypeValues {
   error: string;
   status_awaiting_payment: string;
   status_confirmed_payment: string;
+  status_finish_payment: string;
   status_canceled: string;
   status_canceled_system: string;
   status_canceled_client: string;
@@ -134,10 +136,7 @@ interface ICallback {
   message: string;
   error: string | Error | null;
 }
-interface IOpenQrCode {
-  qrcode: IDataQrCode;
-  callback: (callback: ICallback) => void;
-}
+
 interface ICloseQrCode {
   qrcode: IDataQrCode;
   devices: EnumDevices[];
@@ -208,4 +207,11 @@ interface IDialog {
   onClickCancel?: React.MouseEventHandler<HTMLButtonElement>;
   textbuttonOK?: string;
   textbuttonCancel?: string;
+}
+
+interface IComumObject {
+  [key: string]: string | boolean | number;
+}
+interface IComumObject2 {
+  [key: string]: string | boolean | number | IComumObject2;
 }

@@ -6,7 +6,7 @@ import { Global_State } from "./global_state";
 import ControlTray from "./handlers/ControlTray";
 import { RegisterListenersIpcMain } from "./handlers/ipmain";
 import { CreateNotification } from "./handlers/notifications";
-import { StartPixSrvice } from "./services/Api_Pix";
+import { StartPixService } from "./services/ManageQueuePIX";
 import { GetConfigTabs, GetServices } from "./services/local_storage";
 import HTTP_Server from "./services/server_http";
 import { WindowConfigurationPanel } from "./windows/configuration";
@@ -15,7 +15,7 @@ import { WindowPix } from "./windows/pix";
 function PixService() {
   WindowPix().Create(() => {
     try {
-      StartPixSrvice();
+      StartPixService();
     } catch (e) {
       console.error(e);
     }

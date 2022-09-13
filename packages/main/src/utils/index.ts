@@ -15,13 +15,44 @@ function EncodeURI(text: string) {
 function apenasNumeros(string: string) {
   return string.replace(/[^0-9]/g, "");
 }
-// function ValidateInterface<T>(obj: any, keys: (keyof T)[]): obj is T {
-//   if (!obj || !Array.isArray(keys)) {
-//     return false;
-//   }
+function ValidateInterface<T>(obj: any, keys: (keyof T)[]): obj is T {
+  if (!obj || !Array.isArray(keys)) {
+    return false;
+  }
 
-//   const implementKeys = keys.reduce((impl, key) => impl && key in obj, true);
+  const implementKeys = keys.reduce((impl, key) => impl && key in obj, true);
 
-//   return implementKeys;
-// }
-export { MakeParamsFromObj, EncodeURI, apenasNumeros };
+  return implementKeys;
+}
+function ObjectToLowerCase<T>(
+  obj: IComumObject2,
+  lower_prop = true,
+  lower_value = false,
+) {
+  const NewObj: IComumObject2 = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const value = obj[key];
+
+      if (typeof value === "string") {
+        NewObj[lower_prop ? key.toLowerCase() : key] = lower_value
+          ? value.toLowerCase()
+          : value;
+      }
+      if (typeof value === "object" && !Array.isArray(value)) {
+        NewObj[lower_prop ? key.toLowerCase() : key] = ObjectToLowerCase(value);
+      }
+      if (typeof value === "number" || typeof value === "boolean") {
+        NewObj[lower_prop ? key.toLowerCase() : key] = value;
+      }
+    }
+  }
+  return NewObj as unknown as T;
+}
+export {
+  MakeParamsFromObj,
+  EncodeURI,
+  apenasNumeros,
+  ValidateInterface,
+  ObjectToLowerCase,
+};

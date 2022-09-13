@@ -58,16 +58,24 @@ export const ServiceFirebase: IOptionConfig2[] = [
     key: EnumKeysFirebase.collection,
     value: "cobrancas-pix",
     label: EnumKeysFirebase.collection,
-    description: "Nome da coleção dos registros do  Pix",
+    description: "Nome da coleção dos registros do Pix",
     type: EnumTypesOptions.text,
   },
-
   {
     ...SubCategoryFirebase,
     key: EnumKeysFirebase.liberation_key,
     value: "liberacaokey",
     label: EnumKeysFirebase.liberation_key,
-    description: "Nome da coleção dos registros do  Pix",
+    description: "Nome da coleção dos registros do Pix",
+    type: EnumTypesOptions.text,
+  },
+  {
+    ...SubCategoryFirebase,
+    key: EnumKeysFirebase.collection_refresh,
+    value: "refresh-pix",
+    label: EnumKeysFirebase.collection_refresh,
+    description:
+      "Nome da coleção dos registros de solicitação de atualização do Pix",
     type: EnumTypesOptions.text,
   },
   {
@@ -92,7 +100,7 @@ export const ServiceFirebase: IOptionConfig2[] = [
     key: EnumKeysFirebase.username,
     value: "nomeusuario",
     label: EnumKeysFirebase.username,
-    description: "Campo Usuário Conectado Windows do  Pix",
+    description: "Campo Usuário Conectado Windows do Pix",
     type: EnumTypesOptions.text,
   },
   {
@@ -108,7 +116,7 @@ export const ServiceFirebase: IOptionConfig2[] = [
     key: EnumKeysFirebase.id,
     value: "txid",
     label: EnumKeysFirebase.id,
-    description: "Campo ID do  Pix",
+    description: "Campo ID do Pix",
     type: EnumTypesOptions.text,
   },
   {
@@ -116,7 +124,7 @@ export const ServiceFirebase: IOptionConfig2[] = [
     key: EnumKeysFirebase.price,
     value: "valor",
     label: EnumKeysFirebase.price,
-    description: "Campo Valor do  Pix",
+    description: "Campo Valor do Pix",
     type: EnumTypesOptions.text,
   },
   {
@@ -124,7 +132,7 @@ export const ServiceFirebase: IOptionConfig2[] = [
     key: EnumKeysFirebase.portion,
     value: "parcela",
     label: EnumKeysFirebase.portion,
-    description: "Campo Parcela do  Pix",
+    description: "Campo Parcela do Pix",
     type: EnumTypesOptions.text,
   },
   {
@@ -196,6 +204,14 @@ export const ServiceFirebase: IOptionConfig2[] = [
     key: EnumKeysFirebase.status_confirmed_payment,
     value: "concluido",
     label: EnumKeysFirebase.status_confirmed_payment,
+    description: "Status do Pix CONCLUIDO",
+    type: EnumTypesOptions.text,
+  },
+  {
+    ...SubCategoryFirebase,
+    key: EnumKeysFirebase.status_finish_payment,
+    value: "finalizado",
+    label: EnumKeysFirebase.status_finish_payment,
     description: "Status do Pix FINALIZADO",
     type: EnumTypesOptions.text,
   },

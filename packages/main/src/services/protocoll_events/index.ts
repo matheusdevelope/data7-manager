@@ -1,19 +1,11 @@
 import { exec } from "child_process";
 import { shell } from "electron";
 import { EnumIpcEvents } from "../../../../../types/enums/GlobalState";
-import { EnumTypeOfCallback } from "../../../../../types/enums/QrCode";
 import { apenasNumeros, MakeParamsFromObj } from "../../utils";
 import { WindowPix } from "/@/windows/pix";
 
-function CallQrCode({ qrcode, callback }: IOpenQrCode) {
+function CallQrCode(qrcode: IDataQrCode) {
   WindowPix().Window.webContents.send(EnumIpcEvents.update_qrcode, qrcode);
-  // const params = MakeParamsFromObj(qrcode).join("^&");
-  // exec(`start data7://qrcode?${params}`);
-  return callback({
-    type: EnumTypeOfCallback.success,
-    message: "Sucess on open window",
-    error: null,
-  });
 }
 
 function SendMessageOnWhatsapp(data: IWhatsAppMessage) {
