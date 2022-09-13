@@ -24,6 +24,7 @@ export const ServiceHttpServer: IOptionConfig2[] = [
     description:
       "Define se a aplicação vai operar como um servidor HTTP local para requisições de serviços do Data7 Manager.",
     type: EnumTypesOptions.boolean,
+    disabled: true,
   },
 
   {
