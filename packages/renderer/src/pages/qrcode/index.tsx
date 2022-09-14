@@ -18,6 +18,7 @@ import {
 } from "./style";
 import Dialog from "../../components/modal_dialog";
 import { InputGroup, Input, Button, InputLeftElement } from "@chakra-ui/react";
+import { MaskMoney } from "/@/utils/masks";
 const { innerHeight: height } = window;
 const InitialPix: IDataQrCode = {
   action: "",
@@ -63,6 +64,7 @@ function RenderAreaQrCode(dataQrCode: IDataQrCode) {
           src={DoneAnimation}
           autoplay
           loop
+          speed={1.5}
           style={{ height: Math.floor(height * 0.6) }}
         />
         <p>{dataQrCode.message}</p>
@@ -76,6 +78,7 @@ function RenderAreaQrCode(dataQrCode: IDataQrCode) {
           src={CancelAnimation}
           autoplay
           loop
+          speed={1.8}
           style={{ height: Math.floor(height * 0.6) }}
         />
         <p>{dataQrCode.message}</p>
@@ -114,7 +117,7 @@ function RenderAreaQrCode(dataQrCode: IDataQrCode) {
       <SubHeader>
         {dataQrCode.portion ? "Parcela " + dataQrCode.portion : ""}{" "}
         {dataQrCode.portion && dataQrCode.price ? " - " : ""}
-        {dataQrCode.price ? "R$ " + dataQrCode.price : ""}
+        {dataQrCode.price ? "R$ " + MaskMoney(dataQrCode.price) : ""}
       </SubHeader>
 
       {SelectAnimation()}
@@ -196,7 +199,9 @@ export default function QrCode() {
     });
 
     async function CallCancel() {
-      const result = await window.__electron_preload__CancelQr(dataQrCode.id);
+      const result = await window.__electron_preload__CancelQr(
+        dataQrCode.doc_id
+      );
       if (result.canceled) {
         setDataQrcode({
           ...NewStatus(result.message),

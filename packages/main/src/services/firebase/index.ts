@@ -41,18 +41,13 @@ export default function useFirestore(
     return unsub;
   }
 
-  async function Update(collection: string, Field: string, data: IComumObject) {
+  async function Update(
+    collection: string,
+    doc_id: string,
+    data: IComumObject,
+  ) {
     try {
-      const DocById = db
-        .collection(collection)
-        .where(Field, "==", data[Field])
-        .get();
-
-      await db
-        .collection(collection)
-        .doc((await DocById).docs[0].id)
-        .set(data, { merge: true });
-
+      await db.collection(collection).doc(doc_id).set(data, { merge: true });
       return Promise.resolve();
     } catch (error) {
       Promise.reject(error);

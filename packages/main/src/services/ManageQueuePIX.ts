@@ -54,6 +54,7 @@ export function StartPixService() {
       const data: {
         [key: string]: string | boolean | number | IComumObject2;
       } = ObjectToLowerCase<IComumObject2>(doc);
+      // console.log({ ID: doc.doc_id, status: doc.STATUS });
 
       //Save the original key of STATUS and ID to use in future
       for (const key in doc) {
@@ -135,7 +136,7 @@ export function StartPixService() {
         //Validate if the LIST is empty and the DOC have a active state
         if (index < 0 && !QrCode.awaiting_payment) return;
         lista.sort((a, b) =>
-          a.created_at > b.created_at ? 1 : b.created_at > a.created_at ? -1 : 0,
+          a.created_at < b.created_at ? 1 : b.created_at < a.created_at ? -1 : 0,
         );
 
         CallQrCode(lista[0]);
@@ -143,7 +144,7 @@ export function StartPixService() {
           lista = lista.filter((obj) => obj.id !== QrCode.id);
           setTimeout(() => {
             CallQrCode(
-              lista.length > 0 ? lista[0] : { ...QrCode, action: "close" },
+              lista.length > 0 ? lista[0] : { ...InitialPix, action: "close" },
             );
           }, 1200);
         }
@@ -160,19 +161,14 @@ export function StartPixService() {
   };
 }
 
-export async function CancelPix(id: string): Promise<ICancelQr> {
+export async function CancelPix(doc_id: string): Promise<ICancelQr> {
   const FieldsFirebase = GetValuesFirebase();
   const data: { [key: string]: string } = {};
   data[ID_and_STATUS_original.status] =
     FieldsFirebase.status_canceled_client.toUpperCase();
-  data[ID_and_STATUS_original.id] = id;
 
   try {
-    await Firestore.Update(
-      FieldsFirebase.collection,
-      ID_and_STATUS_original.id,
-      data,
-    );
+    await Firestore.Update(FieldsFirebase.collection, doc_id, data);
     return Promise.resolve({
       canceled: true,
       message: "Cancelamento solicitado com sucesso, aguarde!",

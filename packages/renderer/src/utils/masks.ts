@@ -14,3 +14,7 @@ export function MaskCpf(v: string) {
   v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); //Coloca um hífen entre o terceiro e o quarto dígitos
   return v;
 }
+
+export function MaskMoney(value: number) {
+  return value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
