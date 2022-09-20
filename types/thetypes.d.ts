@@ -215,3 +215,12 @@ interface IComumObject {
 interface IComumObject2 {
   [key: string]: string | boolean | number | IComumObject2;
 }
+
+interface IUploadedFiles {
+  name: string;
+  auto_format: boolean;
+  description_name?: string;
+  description_after_link: string;
+  url: string;
+  expiration: number;
+}

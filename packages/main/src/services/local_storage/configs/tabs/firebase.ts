@@ -4,22 +4,17 @@ import {
   EnumServices,
   EnumTabs,
   EnumTypesOptions,
-} from "../../../../../../types/enums/configTabsAndKeys";
+} from "../../../../../../../types/enums/configTabsAndKeys";
+import { categoryService } from "../comum_categories";
 
-const SubCategoryFirebase = {
-  category: EnumTabs.services,
-  category_label: "Serviços",
+export const SubCategoryFirebase = {
+  ...categoryService,
   sub_category: EnumServices.firebase,
   sub_category_label: "Firebase",
   disabled: false,
   tip: "",
 };
-export const ForceRedefinitionValues = [
-  {
-    ...SubCategoryFirebase,
-    key: EnumKeysFirebase.liberation_key,
-  },
-];
+
 export const ServiceFirebase: IOptionConfig2[] = [
   {
     ...SubCategoryFirebase,

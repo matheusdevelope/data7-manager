@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { shell } from "electron";
 import { EnumIpcEvents } from "../../../../../types/enums/GlobalState";
-import { apenasNumeros, MakeParamsFromObj } from "../../utils";
+import { OnlyNumbersString, MakeParamsFromObj } from "../../utils";
 import { WindowPix } from "/@/windows/pix";
 
 function CallQrCode(qrcode: IDataQrCode) {
@@ -10,7 +10,7 @@ function CallQrCode(qrcode: IDataQrCode) {
 
 function SendMessageOnWhatsapp(data: IWhatsAppMessage) {
   const newData = {
-    phone: "55" + apenasNumeros(data.phone),
+    phone: "55" + OnlyNumbersString(data.phone),
     text: data.message,
   };
   const params = MakeParamsFromObj(newData);

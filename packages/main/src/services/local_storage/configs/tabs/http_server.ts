@@ -4,7 +4,7 @@ import {
   EnumServices,
   EnumTabs,
   EnumTypesOptions,
-} from "../../../../../../types/enums/configTabsAndKeys";
+} from "../../../../../../../types/enums/configTabsAndKeys";
 
 const SubCategoryHttpServer = {
   category: EnumTabs.services,
@@ -24,7 +24,17 @@ export const ServiceHttpServer: IOptionConfig2[] = [
     description:
       "Define se a aplicação vai operar como um servidor HTTP local para requisições de serviços do Data7 Manager.",
     type: EnumTypesOptions.boolean,
-    disabled: true,
+    validate_keys: [
+      {
+        category: EnumTabs.services,
+        sub_category: EnumServices.whatsapp_send_files,
+        key: EnumKeys.status,
+        onvalue: false,
+        keyvalue: true,
+        block: true,
+        message: "Esse recurso está sendo usado pelo serviço de \"Envio Arquivos Whatsapp\", desative-o antes para prosseguir.",
+      },
+    ],
   },
 
   {

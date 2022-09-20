@@ -7,8 +7,8 @@ import {
   EnumServices,
   EnumTabs,
 } from "../../../../../types/enums/configTabsAndKeys";
-import { ForceRedefinitionValues } from "./configs/firebase";
-import { DefaultConfigTabs } from "./configuration_panel";
+import { ForceRedefinitionValues } from "./configs/redefinition_values";
+import { DefaultConfigTabs } from "./configs";
 
 const DefaultConfig: IObjectConfig[] = [
   {
@@ -324,10 +324,7 @@ function GetServices(): IOptionConfig2[] {
   const config = GetConfigTabs();
   if (config) {
     return config.filter(
-      (opt) =>
-        opt.category === EnumTabs.services &&
-        opt.key === EnumKeys.status &&
-        opt.value === true,
+      (opt) => opt.category === EnumTabs.services && opt.key === EnumKeys.status,
     );
   }
   return [];
@@ -337,8 +334,6 @@ interface ObjFirebase {
 }
 function GetValuesFirebase(): IFirebaseTypeValues {
   const ObjFirebase: ObjFirebase = {};
-  // console.log(Object.values(EnumKeysFirebase));
-
   const Config = GetConfigTabs();
   if (Config) {
     const ConfigFirebase = Config.filter(

@@ -37,43 +37,28 @@ function HttpService(Config: IOptionConfig2[]) {
     });
   });
 }
-
-export function ActivateServicesByConfiguration(service?: EnumServices) {
+function IsActive(sub_category: EnumServices) {
   const Services = GetServices();
-  const Config = GetConfigTabs();
-  function IsActive(sub_category: EnumServices) {
-    return Services.find((service) => service.sub_category === sub_category);
-  }
-  if (service === EnumServices.pix || IsActive(EnumServices.pix)) {
-    PixService();
-  }
-
-  if (
-    service === EnumServices.http_server ||
-    IsActive(EnumServices.http_server)
-  ) {
-    HttpService(Config);
-  }
+  const Status = Services.find(
+    (service) => service.sub_category === sub_category,
+  )?.value;
+  return Status;
 }
-export function StopServicesByConfiguration(service?: EnumServices) {
-  const Services = GetServices();
-  function IsActive(sub_category: EnumServices) {
-    return Services.find((service) => service.sub_category === sub_category);
-  }
-  if (service === EnumServices.pix || !IsActive(EnumServices.pix)) {
-    WindowPix().Stop();
-  }
-  if (
-    service === EnumServices.http_server ||
-    !IsActive(EnumServices.http_server)
-  ) {
+
+export function ActivateServicesByConfiguration(_?: EnumServices) {
+  const Config = GetConfigTabs();
+  IsActive(EnumServices.pix) && PixService();
+  IsActive(EnumServices.http_server) && HttpService(Config);
+}
+export function StopServicesByConfiguration(_?: EnumServices) {
+  !IsActive(EnumServices.pix) && WindowPix().Stop();
+  !IsActive(EnumServices.http_server) &&
     HTTP_Server().stop(() => {
       CreateNotification({
         title: "Atenção",
         body: `O serviço HTTP do ${Global_State.name_app} foi desativado.`,
       });
     });
-  }
 }
 
 export function InitializeInterface() {

@@ -12,7 +12,7 @@ export enum EnumTabs {
 
 export enum EnumServices {
   pix = "pix",
-  whatsapp = "whatsapp",
+  whatsapp_send_files = "whatsapp_send_files",
   firebase = "firebase",
   http_server = "http_server",
   whatsapp_integrated = "whatsapp_integrated",
@@ -21,6 +21,11 @@ export enum EnumKeys {
   status = "status",
   identification = "identification",
   cnpj_cpf = "cnpj_cpf",
+}
+export enum EnumKeysSendFilesWhats {
+  path_files = "path_files",
+  disable_auto_format = "disable_auto_format",
+  expiration = "expiration",
 }
 export enum EnumKeysHttpServer {
   port = "port",

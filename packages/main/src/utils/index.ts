@@ -12,10 +12,10 @@ function MakeParamsFromObj<T>(obj: T) {
 function EncodeURI(text: string) {
   return encodeURIComponent(text);
 }
-function apenasNumeros(string: string) {
+function OnlyNumbersString(string: string) {
   return string.replace(/[^0-9]/g, "");
 }
-function ValidateInterface<T>(obj: any, keys: (keyof T)[]): obj is T {
+function ValidateInterface<T>(obj: T, keys: (keyof T)[]): obj is T {
   if (!obj || !Array.isArray(keys)) {
     return false;
   }
@@ -52,7 +52,7 @@ function ObjectToLowerCase<T>(
 export {
   MakeParamsFromObj,
   EncodeURI,
-  apenasNumeros,
+  OnlyNumbersString,
   ValidateInterface,
   ObjectToLowerCase,
 };

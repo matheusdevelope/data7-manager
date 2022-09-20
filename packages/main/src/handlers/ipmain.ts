@@ -9,7 +9,7 @@ import {
 } from "../InitializeInteface";
 import { CancelPix, RefreshPix } from "../services/ManageQueuePIX";
 import { SafeStorage, Storage } from "../services/local_storage";
-import { DefaultConfigTabs } from "../services/local_storage/configuration_panel";
+import { DefaultConfigTabs } from "../services/local_storage/configs";
 import { SendMessageOnWhatsapp } from "../services/protocoll_events";
 import { WindowPix } from "../windows/pix";
 import { ToggleWindow, WindowsCreated } from "./ControlWindows";

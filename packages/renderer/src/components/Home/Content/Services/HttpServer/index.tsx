@@ -27,7 +27,7 @@ export default function HomeContent() {
         obj.key === EnumKeysHttpServer.port
     )?.value
   );
-  const URL_API = `http://${GlobalState?.local_ip}:${PORT_Http_Server}`;
+  const URL_API = `http://${GlobalState?.local_ip}:${PORT_Http_Server}/data7/`;
   useEffect(() => {
     window.__electron_preload__GetLocalConfigTabs().then((config) => {
       setConfig(config);
@@ -46,6 +46,9 @@ export default function HomeContent() {
             <Text color={Color.grayFont} fontWeight="bold">
               {URL_API}
             </Text>
+            {copied ? (
+              <Text fontSize={14}>Copiado para a área de transferência</Text>
+            ) : null}
             <Box
               px="8px"
               onClick={() => {
@@ -53,7 +56,7 @@ export default function HomeContent() {
                 setCopied(true);
                 setTimeout(() => {
                   setCopied(false);
-                }, 2000);
+                }, 3000);
               }}
             >
               <BsClipboardPlus color={copied ? "green" : "black"} />

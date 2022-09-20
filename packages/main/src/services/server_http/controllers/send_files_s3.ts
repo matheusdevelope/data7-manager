@@ -1,21 +1,12 @@
 import type { Request, Response } from "express";
-// function BadRequest(res: Response, message: string) {
-//   return res.status(400).send(message);
-// }
-async function get(req: Request, res: Response) {
-  res.send("Files to S3 GET");
-}
+import { UploadAndSendToWhats } from "../../aws";
+import { Help_Send_Files_S3 } from "../../aws/hepl";
 
 async function post(req: Request, res: Response) {
-  const qrcode = req.body;
-  res.send({ message: "Files to S3 POST", data: qrcode });
+  UploadAndSendToWhats(req, res);
+}
+async function get(req: Request, res: Response) {
+  res.send(Help_Send_Files_S3);
 }
 
-async function put(req: Request, res: Response) {
-  res.send("Files to S3 PUT");
-}
-
-async function deleteFile(req: Request, res: Response) {
-  res.send("Files to S3 DELETE");
-}
-export default { get, post, put, deleteFile };
+export default { post, get };

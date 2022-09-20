@@ -76,10 +76,8 @@ export default function ConfigContent({
         ActualConfig[index].key === EnumKeys.status &&
         typeof value === "boolean"
       ) {
-        window.__electron_preload__ToggleService(
-          ActualConfig[index].key,
-          value
-        );
+        const Service = ActualConfig[index].sub_category;
+        Service && window.__electron_preload__ToggleService(Service, value);
       }
     } else {
       const index = ActualConfig.findIndex((opt) => {
@@ -93,10 +91,8 @@ export default function ConfigContent({
         ActualConfig[index].key === EnumKeys.status &&
         typeof value === "boolean"
       ) {
-        window.__electron_preload__ToggleService(
-          ActualConfig[index].key,
-          value
-        );
+        const Service = ActualConfig[index].category;
+        Service && window.__electron_preload__ToggleService(Service, value);
       }
     }
   }

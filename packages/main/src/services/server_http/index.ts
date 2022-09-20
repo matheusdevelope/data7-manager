@@ -15,7 +15,7 @@ export default function HTTP_Server(
 ) {
   return {
     execute: (cb: () => void) => {
-      server.listen(port, () => cb());
+      !server.listening && server.listen(port, () => cb());
     },
     stop(cb: (e: Error | undefined) => void) {
       server.close((e) => cb(e));
