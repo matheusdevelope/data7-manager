@@ -19,8 +19,11 @@ export enum EnumServices {
 }
 export enum EnumKeys {
   status = "status",
+}
+export enum EnumKeysTerminalData {
   identification = "identification",
   cnpj_cpf = "cnpj_cpf",
+  start_in_boot = "start_in_boot",
 }
 export enum EnumKeysSendFilesWhats {
   path_files = "path_files",

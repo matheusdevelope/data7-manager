@@ -1,7 +1,7 @@
 import type { BrowserWindow } from "electron";
 import { dialog } from "electron";
 import { screen } from "electron";
-import { EnumKeys } from "../../../../types/enums/configTabsAndKeys";
+import { EnumKeysTerminalData } from "../../../../types/enums/configTabsAndKeys";
 import { Global_State } from "../global_state";
 import { createDefaultWindow } from "../handlers/ControlWindows";
 import { CreateNotification } from "../handlers/notifications";
@@ -13,7 +13,7 @@ let Window: BrowserWindow;
 function Create(cb_ready?: (Window: BrowserWindow) => void) {
   const Config = GetConfigTabs();
   const ObjCNPJ = Config
-    ? Config.find((obj) => obj.key === EnumKeys.cnpj_cpf)
+    ? Config.find((obj) => obj.key === EnumKeysTerminalData.cnpj_cpf)
     : undefined;
   const CNPJs = ObjCNPJ && Array.isArray(ObjCNPJ.value) ? ObjCNPJ.value : [];
   if (CNPJs.length == 0) {

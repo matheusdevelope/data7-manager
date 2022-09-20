@@ -18,7 +18,9 @@ interface IOptionConfig {
   type: EnumTypesOptions;
   validate_keys?: IObjValidationKey[];
   id_window?: EnumWindowsID;
+  alert?: string;
 }
+
 interface IObjValidationKey {
   category: string;
   sub_category?: string;
@@ -28,17 +30,18 @@ interface IObjValidationKey {
   block: boolean;
   message: string;
 }
-interface IOptionConfig2 extends ITabsConfig2 {
-  key: string;
-  value: string | number | string[] | boolean;
-  min_value_lenght?: number[];
-  disabled: boolean;
-  tip: string;
-  label: string;
-  description: string;
-  type: EnumTypesOptions;
-  validate_keys?: IObjValidationKey[];
-  id_window?: EnumWindowsID;
+interface IOptionConfig2 extends IOptionConfig, ITabsConfig2 {
+  // key: string;
+  // value: string | number | string[] | boolean;
+  // min_value_lenght?: number[];
+  // disabled: boolean;
+  // tip: string;
+  // label: string;
+  // description: string;
+  // type: EnumTypesOptions;
+  // validate_keys?: IObjValidationKey[];
+  // id_window?: EnumWindowsID;
+  // alert?: string;
 }
 
 interface ITabsConfig2 {

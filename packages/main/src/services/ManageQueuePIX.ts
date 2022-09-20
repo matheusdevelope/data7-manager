@@ -1,4 +1,4 @@
-import { EnumKeys } from "../../../../types/enums/configTabsAndKeys";
+import { EnumKeysTerminalData } from "../../../../types/enums/configTabsAndKeys";
 import { Global_State } from "../global_state";
 import { ObjectToLowerCase } from "../utils";
 import useFirestore from "./firebase";
@@ -32,7 +32,7 @@ export function StartPixService() {
   const Config = GetConfigTabs();
   const FieldsFirebase = GetValuesFirebase();
   const ObjCNPJ = Config
-    ? Config.find((obj) => obj.key === EnumKeys.cnpj_cpf)
+    ? Config.find((obj) => obj.key === EnumKeysTerminalData.cnpj_cpf)
     : undefined;
   const CNPJs = ObjCNPJ && Array.isArray(ObjCNPJ.value) ? ObjCNPJ.value : [];
   const AvailableStatus = [

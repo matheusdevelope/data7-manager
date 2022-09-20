@@ -134,6 +134,7 @@ export default function ConfigContent({
   async function ChangeValue(options: IOptionConfig) {
     if (!(await ValidateRequirideKeys(options))) return;
     SetValueOnStorage(options);
+    options.alert && setMessageModal(options.alert);
     if (currentTab?.options) {
       const index = currentTab.options.findIndex(
         (op) => op.key === options.key

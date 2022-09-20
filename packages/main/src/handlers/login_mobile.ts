@@ -1,5 +1,5 @@
 import { machineIdSync } from "node-machine-id";
-import { EnumKeys } from "../../../../types/enums/configTabsAndKeys";
+import { EnumKeysTerminalData } from "../../../../types/enums/configTabsAndKeys";
 import { Global_State } from "../global_state";
 import { GetConfigTabs } from "../services/local_storage";
 import { GenerateApplicationID } from "../services/local_storage/Applications_IDs_By_Username";
@@ -8,7 +8,7 @@ import { MakeParamsFromObj } from "../utils";
 function DataToLoginMobile(): IDataToLoginMobile {
   const config = GetConfigTabs();
   const ObjCNPJ = config
-    ? config.find((obj) => obj.key === EnumKeys.cnpj_cpf)
+    ? config.find((obj) => obj.key === EnumKeysTerminalData.cnpj_cpf)
     : undefined;
   const CNPJs = ObjCNPJ && Array.isArray(ObjCNPJ.value) ? ObjCNPJ.value : [];
   return {
@@ -19,7 +19,8 @@ function DataToLoginMobile(): IDataToLoginMobile {
     terminal_identification: !config
       ? ""
       : String(
-          config.find((obj) => obj.key === EnumKeys.identification)?.value || "",
+          config.find((obj) => obj.key === EnumKeysTerminalData.identification)
+            ?.value || "",
         ),
     cnpj_cpf: CNPJs,
   };

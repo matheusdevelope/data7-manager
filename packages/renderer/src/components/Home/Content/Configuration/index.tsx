@@ -64,6 +64,7 @@ export default function MainConfig() {
                 type: opt.type,
                 validate_keys: opt.validate_keys,
                 id_window: opt.id_window,
+                alert: opt.alert,
               };
               return NewOpt;
             }),

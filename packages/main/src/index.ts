@@ -7,6 +7,11 @@ import {
   HandleDeepLinkProtocoll,
   RegisterDeepLink,
 } from "./handlers/deeplink_protocoll";
+import { GetConfigTabs } from "./services/local_storage";
+import {
+  EnumKeysTerminalData,
+  EnumTabs,
+} from "../../../types/enums/configTabsAndKeys";
 
 // Prevent electron from running multiple instances.
 const isSingleInstance = app.requestSingleInstanceLock();
@@ -18,9 +23,16 @@ if (!isSingleInstance) {
     return HandleDeepLinkProtocoll(event, commandLine, workingDirectory);
   });
 }
+const StartInBoot = Boolean(
+  GetConfigTabs().find(
+    (obj) =>
+      obj.category === EnumTabs.terminal_data &&
+      obj.key === EnumKeysTerminalData.start_in_boot,
+  )?.value,
+);
 
 app.setLoginItemSettings({
-  openAtLogin: true,
+  openAtLogin: StartInBoot,
 });
 RegisterDeepLink(app);
 // Disable Hardware Acceleration to save more system resources.

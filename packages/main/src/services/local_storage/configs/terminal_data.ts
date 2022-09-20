@@ -1,8 +1,8 @@
 import { hostname } from "os";
 import {
   EnumTabs,
-  EnumKeys,
   EnumTypesOptions,
+  EnumKeysTerminalData,
 } from "../../../../../../types/enums/configTabsAndKeys";
 
 export const CategoryTerminal = {
@@ -12,7 +12,7 @@ export const CategoryTerminal = {
 export const OptionsTerminalData: IOptionConfig2[] = [
   {
     ...CategoryTerminal,
-    key: EnumKeys.identification,
+    key: EnumKeysTerminalData.identification,
     value: hostname(),
     disabled: false,
     tip: "",
@@ -22,13 +22,25 @@ export const OptionsTerminalData: IOptionConfig2[] = [
   },
   {
     ...CategoryTerminal,
-    key: EnumKeys.cnpj_cpf,
+    key: EnumKeysTerminalData.cnpj_cpf,
     value: [],
     disabled: false,
     tip: "11.111.111/1111-01",
     label: "CNPJ / CPF",
     description:
-      "Para usar serviços como PIX ou Whastapp esse campo precisa ser informado.",
+      "Para usar serviços como PIX ou Whatsapp esse campo precisa ser informado.",
     type: EnumTypesOptions.array,
+  },
+  {
+    ...CategoryTerminal,
+    key: EnumKeysTerminalData.start_in_boot,
+    value: true,
+    disabled: false,
+    tip: "",
+    label: "Inicio Automático",
+    description:
+      "Ao ativar essa opção o Data7 Manager irá iniciar seus serviços junto com o sistema operacional.",
+    type: EnumTypesOptions.boolean,
+    alert: "Você precisa reiniciar a aplicação pra aplicar essa configuração.",
   },
 ];
