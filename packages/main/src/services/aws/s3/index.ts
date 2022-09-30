@@ -8,7 +8,7 @@ config.update(CRETENTIALS);
 const ServerS3 = new S3();
 
 export default function ServiceS3() {
-  async function create(path_local: string, key: string, expires: number) {
+  async function create(path_local: string, key: string, expires = 30) {
     try {
       const fileStream = createReadStream(path_local);
       const type = lookup(path_local);

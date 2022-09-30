@@ -97,7 +97,6 @@ export default function RenderEditValue({
     !isEdited && setIsEdited(true);
     validation.length > 0 && setValidation("");
     if (option.type === EnumTypesOptions.boolean) {
-      //  setValue(e.target.checked);
       changeOptions({ ...option, value: e.target.checked });
     } else {
       if (option.type === EnumTypesOptions.array) {
@@ -228,6 +227,7 @@ export default function RenderEditValue({
         borderRadius="8px"
       >
         <Input
+          isDisabled={option.disabled === true}
           value={String(value)}
           onChange={OnChange}
           placeholder={option.tip}

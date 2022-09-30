@@ -1,3 +1,5 @@
+import { tmpdir } from "os";
+import { join } from "path";
 import {
   EnumServices,
   EnumKeys,
@@ -31,15 +33,15 @@ export const ServiceSendFilesWhats: IOptionConfig2[] = [
         onvalue: true,
         keyvalue: false,
         block: true,
-        message: "Esse recurso depende do serviço \"Servidor HTTP\", ative-o antes de habilitar esse serviço.",
+        message:
+          'Esse recurso depende do serviço "Servidor HTTP", ative-o antes de habilitar esse serviço.',
       },
     ],
   },
   {
     ...SubCategorySendFilesWhats,
     key: EnumKeysSendFilesWhats.path_files,
-    value: "",
-
+    value: join(tmpdir(), "data7_manager/files_whatsapp"),
     tip: "",
     label: "Pasta pré-definida dos arquivos para envio.",
     description:

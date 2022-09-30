@@ -1,3 +1,5 @@
+import { readFileSync } from "fs";
+
 function MakeParamsFromObj<T>(obj: T) {
   const text = [];
   for (const props in obj) {
@@ -49,10 +51,23 @@ function ObjectToLowerCase<T>(
   }
   return NewObj as unknown as T;
 }
+function FileToBase64(file_path: string) {
+  const file = readFileSync(file_path);
+  const base64data = file.toString("base64");
+  return base64data;
+}
+function OnlyDataBase64(base64: string) {
+  const CleanedBase64 = base64.includes(";base64,")
+    ? base64.split(";base64,")[1]
+    : base64;
+  return CleanedBase64;
+}
 export {
   MakeParamsFromObj,
   EncodeURI,
   OnlyNumbersString,
   ValidateInterface,
   ObjectToLowerCase,
+  FileToBase64,
+  OnlyDataBase64,
 };

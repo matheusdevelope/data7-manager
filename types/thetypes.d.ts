@@ -76,16 +76,14 @@ interface IEventsGlobalState {
   get_fc_send_message_on_whatsapp: string;
 }
 interface IGlobalState {
+  machine_id: string;
   name_app: string;
   isDev: boolean;
   local_ip: string;
   username_machine: string;
   hostname: string;
-  localConfig: () => IDefaultConfig;
-  port_server_http: 3500;
   protocoll_register: string;
   notification_update: string;
-  events: IEventsGlobalState;
 }
 interface IDimensions {
   height: number;
@@ -223,4 +221,66 @@ interface IUploadedFiles {
   description_after_link: string;
   url: string;
   expiration: number;
+}
+
+////// Types Whatsapp services
+interface IValuesWhatsappService extends ISelectors {
+  status: boolean;
+  ready: boolean;
+  user_agent: string;
+  whats_session: string;
+  url: string;
+  visible: boolean;
+  is_loading: boolean;
+  is_ready_to_show: boolean;
+  is_logged: boolean;
+  use_bot: boolean;
+  delay_bots: number;
+  veryfication_is_logged_interval: number;
+  url_image_profile: string;
+  name_profile: string;
+  use_remote_service: boolean;
+}
+interface ISelectors {
+  selector_key_storage_is_logged: string;
+  selector_qrcode_img: string;
+  selector_is_loading: string;
+  selector_find_when_useragent_failed: string;
+  selector_link_chrome: string;
+  selector_mini_profile_photo: string;
+  selector_profile_photo: string;
+  selector_profile_name: string;
+  selector_close_profile: string;
+}
+
+interface IWhatsappOptions {
+  opt?: IValuesWhatsappServiceToSet;
+}
+
+interface IMessageWhatsapp {
+  text?: string;
+  image_base64?: string;
+  file_path?: string;
+  expiration?: number;
+}
+
+interface ObjFirebase {
+  [key: string]: string | boolean | number;
+}
+
+interface IValidation {
+  message: string;
+  index?: number;
+}
+
+interface IDataListenerWhatsapp {
+  ready?: boolean;
+  event: Events;
+  logged: boolean;
+  disconnected?: boolean;
+  is_loading?: boolean;
+  message?: string;
+  qrcode?: string;
+  url_profile?: string;
+  name_profile?: string;
 }

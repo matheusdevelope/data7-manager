@@ -44,6 +44,7 @@ export function ToggleWindow(
   Window: BrowserWindow,
   cb?: (isVisible: boolean) => void,
 ) {
+  if (Window.isDestroyed()) return false;
   if (Window.isVisible()) {
     Window.hide();
     cb && cb(false);

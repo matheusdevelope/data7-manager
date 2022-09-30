@@ -96,7 +96,6 @@ export default function ConfigContent({
       }
     }
   }
-
   async function ValidateRequirideKeys(options: IOptionConfig) {
     let CanGo = true;
     if (options.validate_keys) {
@@ -130,8 +129,65 @@ export default function ConfigContent({
     }
     return CanGo;
   }
+  // async function ConfigDependencies(options: IOptionConfig) {
+  //   if (options.configs_dependencies) {
+  //     for (let i = 0; i < options.configs_dependencies.length; i++) {
+  //       const service = options.configs_dependencies[i];
+  //       // const config_service = await window.__electron_preload__Config_GetKey(
+  //       //   service.key,
+  //       //   service.sub_category,
+  //       //   service.category
+  //       // );
+  //       // if (config_service) {
+  //       //   ChangeValue({ ...config_service, value: service.value });
+  //       // }
+  //       window.__electron_preload__Config_SetKeyValue(
+  //         service.value,
+  //         service.key,
+  //         service.sub_category,
+  //         service.category
+  //       );
+  //     }
+  //   }
+  // }
+  // async function ServicesDependencies(options: IOptionConfig) {
+  //   if (options.services_dependencies) {
+  //     for (let i = 0; i < options.services_dependencies.length; i++) {
+  //       const service = options.services_dependencies[i];
+  //       // const config_service = await window.__electron_preload__Config_GetKey(
+  //       //   service.key,
+  //       //   service.sub_category,
+  //       //   service.category
+  //       // );
+  //       // if (config_service) {
+  //       if (service.start === true) {
+  //         // ChangeValue({ ...config_service, value: true });
 
+  //         window.__electron_preload__Config_SetKeyValue(
+  //           true,
+  //           service.key,
+  //           service.sub_category,
+  //           service.category
+  //         );
+  //         window.__electron_preload__ToggleService(service.sub_category, true);
+  //       }
+  //       if (service.stop === true) {
+  //         // ChangeValue({ ...config_service, value: false });
+  //         window.__electron_preload__Config_SetKeyValue(
+  //           false,
+  //           service.key,
+  //           service.sub_category,
+  //           service.category
+  //         );
+  //         window.__electron_preload__ToggleService(service.sub_category, false);
+  //       }
+  //       // }
+  //     }
+  //   }
+  // }
   async function ChangeValue(options: IOptionConfig) {
+    // ConfigDependencies(options);
+    // ServicesDependencies(options);
     if (!(await ValidateRequirideKeys(options))) return;
     SetValueOnStorage(options);
     options.alert && setMessageModal(options.alert);

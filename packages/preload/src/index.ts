@@ -1,9 +1,16 @@
 /**
  * @module preload
  */
-
-export { sha256sum } from "./nodeCrypto";
-export { versions } from "./versions";
+export {
+  Config_GetConfigTabs,
+  Config_GetKey,
+  Config_GetKeyValue,
+  Config_GetService,
+  Config_GetServiceOptions,
+  Config_GetServices,
+  Config_SetConfigTabs,
+  Config_SetKeyValue,
+} from "./storage";
 export {
   SetLocalPassApp,
   GetLocalPassApp,
@@ -31,3 +38,9 @@ export {
 export { MoveWindow, MinimizeWindow, CloseWindow } from "./WindowHeaderBar";
 
 export { GenerateQrCode } from "./generate_qrcode";
+
+export {
+  GetStatusWhatsapp,
+  ResetLocalStorageWhats,
+  ListenerWhatsappBot,
+} from "./whatsapp";

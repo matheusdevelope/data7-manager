@@ -62,9 +62,11 @@ export default function MainConfig() {
                 label: opt.label,
                 description: opt.description,
                 type: opt.type,
-                validate_keys: opt.validate_keys,
                 id_window: opt.id_window,
                 alert: opt.alert,
+                services_dependencies: opt.services_dependencies,
+                configs_dependencies: opt.configs_dependencies,
+                validate_keys: opt.validate_keys,
               };
               return NewOpt;
             }),

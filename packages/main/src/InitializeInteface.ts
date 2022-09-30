@@ -11,6 +11,7 @@ import { GetConfigTabs, GetServices } from "./services/local_storage";
 import HTTP_Server from "./services/server_http";
 import { WindowConfigurationPanel } from "./windows/configuration";
 import { WindowPix } from "./windows/pix";
+import Whatsapp from "./services/whatsapp";
 
 function PixService() {
   WindowPix().Create(() => {
@@ -30,7 +31,7 @@ function HttpService(Config: IOptionConfig2[]) {
     )?.value,
   );
 
-  HTTP_Server(port).execute(() => {
+  HTTP_Server().execute(port, () => {
     CreateNotification({
       title: "Atenção",
       body: `O serviço HTTP do ${Global_State.name_app} está sendo executado.`,
@@ -49,6 +50,7 @@ export function ActivateServicesByConfiguration(_?: EnumServices) {
   const Config = GetConfigTabs();
   IsActive(EnumServices.pix) && PixService();
   IsActive(EnumServices.http_server) && HttpService(Config);
+  IsActive(EnumServices.whatsapp_integrated) && Whatsapp.Start();
 }
 export function StopServicesByConfiguration(_?: EnumServices) {
   !IsActive(EnumServices.pix) && WindowPix().Stop();
@@ -59,8 +61,8 @@ export function StopServicesByConfiguration(_?: EnumServices) {
         body: `O serviço HTTP do ${Global_State.name_app} foi desativado.`,
       });
     });
+  !IsActive(EnumServices.whatsapp_integrated) && Whatsapp.Stop();
 }
-
 export function InitializeInterface() {
   RegisterListenersIpcMain();
   ControlTray().Create();

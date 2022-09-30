@@ -2,7 +2,7 @@
 import { Box, Flex, useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import SideBar from "../../components/Home/SideBar";
-import { RouteObject, useRoutes } from "react-router-dom";
+import { RouteObject, Routes, useRoutes } from "react-router-dom";
 import RoutesNavBar, { IRouteNavBar } from "./routes";
 import WindowBar from "/@/components/WindowBar";
 import { Header } from "/@/components/Home/Header";
@@ -66,24 +66,20 @@ export default function Home3() {
       if (prop.category) {
         return getRoutes(prop.views);
       }
-      // if (prop.layout === "/home") {
       return RoutesObject.push({
         element: prop.component,
         path: prop.path,
       });
-      // } else {
-      //   return null;
-      // }
     });
   };
   getRoutes(routesNavBar);
-  console.log(RoutesObject);
-  const Routes = useRoutes(RoutesObject);
+  const RoutesComponents = useRoutes(RoutesObject);
 
   async function FilterServicesActive(routes: IRouteNavBar[]) {
     const Services = (
       await window.__electron_preload__GetLocalConfigTabs()
     ).filter((tab) => tab.key === EnumKeys.status);
+
     const getRoutes = (routes: IRouteNavBar[]): any => {
       return routes
         .map((prop) => {
@@ -128,8 +124,8 @@ export default function Home3() {
         <SideBar
           bg=" #F7FAFC"
           items={routesNavBar}
-          drawerIsOpen={DrawerSideBar.isOpen}
-          drawerOnClose={DrawerSideBar.onClose}
+          drawer_is_open={DrawerSideBar.isOpen}
+          drawer_on_close={DrawerSideBar.onClose}
         />
 
         <Box flex="1" maxW={{ md: "calc(100vw - 250px)", base: "100vw" }}>
@@ -139,7 +135,7 @@ export default function Home3() {
             title={getActiveRoute(routesNavBar)}
           />
           <StackScrollBar minH="calc(100vh - 68px)" maxH="calc(100vh - 68px)">
-            {Routes}
+            {RoutesComponents}
           </StackScrollBar>
         </Box>
       </Flex>

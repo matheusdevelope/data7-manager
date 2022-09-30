@@ -1,6 +1,7 @@
 import {
   EnumKeys,
   EnumKeysHttpServer,
+  EnumKeysWhatsappIntegrated,
   EnumServices,
   EnumTabs,
   EnumTypesOptions,
@@ -32,7 +33,18 @@ export const ServiceHttpServer: IOptionConfig2[] = [
         onvalue: false,
         keyvalue: true,
         block: true,
-        message: "Esse recurso está sendo usado pelo serviço de \"Envio Arquivos Whatsapp\", desative-o antes para prosseguir.",
+        message:
+          'Esse recurso está sendo usado pelo serviço de "Envio Arquivos Whatsapp", desative-o antes para prosseguir.',
+      },
+      {
+        category: EnumTabs.services,
+        sub_category: EnumServices.whatsapp_integrated,
+        key: EnumKeysWhatsappIntegrated.allow_remote_service_server,
+        onvalue: false,
+        keyvalue: true,
+        block: true,
+        message:
+          'Esse recurso está sendo usado pelo serviço de "Whatsapp Integrado - Servidor Integração Remota", desative-o antes para prosseguir.',
       },
     ],
   },

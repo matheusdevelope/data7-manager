@@ -51,5 +51,58 @@ declare global {
       active: boolean
     ) => void;
     __electron_preload__GetURLLoginMobile: () => Promise<string>;
+    __electron_preload__ResetLocalStorageWhats: () => void;
+    __electron_preload__GetStatusWhatsapp: () => Promise<IValuesWhatsappService>;
+    __electron_preload__ReceiveQrCodeLoginWhatsapp: () => Promisse<string>;
+    __electron_preload__ListenerWhatsappBot: (
+      cb: (data: IDataListenerWhatsapp) => void
+    ) => void;
+
+    ///Storage Handles
+    __electron_preload__Config_GetConfigTabs: () => Promise<IOptionConfig2[]>;
+    __electron_preload__Config_SetConfigTabs: (
+      config: IOptionConfig2[]
+    ) => Promise<boolean>;
+    __electron_preload__Config_GetServices: () => Promise<IOptionConfig2[]>;
+    __electron_preload__Config_GetService: (
+      service: EnumServices
+    ) => Promise<IOptionConfig2 | undefined>;
+    __electron_preload__Config_GetServiceOptions: (
+      service: EnumServices
+    ) => Promise<IOptionConfig2[] | undefined>;
+    __electron_preload__Config_GetKey: (
+      key:
+        | EnumKeys
+        | EnumKeysFirebase
+        | EnumKeysHttpServer
+        | EnumKeysSendFilesWhats
+        | EnumKeysTerminalData
+        | EnumKeysWhatsappIntegrated,
+      sub_category?: EnumServices,
+      category?: EnumTabs
+    ) => Promise<IOptionConfig2 | undefined>;
+    __electron_preload__Config_GetKeyValue: (
+      key:
+        | EnumKeys
+        | EnumKeysFirebase
+        | EnumKeysHttpServer
+        | EnumKeysSendFilesWhats
+        | EnumKeysTerminalData
+        | EnumKeysWhatsappIntegrated,
+      sub_category?: EnumServices,
+      category?: EnumTabs
+    ) => Promise<string | number | boolean | string[] | undefined>;
+    __electron_preload__Config_SetKeyValue: (
+      value: string | number | boolean | string[],
+      key:
+        | EnumKeys
+        | EnumKeysFirebase
+        | EnumKeysHttpServer
+        | EnumKeysSendFilesWhats
+        | EnumKeysTerminalData
+        | EnumKeysWhatsappIntegrated,
+      sub_category?: EnumServices,
+      category?: EnumTabs
+    ) => Promise<boolean>;
   }
 }

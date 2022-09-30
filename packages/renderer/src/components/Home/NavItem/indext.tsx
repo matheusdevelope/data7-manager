@@ -9,7 +9,7 @@ import {
 import { Flex, Icon } from "@chakra-ui/react";
 import React from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Separator from "../Separator";
 import { IRouteNavBar } from "../../../pages/home/routes";
 
@@ -75,19 +75,19 @@ export default function CreateMenus(
     );
   }
 
-  function RenderNavItemCategory(menu: IRouteNavBar) {
+  function RenderNavItemCategory(menu: IRouteNavBar, key: number) {
     return (
-      <Box>
+      <Box key={key}>
         <TextDefault my="2">{menu.name}</TextDefault>
         {CreateMenus(menu.views, drawerOnClose)}
       </Box>
     );
   }
 
-  function RenderNavItemCategoryExpansible(menu: IRouteNavBar) {
+  function RenderNavItemCategoryExpansible(menu: IRouteNavBar, key: number) {
     const nameRoute = menu.layout + menu.path;
     return (
-      <Box>
+      <Box key={key}>
         <Flex
           alignItems={"center"}
           cursor="pointer"
@@ -121,15 +121,15 @@ export default function CreateMenus(
 
   return menus.map((menu, key) => {
     if (menu.category) {
-      if (menu.expansible) return RenderNavItemCategoryExpansible(menu);
-      return RenderNavItemCategory(menu);
+      if (menu.expansible) return RenderNavItemCategoryExpansible(menu, key);
+      return RenderNavItemCategory(menu, key);
     }
     return (
-      <NavLink to={menu.layout + menu.path} key={key}>
+      <Link to={menu.layout + menu.path} key={key} replace={true}>
         {activeRoute(menu.layout + menu.path)
           ? RenderNavItemActiveRoute(menu)
           : RenderNavItem(menu)}
-      </NavLink>
+      </Link>
     );
   });
 }

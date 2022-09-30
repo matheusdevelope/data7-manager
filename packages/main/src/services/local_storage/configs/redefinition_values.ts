@@ -1,9 +1,13 @@
-import { EnumKeysFirebase } from "../../../../../../types/enums/configTabsAndKeys";
-import { SubCategoryFirebase } from "./tabs/firebase";
+import { EnumKeysWhatsappIntegrated } from "../../../../../../types/enums/configTabsAndKeys";
+import { SubCatgoryWhatsIntegrated } from "./tabs/whats_integrated";
 
 export const ForceRedefinitionValues = [
   {
-    ...SubCategoryFirebase,
-    key: EnumKeysFirebase.liberation_key,
+    ...SubCatgoryWhatsIntegrated,
+    key: EnumKeysWhatsappIntegrated.selector_is_loading,
+  },
+  {
+    ...SubCatgoryWhatsIntegrated,
+    key: EnumKeysWhatsappIntegrated.selector_profile_photo,
   },
 ];

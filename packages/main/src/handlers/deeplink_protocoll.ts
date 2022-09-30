@@ -1,6 +1,7 @@
 import type { App, BrowserWindow } from "electron";
 import parseUrl from "parse-url";
 import * as path from "path";
+import { EnumIpcEvents } from "../../../../types/enums/GlobalState";
 import { Global_State } from "../global_state";
 import { WindowPix } from "../windows/pix";
 
@@ -67,7 +68,7 @@ function HandleQrCode(deeplinkingUrl: string, Window: BrowserWindow) {
     doc_id: query.doc_id,
   };
 
-  Window.webContents.send(Global_State.events.update_qrcode, qrcode);
+  Window.webContents.send(EnumIpcEvents.update_qrcode, qrcode);
   return;
 }
 export { HandleDeepLinkProtocoll, RegisterDeepLink };

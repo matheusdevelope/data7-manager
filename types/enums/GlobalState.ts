@@ -22,4 +22,16 @@ export enum EnumIpcEvents {
   toggle_window = "toggle_window",
   visibility_window = "visibility_window",
   toggle_service = "toggle_service",
+  reset_localstorage_whatsapp = "reset_localstorage_whatsapp",
+  get_status_whatsapp = "get_status_whatsapp",
+  listener_whatsapp_bot = "listener_whatsapp_bot",
+  //storage
+  config_get_config = "config_get_config",
+  config_set_config = "config_set_config",
+  config_get_services = "config_get_services",
+  config_get_service = "config_get_service",
+  config_get_service_options = "config_get_service_options",
+  config_get_key = "config_get_key",
+  config_get_key_value = "config_get_key_value",
+  config_set_key_value = "config_set_key_value",
 }

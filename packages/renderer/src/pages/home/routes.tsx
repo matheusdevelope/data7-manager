@@ -43,7 +43,7 @@ const ServicesMenu: IRouteNavBar[] = [
     secondaryNavbar: true,
     component: <ServicesWhatsContent />,
     views: [],
-    service: EnumServices.whatsapp,
+    service: EnumServices.whatsapp_integrated,
   },
   {
     layout: "/home",

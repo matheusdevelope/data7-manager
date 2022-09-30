@@ -20,10 +20,34 @@ export enum EnumServices {
 export enum EnumKeys {
   status = "status",
 }
+export enum EnumKeysWhatsappIntegrated {
+  use_bot = "use_bot",
+  allow_remote_service_server = "allow_remote_service_server",
+  use_remote_service = "use_remote_service",
+  remote_service_address = "remote_service_address",
+  show_window_on_start = "show_window_on_start",
+  delay_bots = "delay_bots",
+  veryfication_is_logged_interval = "veryfication_is_logged_interval",
+  user_agent = "user_agent",
+  whats_session = "whats_session",
+  url = "url",
+  //SELECTORS
+  selector_key_storage_is_logged = "selector_key_storage_is_logged",
+  selector_qrcode_img = "selector_qrcode_img",
+  selector_is_loading = "selector_is_loading",
+  selector_find_when_useragent_failed = "selector_find_when_useragent_failed",
+  selector_link_chrome = "selector_link_chrome",
+  selector_mini_profile_photo = "selector_mini_profile_photo",
+  selector_profile_photo = "selector_profile_photo",
+  selector_profile_name = "selector_profile_name",
+  selector_close_profile = "selector_close_profile",
+}
+
 export enum EnumKeysTerminalData {
   identification = "identification",
   cnpj_cpf = "cnpj_cpf",
   start_in_boot = "start_in_boot",
+  temp_files = "temp_files",
 }
 export enum EnumKeysSendFilesWhats {
   path_files = "path_files",

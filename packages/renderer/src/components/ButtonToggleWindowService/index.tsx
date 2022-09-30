@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 
 interface IProps extends ButtonProps {
   service: IOptionConfig2;
+  label?: string;
 }
 
 export default function RenderButtonsToggleWindowsServices({
   service,
+  label,
   ...props
 }: IProps) {
   const [visible, setVisible] = useState(false);
@@ -44,7 +46,7 @@ export default function RenderButtonsToggleWindowsServices({
       }
       {...props}
     >
-      {service.sub_category_label || service.label}
+      {label || service.sub_category_label || service.label}
     </Button>
   );
 }

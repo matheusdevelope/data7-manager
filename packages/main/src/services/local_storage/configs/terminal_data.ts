@@ -4,7 +4,8 @@ import {
   EnumTypesOptions,
   EnumKeysTerminalData,
 } from "../../../../../../types/enums/configTabsAndKeys";
-
+import { tmpdir } from "os";
+import { join } from "path";
 export const CategoryTerminal = {
   category: EnumTabs.terminal_data,
   category_label: "Dados Terminal",
@@ -17,6 +18,16 @@ export const OptionsTerminalData: IOptionConfig2[] = [
     disabled: false,
     tip: "",
     label: "Identificação do Terminal",
+    description: "",
+    type: EnumTypesOptions.text,
+  },
+  {
+    ...CategoryTerminal,
+    key: EnumKeysTerminalData.temp_files,
+    value: join(tmpdir(), "data7_manager/"),
+    disabled: false,
+    tip: "",
+    label: "Pasta Arquivos Temporários",
     description: "",
     type: EnumTypesOptions.text,
   },

@@ -16,12 +16,16 @@ import CreateMenus from "../NavItem/indext";
 
 interface ISideBarContent extends BoxProps {
   items: IRouteNavBar[];
-  drawerIsOpen: boolean;
-  drawerOnClose: () => void;
+  drawer_is_open: boolean;
+  drawer_on_close: () => void;
 }
 
-export default function Sidebar(props: ISideBarContent) {
-  const { items: menus, drawerIsOpen, drawerOnClose } = props;
+export default function Sidebar({
+  items: menus,
+  drawer_is_open,
+  drawer_on_close,
+  ...props
+}: ISideBarContent) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,7 +40,7 @@ export default function Sidebar(props: ISideBarContent) {
           <Brand title="Data7 Manager" />
         </Box>
         <StackScrollBar maxH="calc(100vh - 100px)" px="1">
-          <>{CreateMenus(menus, drawerOnClose)}</>
+          <>{CreateMenus(menus, drawer_on_close)}</>
         </StackScrollBar>
       </Stack>
     );
@@ -46,8 +50,8 @@ export default function Sidebar(props: ISideBarContent) {
     <>
       <ContentSideBar display={{ base: "none", md: "unset" }} {...props} />
       <Drawer
-        isOpen={drawerIsOpen}
-        onClose={drawerOnClose}
+        isOpen={drawer_is_open}
+        onClose={drawer_on_close}
         placement="left"
         size={"xs"}
       >

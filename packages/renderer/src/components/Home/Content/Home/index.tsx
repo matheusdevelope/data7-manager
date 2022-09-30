@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import {
   EnumKeys,
+  EnumKeysTerminalData,
   EnumServices,
   EnumTabs,
 } from "../../../../../../../types/enums/configTabsAndKeys";
@@ -12,7 +13,8 @@ export default function HomeContent() {
   const [config, setConfig] = useState<IOptionConfig2[]>();
   const [qrcode, setQrCode] = useState("");
   const Identification =
-    config?.find((opt) => opt.key === EnumKeys.identification)?.value || "";
+    config?.find((opt) => opt.key === EnumKeysTerminalData.identification)
+      ?.value || "";
   const Services =
     config?.filter(
       (opt) =>
@@ -21,7 +23,7 @@ export default function HomeContent() {
         opt.value === true
     ) || [];
   const ObjCNPJ = config
-    ? config.find((obj) => obj.key === EnumKeys.cnpj_cpf)
+    ? config.find((obj) => obj.key === EnumKeysTerminalData.cnpj_cpf)
     : undefined;
   const CNPJs = ObjCNPJ && Array.isArray(ObjCNPJ.value) ? ObjCNPJ.value : [];
 
@@ -68,7 +70,7 @@ export default function HomeContent() {
   }
   function RenderCNPJ_CPF() {
     const CNPJ_CPF = config?.find(
-      (opt) => opt.key === EnumKeys.cnpj_cpf
+      (opt) => opt.key === EnumKeysTerminalData.cnpj_cpf
     )?.value;
 
     if (Array.isArray(CNPJ_CPF))
@@ -111,12 +113,11 @@ export default function HomeContent() {
   return (
     <Flex flex={"1"} direction={"column"} justifyContent="space-between" p="2">
       <Flex direction={"column"} gap="2" flex="1">
-        <Text color={Color.blackFont1} bg="#f3f3f3" borderRadius={"8"} p="1">
-          Identificação do Terminal:
-          <Text color={Color.grayFont} fontWeight="bold">
-            {Identification}
-          </Text>
-        </Text>
+        <Box color={Color.blackFont1} bg="#f3f3f3" borderRadius={"8"} p="1">
+          <Text>Identificação do Terminal:</Text>
+          <Text fontWeight="bold">{Identification}</Text>
+        </Box>
+
         <RenderCNPJ_CPF />
         <RenderServicesActive />
       </Flex>

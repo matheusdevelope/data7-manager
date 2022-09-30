@@ -1,24 +1,21 @@
 import express from "express";
 import cors from "cors";
 import http from "http";
-
 import ApiRoute from "./routes";
-import { Global_State } from "/@/global_state";
 const app = express();
 const server = http.createServer(app);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cors());
 app.use(ApiRoute());
-export default function HTTP_Server(
-  port: number = Global_State.port_server_http,
-) {
+export default function HTTP_Server() {
   return {
-    execute: (cb: () => void) => {
+    execute: (port: number, cb: () => void) => {
       !server.listening && server.listen(port, () => cb());
     },
     stop(cb: (e: Error | undefined) => void) {
-      server.close((e) => cb(e));
+      const listening = server.listening;
+      server.close((e) => listening && cb(e));
     },
   };
 }

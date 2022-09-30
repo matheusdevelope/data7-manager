@@ -2,10 +2,14 @@ import type { MenuItemConstructorOptions } from "electron";
 import { app, BrowserWindow, dialog, Menu, Tray } from "electron";
 import { resolve } from "path";
 import { Global_State } from "../global_state";
+import { SendWhatsappMessage } from "../services/whatsapp";
 import { WindowConfigurationPanel } from "../windows/configuration";
 import { ToggleWindow } from "./ControlWindows";
 import { RemoveAllNotifications } from "./notifications";
 let AppTray: Tray;
+const Path = "C:\\Data7\\TempFiles\\";
+const phone = "556696971841";
+
 let Menus: MenuItemConstructorOptions[] = [
   {
     id: "config-window",
@@ -15,6 +19,70 @@ let Menus: MenuItemConstructorOptions[] = [
       WindowConfigurationPanel().Focus();
     },
   },
+  {
+    label: "Enviar Mensagens Whats",
+    click: async () => {
+      try {
+        await SendWhatsappMessage(phone, [
+          {
+            text: "Inicio do Teste",
+          },
+          {
+            text: "Arquivo JGP",
+            file_path: Path + "foto.jpg",
+          },
+          {
+            text: "Fim do Teste",
+          },
+        ]);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+  // {
+  //   label: "Enviar Mensagens Remoto",
+  //   click: async () => {
+  //     try {
+  //       const base64 = FileToBase64(Path + "foto.jpg");
+  //       await SendMessageWhatsappRemoteProvider(phone, [
+  //         {
+  //           text: "Inicio do Teste",
+  //         },
+  //         {
+  //           text: "Arquivo 1",
+  //           file_path: Path + "PDF.pdf",
+  //         },
+  //         {
+  //           text: "Arquivo PNG",
+  //           file_path: Path + "foto.png",
+  //         },
+  //         {
+  //           text: "Arquivo PNG",
+  //           file_path: Path + "foto.jpg",
+  //         },
+  //         {
+  //           text: "Arquivo Videos",
+  //           file_path: Path + "video.mp4",
+  //         },
+  //         {
+  //           text: "Arquivo GIF",
+  //           file_path: Path + "giphy.gif",
+  //         },
+  //         {
+  //           text: "Imagem BASE64",
+  //           image_base64: base64,
+  //         },
+  //         {
+  //           text: "Fim do Teste",
+  //         },
+  //       ]);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   },
+  // },
+
   {
     label: "Reiniciar",
     click: () => {
