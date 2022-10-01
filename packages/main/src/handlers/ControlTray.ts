@@ -40,49 +40,6 @@ let Menus: MenuItemConstructorOptions[] = [
       }
     },
   },
-  // {
-  //   label: "Enviar Mensagens Remoto",
-  //   click: async () => {
-  //     try {
-  //       const base64 = FileToBase64(Path + "foto.jpg");
-  //       await SendMessageWhatsappRemoteProvider(phone, [
-  //         {
-  //           text: "Inicio do Teste",
-  //         },
-  //         {
-  //           text: "Arquivo 1",
-  //           file_path: Path + "PDF.pdf",
-  //         },
-  //         {
-  //           text: "Arquivo PNG",
-  //           file_path: Path + "foto.png",
-  //         },
-  //         {
-  //           text: "Arquivo PNG",
-  //           file_path: Path + "foto.jpg",
-  //         },
-  //         {
-  //           text: "Arquivo Videos",
-  //           file_path: Path + "video.mp4",
-  //         },
-  //         {
-  //           text: "Arquivo GIF",
-  //           file_path: Path + "giphy.gif",
-  //         },
-  //         {
-  //           text: "Imagem BASE64",
-  //           image_base64: base64,
-  //         },
-  //         {
-  //           text: "Fim do Teste",
-  //         },
-  //       ]);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
-  // },
-
   {
     label: "Reiniciar",
     click: () => {

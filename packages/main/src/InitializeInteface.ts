@@ -46,13 +46,13 @@ function IsActive(sub_category: EnumServices) {
   return Status;
 }
 
-export function ActivateServicesByConfiguration(_?: EnumServices) {
+export function ActivateServicesByConfiguration() {
   const Config = GetConfigTabs();
   IsActive(EnumServices.pix) && PixService();
   IsActive(EnumServices.http_server) && HttpService(Config);
   IsActive(EnumServices.whatsapp_integrated) && Whatsapp.Start();
 }
-export function StopServicesByConfiguration(_?: EnumServices) {
+export function StopServicesByConfiguration() {
   !IsActive(EnumServices.pix) && WindowPix().Stop();
   !IsActive(EnumServices.http_server) &&
     HTTP_Server().stop(() => {

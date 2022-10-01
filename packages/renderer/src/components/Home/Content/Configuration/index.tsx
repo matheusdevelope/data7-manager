@@ -64,7 +64,6 @@ export default function MainConfig() {
                 type: opt.type,
                 id_window: opt.id_window,
                 alert: opt.alert,
-                services_dependencies: opt.services_dependencies,
                 configs_dependencies: opt.configs_dependencies,
                 validate_keys: opt.validate_keys,
               };

@@ -20,6 +20,12 @@ interface IProps extends BoxProps {
   mainCategory: string;
   isSubCategory?: boolean;
 }
+interface Labels {
+  title?: string;
+  message?: string;
+  buttonLeft?: string;
+  buttonRight?: string;
+}
 
 export default function ConfigContent({
   tabs,
@@ -28,6 +34,7 @@ export default function ConfigContent({
   ...props
 }: IProps) {
   const [currentTab, setCurrentTab] = useState<ITabsConfig>();
+  const [messages, setMessages] = useState<string[]>([]);
   const [messageModal, setMessageModal] = useState("");
   useEffect(() => {
     if (tabs) setCurrentTab({ ...tabs[0] });
@@ -58,138 +65,108 @@ export default function ConfigContent({
     });
   }
 
-  async function SetValueOnStorage({ key, value }: IOptionConfig) {
-    const ActualConfig = await window.__electron_preload__GetLocalConfigTabs();
-    if (isSubCategory) {
-      const index = ActualConfig.findIndex((opt) => {
-        return (
-          opt.category === mainCategory &&
-          opt.sub_category === currentTab?.category &&
-          opt.key === key
-        );
-      });
-      ActualConfig.splice(index, 1, { ...ActualConfig[index], value: value });
-
-      window.__electron_preload__SetLocalConfigTabs([...ActualConfig]);
-
-      if (
-        ActualConfig[index].key === EnumKeys.status &&
-        typeof value === "boolean"
-      ) {
-        const Service = ActualConfig[index].sub_category;
-        Service && window.__electron_preload__ToggleService(Service, value);
-      }
-    } else {
-      const index = ActualConfig.findIndex((opt) => {
-        return opt.key === key;
-      });
-
-      ActualConfig.splice(index, 1, { ...ActualConfig[index], value: value });
-
-      window.__electron_preload__SetLocalConfigTabs([...ActualConfig]);
-      if (
-        ActualConfig[index].key === EnumKeys.status &&
-        typeof value === "boolean"
-      ) {
-        const Service = ActualConfig[index].category;
-        Service && window.__electron_preload__ToggleService(Service, value);
-      }
-    }
-  }
-  async function ValidateRequirideKeys(options: IOptionConfig) {
-    let CanGo = true;
-    if (options.validate_keys) {
-      const config = await window.__electron_preload__GetLocalConfigTabs();
-      for (let i = 0; i < options.validate_keys.length; i++) {
-        const validate = options.validate_keys[i];
-        const ObjToValidate = config.find(
-          (oldTab) =>
-            oldTab.category === validate.category &&
-            oldTab.key === validate.key &&
-            (oldTab.sub_category && validate.sub_category
-              ? oldTab.sub_category === validate.sub_category
-              : true)
-        );
-        if (validate.onvalue !== options.value) return CanGo;
-        if (!ObjToValidate) {
-          setMessageModal(
-            "Valor para validação não encontrado, reinicie a aplicação."
-          );
-          CanGo = false;
-          return CanGo;
-        }
-        if (ObjToValidate.value === validate.keyvalue) {
-          setMessageModal(validate.message);
-          if (validate.block === true) {
-            CanGo = false;
-            return CanGo;
-          }
-        }
-      }
-    }
-    return CanGo;
-  }
-  // async function ConfigDependencies(options: IOptionConfig) {
-  //   if (options.configs_dependencies) {
-  //     for (let i = 0; i < options.configs_dependencies.length; i++) {
-  //       const service = options.configs_dependencies[i];
-  //       // const config_service = await window.__electron_preload__Config_GetKey(
-  //       //   service.key,
-  //       //   service.sub_category,
-  //       //   service.category
-  //       // );
-  //       // if (config_service) {
-  //       //   ChangeValue({ ...config_service, value: service.value });
-  //       // }
-  //       window.__electron_preload__Config_SetKeyValue(
-  //         service.value,
-  //         service.key,
-  //         service.sub_category,
-  //         service.category
+  // async function SetValueOnStorage({ key, value }: IOptionConfig) {
+  //   const ActualConfig = await window.__electron_preload__GetLocalConfigTabs();
+  //   if (isSubCategory) {
+  //     const index = ActualConfig.findIndex((opt) => {
+  //       return (
+  //         opt.category === mainCategory &&
+  //         opt.sub_category === currentTab?.category &&
+  //         opt.key === key
   //       );
-  //     }
-  //   }
-  // }
-  // async function ServicesDependencies(options: IOptionConfig) {
-  //   if (options.services_dependencies) {
-  //     for (let i = 0; i < options.services_dependencies.length; i++) {
-  //       const service = options.services_dependencies[i];
-  //       // const config_service = await window.__electron_preload__Config_GetKey(
-  //       //   service.key,
-  //       //   service.sub_category,
-  //       //   service.category
-  //       // );
-  //       // if (config_service) {
-  //       if (service.start === true) {
-  //         // ChangeValue({ ...config_service, value: true });
+  //     });
+  //     ActualConfig.splice(index, 1, { ...ActualConfig[index], value: value });
 
-  //         window.__electron_preload__Config_SetKeyValue(
-  //           true,
-  //           service.key,
-  //           service.sub_category,
-  //           service.category
-  //         );
-  //         window.__electron_preload__ToggleService(service.sub_category, true);
-  //       }
-  //       if (service.stop === true) {
-  //         // ChangeValue({ ...config_service, value: false });
-  //         window.__electron_preload__Config_SetKeyValue(
-  //           false,
-  //           service.key,
-  //           service.sub_category,
-  //           service.category
-  //         );
-  //         window.__electron_preload__ToggleService(service.sub_category, false);
-  //       }
-  //       // }
+  //     window.__electron_preload__SetLocalConfigTabs([...ActualConfig]);
+
+  //     if (
+  //       ActualConfig[index].key === EnumKeys.status &&
+  //       typeof value === "boolean"
+  //     ) {
+  //       const Service = ActualConfig[index].sub_category;
+  //       Service && window.__electron_preload__ToggleService(Service, value);
+  //     }
+  //   } else {
+  //     const index = ActualConfig.findIndex((opt) => {
+  //       return opt.key === key;
+  //     });
+
+  //     ActualConfig.splice(index, 1, { ...ActualConfig[index], value: value });
+
+  //     window.__electron_preload__SetLocalConfigTabs([...ActualConfig]);
+  //     if (
+  //       ActualConfig[index].key === EnumKeys.status &&
+  //       typeof value === "boolean"
+  //     ) {
+  //       const Service = ActualConfig[index].category;
+  //       Service && window.__electron_preload__ToggleService(Service, value);
   //     }
   //   }
   // }
+  // async function ValidateRequirideKeys(options: IOptionConfig) {
+  //   let CanGo = true;
+  //   if (options.validate_keys) {
+  //     const config = await window.__electron_preload__GetLocalConfigTabs();
+  //     for (let i = 0; i < options.validate_keys.length; i++) {
+  //       const validate = options.validate_keys[i];
+  //       const ObjToValidate = config.find(
+  //         (oldTab) =>
+  //           oldTab.category === validate.category &&
+  //           oldTab.key === validate.key &&
+  //           (oldTab.sub_category && validate.sub_category
+  //             ? oldTab.sub_category === validate.sub_category
+  //             : true)
+  //       );
+  //       if (validate.onvalue !== options.value) return CanGo;
+  //       if (!ObjToValidate) {
+  //         setMessageModal(
+  //           "Valor para validação não encontrado, reinicie a aplicação."
+  //         );
+  //         CanGo = false;
+  //         return CanGo;
+  //       }
+  //       if (ObjToValidate.value === validate.keyvalue) {
+  //         setMessageModal(validate.message);
+  //         if (validate.block === true) {
+  //           CanGo = false;
+  //           return CanGo;
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return CanGo;
+  // }
+
   async function ChangeValue(options: IOptionConfig) {
-    // ConfigDependencies(options);
-    // ServicesDependencies(options);
-    if (!(await ValidateRequirideKeys(options))) return;
-    SetValueOnStorage(options);
+    // if (!(await ValidateRequirideKeys(options))) return;
+    // SetValueOnStorage(options);
+    const ret = await window.__electron_preload__Config_SetKeyValue(
+      options.value,
+      options.key,
+      currentTab?.category,
+      mainCategory
+    );
+    if (!ret.value_changed) {
+      let message = "";
+      if (ret.required_configs) {
+        message = JSON.stringify(ret.required_configs, null, "\n");
+        const messages = ret.required_configs.map((obj) => {
+          return obj.message;
+        });
+        setMessages([...messages]);
+        return setMessageModal(messages[0]);
+      }
+      message = `Não foi possivel salvar essa alteração.
+        Mensagem: ${ret.message}
+        Valores em conflito: ${JSON.stringify(
+          ret.value_on_conflict,
+          null,
+          "\n"
+        )}`;
+
+      return setMessageModal(message);
+    }
+
     options.alert && setMessageModal(options.alert);
     if (currentTab?.options) {
       const index = currentTab.options.findIndex(
@@ -224,7 +201,14 @@ export default function ConfigContent({
       )}
       <ConfirmationModal
         isOpen={Boolean(messageModal)}
-        onClose={() => setMessageModal("")}
+        onClose={() => {
+          setMessages((prev) => {
+            const NewMessages = prev;
+            NewMessages.shift();
+            setMessageModal(NewMessages[0] || "");
+            return NewMessages || [];
+          });
+        }}
         labels={{
           message: messageModal,
         }}

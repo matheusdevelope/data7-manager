@@ -103,6 +103,6 @@ declare global {
         | EnumKeysWhatsappIntegrated,
       sub_category?: EnumServices,
       category?: EnumTabs
-    ) => Promise<boolean>;
+    ) => Promise<IReturnSetConfigKey>;
   }
 }

@@ -26,7 +26,6 @@ import {
   GetServices,
   SafeStorage,
   SetConfigTabs,
-  SetKeyValue,
   Storage,
 } from "../services/local_storage";
 import { DefaultConfigTabs } from "../services/local_storage/configs";
@@ -35,6 +34,7 @@ import { WindowPix } from "../windows/pix";
 import { ToggleWindow, WindowsCreated } from "./ControlWindows";
 import { DataToLoginMobile, URL_Login_Mobile } from "./login_mobile";
 import Whatsapp from "../services/whatsapp";
+import SetConfigKeyValue from "../services/local_storage/SetValueConfig";
 
 function RegisterListenersIpcMain() {
   HandleStorage();
@@ -139,6 +139,24 @@ function HandleStorage() {
       return GetKeyValue(key, sub_category, category);
     },
   );
+  // ipcMain.handle(
+  //   EnumIpcEvents.config_set_key_value,
+  //   (
+  //     _,
+  //     value: string | number | boolean | string[],
+  //     key:
+  //       | EnumKeys
+  //       | EnumKeysFirebase
+  //       | EnumKeysHttpServer
+  //       | EnumKeysSendFilesWhats
+  //       | EnumKeysTerminalData
+  //       | EnumKeysWhatsappIntegrated,
+  //     sub_category?: EnumServices,
+  //     category?: EnumTabs
+  //   ) => {
+  //     return SetKeyValue(value, key, sub_category, category);
+  //   }
+  // );
   ipcMain.handle(
     EnumIpcEvents.config_set_key_value,
     (
@@ -154,7 +172,7 @@ function HandleStorage() {
       sub_category?: EnumServices,
       category?: EnumTabs,
     ) => {
-      return SetKeyValue(value, key, sub_category, category);
+      return SetConfigKeyValue({ value, key, sub_category, category });
     },
   );
 }
@@ -214,13 +232,10 @@ function HandlePix() {
   );
 }
 function HandleServices() {
-  ipcMain.on(
-    EnumIpcEvents.toggle_service,
-    (_, service: EnumServices, active: boolean) => {
-      if (active) return ActivateServicesByConfiguration(service);
-      return StopServicesByConfiguration(service);
-    },
-  );
+  ipcMain.on(EnumIpcEvents.toggle_service, (_, active: boolean) => {
+    if (active) return ActivateServicesByConfiguration();
+    return StopServicesByConfiguration();
+  });
 }
 function HandleWhatsappBOT() {
   ipcMain.handle(EnumIpcEvents.get_status_whatsapp, () => {

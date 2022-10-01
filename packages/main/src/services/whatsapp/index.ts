@@ -58,6 +58,7 @@ function CreateOrRestoreWindowWhats(
   return Window;
 }
 async function Start() {
+  return;
   const UseRemoteServer = Boolean(
     GetKeyValue(
       EnumKeysWhatsappIntegrated.use_remote_service,
@@ -86,6 +87,7 @@ async function Start() {
   return Window;
 }
 function Stop() {
+  return;
   const UseRemoteServer = Boolean(
     GetKeyValue(
       EnumKeysWhatsappIntegrated.use_remote_service,
@@ -283,9 +285,9 @@ async function OnReady() {
   };
   if (
     GetKeyValue(
-        EnumKeysWhatsappIntegrated.show_window_on_start,
-        EnumServices.whatsapp_integrated,
-      )
+      EnumKeysWhatsappIntegrated.show_window_on_start,
+      EnumServices.whatsapp_integrated,
+    )
   ) {
     Window.show();
     Window.focus();

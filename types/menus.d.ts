@@ -1,3 +1,17 @@
+interface IKeysConfigs {
+  key:
+    | EnumKeys
+    | EnumKeysFirebase
+    | EnumKeysHttpServer
+    | EnumKeysSendFilesWhats
+    | EnumKeysTerminalData
+    | EnumKeysWhatsappIntegrated;
+}
+
+interface ICommonConfigIdentification extends IKeysConfigs {
+  category?: EnumTabs;
+  sub_category?: EnumServices;
+}
 interface ITabsConfig {
   category: string;
   label: string;
@@ -24,22 +38,22 @@ interface IOptionConfig {
   id_window?: EnumWindowsID;
   alert?: string;
   validate_keys?: IObjValidationKey[];
+  required_configs?: IRequiredConfigs[];
   configs_dependencies?: IDependenciesConfigs[];
-  services_dependencies?: IServicesDependencies[];
+  restart_services?: boolean;
 }
 interface IOptionConfig2 extends IOptionConfig, ITabsConfig2 {}
-interface IServicesDependencies {
-  category: string;
-  sub_category: string;
-  key: string;
-  start?: boolean;
-  stop?: boolean;
-  on_value: string | number | boolean | string[];
-}
+
 interface IDependenciesConfigs {
-  category: string;
-  sub_category?: string;
-  key: string;
+  category: EnumTabs;
+  sub_category?: EnumServices;
+  key:
+    | EnumKeys
+    | EnumKeysFirebase
+    | EnumKeysHttpServer
+    | EnumKeysSendFilesWhats
+    | EnumKeysTerminalData
+    | EnumKeysWhatsappIntegrated;
   value: string | number | boolean | string[];
   on_value: string | number | boolean | string[];
 }
@@ -51,4 +65,42 @@ interface IObjValidationKey {
   onvalue: string | number | boolean;
   block: boolean;
   message: string;
+}
+
+interface IRequiredConfigs extends ICommonConfigIdentification {
+  message: string;
+  key_value: string | number | boolean | string[];
+  block: boolean;
+  message: string;
+  on_value: string | number | boolean | string[];
+}
+
+interface IValuesToSetConfigKey {
+  value: string | number | boolean | string[];
+  key:
+    | EnumKeys
+    | EnumKeysFirebase
+    | EnumKeysHttpServer
+    | EnumKeysSendFilesWhats
+    | EnumKeysTerminalData
+    | EnumKeysWhatsappIntegrated;
+  sub_category?: EnumServices;
+  category?: EnumTabs;
+}
+
+interface IReturnSetConfigKey {
+  value_changed: boolean;
+  message: string;
+  from_config_dependecies?: boolean;
+  from_required_dependecies?: boolean;
+  value_on_conflict?: ICommonConfigIdentification;
+  required_configs?: IRequiredConfigs[];
+  new_config?: IOptionConfig2;
+  configs?: IOptionConfig2[];
+}
+interface IReturnRequiredDependencies {
+  can_go: boolean;
+  message: string;
+  value_on_conflict?: ICommonConfigIdentification;
+  required_configs: IRequiredConfigs[];
 }

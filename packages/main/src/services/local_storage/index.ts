@@ -5,7 +5,8 @@ import type {
   EnumKeysHttpServer,
   EnumKeysSendFilesWhats,
   EnumKeysTerminalData,
-  EnumKeysWhatsappIntegrated} from "../../../../../types/enums/configTabsAndKeys";
+  EnumKeysWhatsappIntegrated,
+} from "../../../../../types/enums/configTabsAndKeys";
 import {
   EnumKeys,
   EnumKeysFirebase,
@@ -91,12 +92,19 @@ const SafeStorage = {
   },
 };
 function SetConfigTabs(configs: IOptionConfig2[]) {
+  // const config = configs;
+  // const option = config.find(
+  //   (obj) =>
+  //     obj.key === EnumKeys.status &&
+  //     obj.sub_category === EnumServices.whatsapp_integrated &&
+  //     obj.category === EnumTabs.services
+  // );
+  // console.log(option);
   try {
     Storage.set("config_tabs", configs);
     return true;
   } catch (error) {
     console.log(error);
-
     return false;
   }
 }

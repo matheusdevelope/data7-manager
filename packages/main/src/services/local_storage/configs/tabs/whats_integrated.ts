@@ -37,31 +37,63 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
       "Esse recurso vai permitir que outro Data7 Manager na rede use o serviço de Whatsapp Integrado dessa máquina. Isso será necessário quando o limite de 4 conexões simultâneas do Whatsapp for atingido. ",
     type: EnumTypesOptions.boolean,
     disabled: false,
-    services_dependencies: [
+    // restart_services: true,
+    configs_dependencies: [
+      {
+        category: EnumTabs.services,
+        sub_category: EnumServices.whatsapp_integrated,
+        key: EnumKeys.status,
+        value: true,
+        on_value: true,
+      },
       {
         category: EnumTabs.services,
         sub_category: EnumServices.http_server,
         key: EnumKeys.status,
-        start: true,
+        value: true,
         on_value: true,
       },
       {
         category: EnumTabs.services,
         sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeys.status,
-        start: true,
+        key: EnumKeysWhatsappIntegrated.use_remote_service,
+        value: false,
         on_value: true,
       },
     ],
-    configs_dependencies: [
+    required_configs: [
+      {
+        category: EnumTabs.services,
+        sub_category: EnumServices.http_server,
+        key: EnumKeys.status,
+        on_value: true,
+        key_value: false,
+        block: true,
+        message:
+          "Para ser um provedor do serviço, é necessário primeiro ativar o serviço 'Servidor HTTP'.",
+      },
+      {
+        category: EnumTabs.services,
+        sub_category: EnumServices.whatsapp_integrated,
+        key: EnumKeys.status,
+        on_value: true,
+        key_value: false,
+        block: true,
+        message:
+          "Para ser um provedor do serviço, é necessário primeiro ativar o serviço 'Whatsapp Integrado'.",
+      },
       {
         category: EnumTabs.services,
         sub_category: EnumServices.whatsapp_integrated,
         key: EnumKeysWhatsappIntegrated.use_remote_service,
         on_value: true,
-        value: false,
+        key_value: true,
+        block: true,
+        message:
+          "Você está usando a Integração Remota para se conectar em outra máquina, para ser um provedor do serviço, desative o recurso 'Integração Remota'.",
       },
     ],
+
     validate_keys: [
       {
         category: EnumTabs.services,
@@ -104,13 +136,61 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
       "Esse recurso vai se conectar em outro Data7 Manager que esteja executando o serviço de Whatsapp Integrado. \n Isso será necessário quando o limite de 4 conexões simultâneas do Whatsapp for atingido. ",
     type: EnumTypesOptions.boolean,
     disabled: false,
-    services_dependencies: [
+    configs_dependencies: [
+      {
+        category: EnumTabs.services,
+        sub_category: EnumServices.whatsapp_integrated,
+        key: EnumKeysWhatsappIntegrated.allow_remote_service_server,
+        value: false,
+        on_value: true,
+      },
       {
         category: EnumTabs.services,
         sub_category: EnumServices.whatsapp_integrated,
         key: EnumKeys.status,
-        start: true,
+        value: true,
         on_value: true,
+      },
+    ],
+    required_configs: [
+      // {
+      //   category: EnumTabs.services,
+      //   sub_category: EnumServices.whatsapp_integrated,
+      //   key: EnumKeys.status,
+      //   on_value: true,
+      //   key_value: false,
+      //   block: true,
+      //   message:
+      //     "Para usar a Integração Remota, é necessário primeiro ativar o serviço 'Whatsapp Integrado'.",
+      // },
+      // {
+      //   category: EnumTabs.services,
+      //   sub_category: EnumServices.whatsapp_integrated,
+      //   key: EnumKeysWhatsappIntegrated.allow_remote_service_server,
+      //   on_value: true,
+      //   key_value: true,
+      //   block: true,
+      //   message:
+      //     "Você definiu esse Data7 Manager como um provedor de Integração Remota. Para usar o serviço de outra máquina, desative o recurso 'Servidor Integração Remota'.",
+      // },
+      {
+        category: EnumTabs.services,
+        sub_category: EnumServices.whatsapp_integrated,
+        key: EnumKeysWhatsappIntegrated.use_bot,
+        on_value: true,
+        key_value: false,
+        block: true,
+        message: "Use BOT messsage.",
+      },
+      {
+        category: EnumTabs.services,
+        sub_category: EnumServices.whatsapp_integrated,
+        key: EnumKeysWhatsappIntegrated.remote_service_address,
+        on_value: true,
+        key_value: "",
+        block: true,
+        message:
+          "Para usar o serviço de outra máquina, primeiro informe o endereço IP do provedor do serviço no campo 'IP Integração Remota'.",
       },
     ],
     validate_keys: [
@@ -146,7 +226,6 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
       },
     ],
   },
-
   {
     ...SubCatgoryWhatsIntegrated,
     key: EnumKeysWhatsappIntegrated.remote_service_address,
