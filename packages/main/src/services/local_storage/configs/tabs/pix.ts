@@ -53,6 +53,6 @@ export const ServicePix: IOptionConfig2[] = [
     label: "Mensagem Envio Whatsapp",
     description:
       "Aqui você pode definir uma mensagem personalizada para o envio do link de pagamento do PIX. \nLembre-se para indicar onde o link será colocado na mensagem use: {link@pix} . Esse texto será substituido pelo link gerado dinamicamente, caso não informe, o link será aplicado no fim da mensagem definida. ",
-    type: EnumTypesOptions.text,
+    type: EnumTypesOptions.textarea,
   },
 ];

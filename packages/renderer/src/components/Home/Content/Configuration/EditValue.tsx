@@ -9,6 +9,7 @@ import {
   Icon,
   FormControl,
   FormErrorMessage,
+  Textarea,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { MdAdd, MdDelete, MdDone, MdSave } from "react-icons/md";
@@ -105,6 +106,11 @@ export default function RenderEditValue({
         setValue(e.target.value);
       }
     }
+  }
+  function OnChangeTextArea(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    !isEdited && setIsEdited(true);
+    validation.length > 0 && setValidation("");
+    setValue(e.target.value);
   }
   function OnDeleteFromArray(key: number) {
     if (Array.isArray(option.value)) {
@@ -226,23 +232,35 @@ export default function RenderEditValue({
         borderColor={"gray.200"}
         borderRadius="8px"
       >
-        <Input
-          isDisabled={option.disabled === true}
-          value={String(value)}
-          onChange={OnChange}
-          placeholder={option.tip}
-          color={Color.blackFont1}
-          borderRadius="8px"
-          _placeholder={{ color: "gray.500" }}
-        />
+        {option.type === EnumTypesOptions.textarea ? (
+          <Textarea
+            scrollBehavior={"inherit"}
+            isDisabled={option.disabled === true}
+            value={String(value)}
+            onChange={OnChangeTextArea}
+            placeholder={option.tip}
+            color={Color.blackFont1}
+            borderRadius="8px"
+            _placeholder={{ color: "gray.500" }}
+          />
+        ) : (
+          <Input
+            isDisabled={option.disabled === true}
+            value={String(value)}
+            onChange={OnChange}
+            placeholder={option.tip}
+            color={Color.blackFont1}
+            borderRadius="8px"
+            _placeholder={{ color: "gray.500" }}
+          />
+        )}
+
         {option.value !== value && isEdited ? (
           <InputRightElement
-            bg={"gray.300"}
             borderRadius="6"
-            m="1"
-            boxSize={"6"}
+            bg="transparent"
             children={
-              <Button type="submit" p="0">
+              <Button bg="transparent" size={"sm"} type="submit" p="0">
                 <MdSave color="green.500" />
               </Button>
             }
