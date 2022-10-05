@@ -14,10 +14,10 @@ export async function SendMessageWhatsappRemoteProvider(
   messages: IMessageWhatsapp[],
 ) {
   const AddressRemoteServer = String(
-    GetKeyValue(
-      EnumKeysWhatsappIntegrated.remote_service_address,
-      EnumServices.whatsapp_integrated,
-    ),
+    GetKeyValue({
+      key: EnumKeysWhatsappIntegrated.remote_service_address,
+      sub_category: EnumServices.whatsapp_integrated,
+    }),
   );
   const form = new FormData();
   let FilesCount = 0;
@@ -53,7 +53,6 @@ export async function SendMessageWhatsappRemoteProvider(
       Promise.reject("Failed on sent files to remote provider: " + error);
     }
   }
-
   try {
     const data = await axios.post(
       `http://${AddressRemoteServer}/data7/send_message_whatsapp?dir=${Global_State.machine_id}`,
@@ -62,9 +61,6 @@ export async function SendMessageWhatsappRemoteProvider(
         messages: messages,
       },
     );
-    // messages.forEach((message) => {
-    //   message.file_path && unlinkSync(message.file_path);
-    // });
     return Promise.resolve(data.data);
   } catch (error) {
     Promise.reject("Failed on sent messages to remote provider: " + error);

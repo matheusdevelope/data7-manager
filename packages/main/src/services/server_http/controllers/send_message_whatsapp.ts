@@ -3,18 +3,18 @@ import { basename, join } from "path";
 import {
   EnumKeysTerminalData,
   EnumKeysWhatsappIntegrated,
+  EnumServices,
   EnumTabs,
 } from "../../../../../../types/enums/configTabsAndKeys";
 import { GetKeyValue } from "../../local_storage";
-import Whatsapp from "../../whatsapp";
+import Whatsapp, { SendWhatsappMessage } from "../../whatsapp";
 
 async function post(req: Request, res: Response) {
   const TempDir = String(
-    GetKeyValue(
-      EnumKeysTerminalData.temp_files,
-      undefined,
-      EnumTabs.terminal_data,
-    ),
+    GetKeyValue({
+      key: EnumKeysTerminalData.temp_files,
+      category: EnumTabs.terminal_data,
+    }),
   );
   const dir = `${TempDir}/${req.query.dir || "general"}/`;
 
@@ -27,23 +27,29 @@ async function post(req: Request, res: Response) {
         : undefined,
     };
   });
-
-  const result = await Whatsapp.SendWhatsappMessage(
-    req.body.phone,
-    NewMessages,
-  );
-  if (result === true) {
-    res.send("Messages sent successfully");
-  } else {
+  try {
+    const result = await SendWhatsappMessage(req.body.phone, NewMessages);
+    if (result === true) {
+      res.send("Messages sent successfully");
+    } else {
+      res.status(400).json({
+        message: "Error on sent messages",
+        error: result,
+      });
+    }
+  } catch (error) {
     res.status(400).json({
       message: "Error on sent messages",
-      error: result,
+      error: error,
     });
   }
 }
 async function get(req: Request, res: Response) {
   const IsProviderRemote = Boolean(
-    GetKeyValue(EnumKeysWhatsappIntegrated.allow_remote_service_server),
+    GetKeyValue({
+      key: EnumKeysWhatsappIntegrated.allow_remote_service_server,
+      sub_category: EnumServices.whatsapp_integrated,
+    }),
   );
 
   if (IsProviderRemote) {

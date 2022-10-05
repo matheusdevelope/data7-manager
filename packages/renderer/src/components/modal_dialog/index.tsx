@@ -1,9 +1,17 @@
-import { useEffect, useRef } from 'react';
-import { AreaMessage, Button, Container, LineButtons, Message, Text, Title } from './style';
+import { useEffect, useRef } from "react";
+import {
+  AreaMessage,
+  Button,
+  Container,
+  LineButtons,
+  Message,
+  Text,
+  Title,
+} from "./style";
 export const DefaultDialog: IDialog = {
   isOpen: false,
-  title: 'Atenção',
-  message: '',
+  title: "Atenção",
+  message: "",
   onClickOK: () => null,
   onClickCancel: undefined,
 };
@@ -22,19 +30,19 @@ export default function Dialog({
     isOpen && ButtonRef.current?.focus();
   }, [isOpen]);
   return (
-    <Container style={{ display: isOpen ? 'flex' : 'none' }}>
+    <Container style={{ display: isOpen ? "flex" : "none" }}>
       <AreaMessage>
         <Message>
-          <Title>{title || ''}</Title>
+          <Title>{title || ""}</Title>
           <Text>{message} </Text>
         </Message>
         <LineButtons>
           <Button ref={!onClickCancel ? ButtonRef : null} onClick={onClickOK}>
-            {textbuttonOK ? textbuttonOK : 'OK'}
+            {textbuttonOK ? textbuttonOK : "OK"}
           </Button>
           {onClickCancel && (
             <Button ref={ButtonRef} onClick={onClickCancel}>
-              {textbuttonCancel ? textbuttonCancel : 'Cancelar'}
+              {textbuttonCancel ? textbuttonCancel : "Cancelar"}
             </Button>
           )}
         </LineButtons>

@@ -1,6 +1,7 @@
 import { config, S3 } from "aws-sdk";
 import { createReadStream } from "fs";
 import { lookup } from "mime-types";
+import { GenererateNameFileUnique } from "./utils";
 const CRETENTIALS = require("./certificates/aws.json");
 
 const BUCKET = CRETENTIALS.bucket;
@@ -8,13 +9,21 @@ config.update(CRETENTIALS);
 const ServerS3 = new S3();
 
 export default function ServiceS3() {
-  async function create(path_local: string, key: string, expires = 30) {
+  async function create(
+    path_local: string,
+    expires = 30,
+    pretty_name_file?: string,
+  ) {
     try {
       const fileStream = createReadStream(path_local);
       const type = lookup(path_local);
       const uploadParams = {
         Bucket: BUCKET,
-        Key: key,
+        Key: GenererateNameFileUnique(
+          pretty_name_file || path_local,
+          5,
+          expires,
+        ),
         Body: fileStream,
         ACL: "public-read",
         Tagging: "expires=" + expires,

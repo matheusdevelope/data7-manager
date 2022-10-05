@@ -1,106 +1,28 @@
 import type { Request, Response } from "express";
-import { readdirSync, existsSync, unlinkSync } from "fs";
+import { readdirSync, existsSync } from "fs";
 import { join, normalize } from "path";
 import {
   EnumKeysSendFilesWhats,
   EnumServices,
 } from "../../../../../types/enums/configTabsAndKeys";
-import { GetConfigTabs, GetServices } from "../local_storage";
-import { SendMessageOnWhatsapp } from "../protocoll_events";
-import ServiceS3 from "./s3";
-import {
-  error,
-  GenererateNameFileUnique,
-  MountMessage,
-  EncodeURI,
-  Convert_UTF16_To_Emoji,
-  round,
-} from "./s3/utils";
+import { GetConfigTabs, GetService } from "../local_storage";
+import { SendWhatsappMessage } from "../whatsapp";
+import { error, Convert_UTF16_To_Emoji } from "./s3/utils";
 import { OnlyNumbersString } from "/@/utils";
 
-export async function SendFilesToS3(
-  files: IComumObject[],
-  received_path?: string,
-  Expiration?: number,
-) {
-  const Config = GetConfigTabs();
-  const path_directory =
-    received_path ||
-    String(
-      Config.find(
-        (obj) =>
-          obj.sub_category == EnumServices.whatsapp_send_files &&
-          obj.key === EnumKeysSendFilesWhats.path_files,
-      )?.value || "",
-    );
-  const DaysToExpireFile =
-    Expiration ||
-    Number(
-      Config.find(
-        (obj) =>
-          obj.sub_category == EnumServices.whatsapp_send_files &&
-          obj.key === EnumKeysSendFilesWhats.expiration,
-      )?.value || 30,
-    );
-  const DisableAutoFormat = Boolean(
-    Config.find(
-      (obj) =>
-        obj.sub_category == EnumServices.whatsapp_send_files &&
-        obj.key === EnumKeysSendFilesWhats.disable_auto_format,
-    )?.value || false,
-  );
-  if (!path_directory) {
-    return Promise.reject("Nenhum path foi informado.");
-  }
-  try {
-    const SendedFiles: IUploadedFiles[] = [];
-    const Paths_Files = readdirSync(normalize(path_directory));
-    for (let i = 0; i < Paths_Files.length; i++) {
-      const Path = join(path_directory, Paths_Files[i]);
-      const name_file = GenererateNameFileUnique(Path, 5, DaysToExpireFile);
-      const File_Uploaded = await ServiceS3().create(
-        Path,
-        name_file,
-        DaysToExpireFile,
-      );
-      const req_file = files.find((file) => file.name === Paths_Files[i]);
-      const file_with_link = {
-        name: File_Uploaded.Key,
-        auto_format:
-          req_file && req_file.auto_format === false
-            ? false
-            : DisableAutoFormat,
-        description_name:
-          req_file && req_file.description_name !== undefined
-            ? String(req_file.description_name)
-            : undefined,
-
-        description_after_link:
-          req_file && req_file.description_after_link
-            ? String(req_file.description_after_link)
-            : "",
-        url: File_Uploaded.Location,
-        expiration: DaysToExpireFile,
-      };
-      SendedFiles.push(file_with_link);
-    }
-
-    return SendedFiles;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-function DeleteFiles(path: string) {
-  if (path && existsSync(normalize(path))) {
-    readdirSync(normalize(path)).forEach((file) => {
-      unlinkSync(join(path, file));
-    });
-  }
+interface IFileExtra {
+  name: string;
+  pretty_name: string;
+  description_name: string;
+  description_after_link: string;
 }
 
 function ValidateRequisition(body: { [key: string]: string | IComumObject[] }) {
-  const errors: { [key: string]: string | { [key: string]: string } }[] = [];
+  const errors: {
+    [key: string]:
+      | string
+      | { [key: string]: string | number | boolean | IComumObject };
+  }[] = [];
 
   function CheckFiles() {
     if (!body.files) return;
@@ -109,24 +31,13 @@ function ValidateRequisition(body: { [key: string]: string | IComumObject[] }) {
         propriedade: "files",
         message:
           "Você precisa enviar um array contendo os dados dos arquivos, o array enviado está vazio.",
-        // expected: {
-        //   files: [
-        //     {
-        //       name: "nome-arquivo.png",
-        //     },
-        //     {
-        //       name: "nome-arquivo2.pdf",
-        //     },
-        //   ],
-        // },
-        // received: [],
       });
     CheckName();
   }
   function CheckName() {
     if (!body.files) return;
     Array.isArray(body.files) &&
-      body.files.forEach((element: any) => {
+      body.files.forEach((element) => {
         if (!element.name)
           errors.push({
             propriedade: "files[i].name",
@@ -136,18 +47,11 @@ function ValidateRequisition(body: { [key: string]: string | IComumObject[] }) {
             },
             received: element,
           });
-        if (element.name && element.name.split(".").length < 2)
+        if (element.name && String(element.name).split(".").length < 2)
           errors.push({
             propriedade: "files[i].name",
             message:
               "Você precisa enviar o nome do arquivo com a extensão (.ext)",
-            // expected: {
-            //   files: [
-            //     {
-            //       name: "nome-arquivo.png",
-            //     },
-            //   ],
-            // },
             received: element,
           });
       });
@@ -157,7 +61,6 @@ function ValidateRequisition(body: { [key: string]: string | IComumObject[] }) {
     errors.push({
       message: "Phone to send to whatsapp not provided",
       fix: "send a propertie [phone:'66999999999'].",
-      // body_received: body,
     });
 
   if (!body.requester)
@@ -165,7 +68,6 @@ function ValidateRequisition(body: { [key: string]: string | IComumObject[] }) {
       message:
         "Requester not provided, you need send that information to use this API",
       fix: "send a propertie [requester:'your_name'] with your info",
-      // body_received: body,
     });
 
   return {
@@ -173,6 +75,31 @@ function ValidateRequisition(body: { [key: string]: string | IComumObject[] }) {
     erros: errors,
     body_received: body,
   };
+}
+function ConvertToMessage(
+  Messages: IMessageWhatsapp[],
+  Dir_Path: string,
+  Files_Dir: string[],
+  ExtraDataFiles: IFileExtra[],
+) {
+  Files_Dir.forEach((file_name_dir) => {
+    const ExtraData = ExtraDataFiles.find(
+      (file) => file.name === file_name_dir,
+    );
+    if (ExtraData) {
+      Messages.push({
+        text: Convert_UTF16_To_Emoji(ExtraData.description_name).trim(),
+        file_path: join(normalize(Dir_Path), ExtraData.name),
+        name_file: ExtraData.pretty_name,
+      });
+    } else {
+      Messages.push({
+        file_path: join(normalize(Dir_Path), file_name_dir),
+      });
+    }
+  });
+
+  return Messages;
 }
 
 export async function UploadAndSendToWhats(req: Request, res: Response) {
@@ -183,6 +110,7 @@ export async function UploadAndSendToWhats(req: Request, res: Response) {
     exceptions: "none",
     requester: "",
   };
+
   const path_files =
     req.body.path_files ||
     String(
@@ -195,8 +123,8 @@ export async function UploadAndSendToWhats(req: Request, res: Response) {
     "";
 
   try {
-    const ServiceActivated = GetServices().find(
-      (obj) => obj.sub_category === EnumServices.whatsapp_send_files,
+    const ServiceActivated = GetService(
+      EnumServices.whatsapp_send_files,
     )?.value;
     if (ServiceActivated !== true) {
       return await error({
@@ -204,12 +132,8 @@ export async function UploadAndSendToWhats(req: Request, res: Response) {
       });
     }
     const body = req.body as unknown as { [key: string]: string };
-    const HashSize = Number(body.hash_size) || 5;
-    const Expiration = round(Number(body.expiration || 30), 5);
     const Validation = ValidateRequisition(body);
-
     if (Validation.erros.length > 0) return res.status(400).send(Validation);
-
     if (!path_files)
       return await error({
         message:
@@ -220,50 +144,49 @@ export async function UploadAndSendToWhats(req: Request, res: Response) {
         message: "The informed path does not exist or could not be accessed.",
       });
 
-    const list_name_files = readdirSync(normalize(path_files));
+    const List_Dir = readdirSync(normalize(path_files), {
+      withFileTypes: true,
+    });
+    const Files_Dir = List_Dir.filter((obj) => obj.isFile()).map(
+      (file) => file.name,
+    );
 
-    if (!list_name_files || list_name_files.length <= 0)
+    const ExtraDataFiles = (req.body.files as IFileExtra[]) || [];
+
+    if (!Files_Dir || Files_Dir.length <= 0)
       return await error({
         message: "The informed path returns a empty list os files.",
       });
 
-    const files = await SendFilesToS3(
-      req.body.files || [],
-      path_files,
-      Expiration,
-    );
-    if (!files || files.length <= 0)
-      return await error({
-        message: "List of files uploaded returns empty",
+    const Messages: IMessageWhatsapp[] = [];
+    const HeaderMessage = req.body.header_message;
+    if (HeaderMessage && String(HeaderMessage).trim())
+      Messages.push({
+        text: Convert_UTF16_To_Emoji(HeaderMessage).trim(),
       });
-
-    const message = Convert_UTF16_To_Emoji(
-      MountMessage(
-        req.body.header_message,
-        files,
-        HashSize,
-        req.body.footer_message,
-      ),
+    const MessagesWithFiles = ConvertToMessage(
+      Messages,
+      path_files,
+      Files_Dir,
+      ExtraDataFiles,
+    );
+    const FooterMessage = req.body.footer_message;
+    if (FooterMessage && String(FooterMessage).trim())
+      MessagesWithFiles.push({
+        text: Convert_UTF16_To_Emoji(FooterMessage).trim(),
+      });
+    const ret = await SendWhatsappMessage(
+      OnlyNumbersString(req.body.phone),
+      MessagesWithFiles,
     );
 
     retorno = {
-      message: "Success!",
-      data: {
-        files: files,
-        message: message,
-        message_encoded_URI: EncodeURI(message),
-      },
+      message: ret === true ? "Success!" : "Falha no envio",
+      data: ret,
       exceptions: "none",
       requester: req.body.requester,
     };
-    SendMessageOnWhatsapp({
-      phone: OnlyNumbersString(req.body.phone),
-      message: message,
-    });
-
-    DeleteFiles(path_files);
   } catch (e) {
-    DeleteFiles(path_files);
     return res.status(400).send(e);
   }
 

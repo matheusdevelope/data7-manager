@@ -98,8 +98,17 @@ export async function RefreshQr(id_qrcode: string): Promise<IRefreshQr> {
     });
   }
 }
-export function SendWhats(data: IWhatsAppMessage) {
-  ipcRenderer.invoke(EnumIpcEvents.get_fc_send_message_on_whatsapp, data);
+export async function SendWhats(phone: string, messages: IMessageWhatsapp[]) {
+  try {
+    const ret = await ipcRenderer.invoke(
+      EnumIpcEvents.get_fc_send_message_on_whatsapp,
+      phone,
+      messages,
+    );
+    return Promise.resolve(ret);
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
 export function CloseCurrentWindow(origin?: string) {
   ipcRenderer.send(EnumIpcEvents.close_current_window, origin);

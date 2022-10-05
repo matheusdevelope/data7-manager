@@ -3,7 +3,6 @@ import { Box, BoxProps, Button } from "@chakra-ui/react";
 import { HStackScrollBar } from "../../StackScrollBar";
 import RenderOption from "./option";
 import ConfirmationModal from "../../Confirmation";
-import { EnumKeys } from "../../../../../../../types/enums/configTabsAndKeys";
 
 const Color = {
   background: "#FFF",
@@ -65,87 +64,14 @@ export default function ConfigContent({
     });
   }
 
-  // async function SetValueOnStorage({ key, value }: IOptionConfig) {
-  //   const ActualConfig = await window.__electron_preload__GetLocalConfigTabs();
-  //   if (isSubCategory) {
-  //     const index = ActualConfig.findIndex((opt) => {
-  //       return (
-  //         opt.category === mainCategory &&
-  //         opt.sub_category === currentTab?.category &&
-  //         opt.key === key
-  //       );
-  //     });
-  //     ActualConfig.splice(index, 1, { ...ActualConfig[index], value: value });
-
-  //     window.__electron_preload__SetLocalConfigTabs([...ActualConfig]);
-
-  //     if (
-  //       ActualConfig[index].key === EnumKeys.status &&
-  //       typeof value === "boolean"
-  //     ) {
-  //       const Service = ActualConfig[index].sub_category;
-  //       Service && window.__electron_preload__ToggleService(Service, value);
-  //     }
-  //   } else {
-  //     const index = ActualConfig.findIndex((opt) => {
-  //       return opt.key === key;
-  //     });
-
-  //     ActualConfig.splice(index, 1, { ...ActualConfig[index], value: value });
-
-  //     window.__electron_preload__SetLocalConfigTabs([...ActualConfig]);
-  //     if (
-  //       ActualConfig[index].key === EnumKeys.status &&
-  //       typeof value === "boolean"
-  //     ) {
-  //       const Service = ActualConfig[index].category;
-  //       Service && window.__electron_preload__ToggleService(Service, value);
-  //     }
-  //   }
-  // }
-  // async function ValidateRequirideKeys(options: IOptionConfig) {
-  //   let CanGo = true;
-  //   if (options.validate_keys) {
-  //     const config = await window.__electron_preload__GetLocalConfigTabs();
-  //     for (let i = 0; i < options.validate_keys.length; i++) {
-  //       const validate = options.validate_keys[i];
-  //       const ObjToValidate = config.find(
-  //         (oldTab) =>
-  //           oldTab.category === validate.category &&
-  //           oldTab.key === validate.key &&
-  //           (oldTab.sub_category && validate.sub_category
-  //             ? oldTab.sub_category === validate.sub_category
-  //             : true)
-  //       );
-  //       if (validate.onvalue !== options.value) return CanGo;
-  //       if (!ObjToValidate) {
-  //         setMessageModal(
-  //           "Valor para validação não encontrado, reinicie a aplicação."
-  //         );
-  //         CanGo = false;
-  //         return CanGo;
-  //       }
-  //       if (ObjToValidate.value === validate.keyvalue) {
-  //         setMessageModal(validate.message);
-  //         if (validate.block === true) {
-  //           CanGo = false;
-  //           return CanGo;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   return CanGo;
-  // }
-
   async function ChangeValue(options: IOptionConfig) {
-    // if (!(await ValidateRequirideKeys(options))) return;
-    // SetValueOnStorage(options);
-    const ret = await window.__electron_preload__Config_SetKeyValue(
-      options.value,
-      options.key,
-      currentTab?.category,
-      mainCategory
-    );
+    const ret = await window.__electron_preload__Config_SetKeyValue({
+      value: options.value,
+      key: options.key,
+      sub_category: isSubCategory ? currentTab?.category : undefined,
+      category: isSubCategory ? mainCategory : undefined,
+    });
+
     if (!ret.value_changed) {
       let message = "";
       if (ret.required_configs) {

@@ -25,13 +25,14 @@ export const ServiceHttpServer: IOptionConfig2[] = [
     description:
       "Define se a aplicação vai operar como um servidor HTTP local para requisições de serviços do Data7 Manager.",
     type: EnumTypesOptions.boolean,
-    validate_keys: [
+    restart_services: true,
+    required_configs: [
       {
         category: EnumTabs.services,
         sub_category: EnumServices.whatsapp_send_files,
         key: EnumKeys.status,
-        onvalue: false,
-        keyvalue: true,
+        on_value: false,
+        key_value: true,
         block: true,
         message:
           'Esse recurso está sendo usado pelo serviço de "Envio Arquivos Whatsapp", desative-o antes para prosseguir.',
@@ -40,8 +41,8 @@ export const ServiceHttpServer: IOptionConfig2[] = [
         category: EnumTabs.services,
         sub_category: EnumServices.whatsapp_integrated,
         key: EnumKeysWhatsappIntegrated.allow_remote_service_server,
-        onvalue: false,
-        keyvalue: true,
+        on_value: false,
+        key_value: true,
         block: true,
         message:
           'Esse recurso está sendo usado pelo serviço de "Whatsapp Integrado - Servidor Integração Remota", desative-o antes para prosseguir.',

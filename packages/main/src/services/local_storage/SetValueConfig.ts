@@ -1,10 +1,16 @@
 import { GetConfigTabs, SetConfigTabs } from ".";
 import { GetIndexConfigOption } from "./utils";
+import {
+  ActivateServicesByConfiguration,
+  StopServicesByConfiguration,
+} from "/@/InitializeInteface";
+let NeedRestart = false;
 
 function SetConfigsDependencies(
   configs: IOptionConfig2[],
   values_received: IValuesToSetConfigKey,
   configs_dependencies: IDependenciesConfigs[],
+  restart_services?: boolean,
 ): IReturnSetConfigKey {
   const ret: IReturnSetConfigKey = {
     value_changed: true,
@@ -13,7 +19,9 @@ function SetConfigsDependencies(
   };
   for (const config of configs_dependencies) {
     if (config.on_value === values_received.value) {
-      const TheRet = { ...SetValuesInConfig(configs, { ...config }) };
+      const TheRet = {
+        ...SetValuesInConfig(configs, { ...config }, restart_services),
+      };
       if (!TheRet.value_changed) {
         return TheRet;
       }
@@ -62,6 +70,7 @@ function ValidateRequiredConfigs(
 function SetValuesInConfig(
   config: IOptionConfig2[],
   values_received: IValuesToSetConfigKey,
+  restart_services?: boolean,
 ): IReturnSetConfigKey {
   let Configs = config;
   const { category, sub_category, key, value } = values_received;
@@ -86,6 +95,7 @@ function SetValuesInConfig(
       Configs,
       values_received,
       ConfigsDependencies,
+      restart_services,
     );
     if (!ret.value_changed) return ret;
     if (ret.configs) {
@@ -114,13 +124,16 @@ function SetValuesInConfig(
     value: value,
   });
 
+  if (!NeedRestart) {
+    NeedRestart = Boolean(ConfigOption.restart_services);
+  }
+
   return {
     value_changed: true,
     message: "Success!",
     configs: Configs,
   };
 }
-
 export default function SetConfigKeyValue(
   values_received: IValuesToSetConfigKey,
 ): IReturnSetConfigKey {
@@ -131,5 +144,10 @@ export default function SetConfigKeyValue(
   if (NewConfig) {
     SetConfigTabs(NewConfig);
   }
+  if (NeedRestart) {
+    StopServicesByConfiguration();
+    ActivateServicesByConfiguration();
+  }
+
   return ret;
 }

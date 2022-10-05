@@ -75,7 +75,7 @@ const RoutesNavBar: IRouteNavBar[] = [
     path: "/services",
     name: "SERVIÇOS",
     category: "services",
-    expansible: true,
+    expansible: false,
     icon: HiCode,
     secondaryNavbar: false,
     component: <></>,

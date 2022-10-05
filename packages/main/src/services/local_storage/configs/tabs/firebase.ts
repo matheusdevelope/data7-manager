@@ -25,13 +25,14 @@ export const ServiceFirebase: IOptionConfig2[] = [
     description:
       "Define se o serviço Firebase será executado. \nLembre-se: Para usar o serviço de PIX esse serviço precisa estar ativo.",
     type: EnumTypesOptions.boolean,
-    validate_keys: [
+    restart_services: true,
+    required_configs: [
       {
         category: EnumTabs.services,
         sub_category: EnumServices.pix,
         key: EnumKeys.status,
-        onvalue: false,
-        keyvalue: true,
+        on_value: false,
+        key_value: true,
         block: true,
         message:
           "Esse recurso está sendo usado pelo serviço de PIX, desative-o antes para prosseguir.",

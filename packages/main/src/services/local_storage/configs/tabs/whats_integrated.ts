@@ -27,6 +27,7 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
       "Esse recurso permite que os serviços de comunicação com o Whatsapp usem o bot interno de whatsapp para fazer o envio de mensagens abrir o app/site. \nAtenção: Esse recurso oferece risco de suspensão se do numero de whatsapp por não se tratar de uma integração oficial da plataforma, recomenda-se usar um número exclusivo para envio afim de evitar possíveis perca de números oficias da empresa.",
     type: EnumTypesOptions.boolean,
     disabled: false,
+    restart_services: true,
   },
   {
     ...SubCatgoryWhatsIntegrated,
@@ -37,7 +38,6 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
       "Esse recurso vai permitir que outro Data7 Manager na rede use o serviço de Whatsapp Integrado dessa máquina. Isso será necessário quando o limite de 4 conexões simultâneas do Whatsapp for atingido. ",
     type: EnumTypesOptions.boolean,
     disabled: false,
-    // restart_services: true,
     configs_dependencies: [
       {
         category: EnumTabs.services,
@@ -59,71 +59,6 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
         key: EnumKeysWhatsappIntegrated.use_remote_service,
         value: false,
         on_value: true,
-      },
-    ],
-    required_configs: [
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.http_server,
-        key: EnumKeys.status,
-        on_value: true,
-        key_value: false,
-        block: true,
-        message:
-          "Para ser um provedor do serviço, é necessário primeiro ativar o serviço 'Servidor HTTP'.",
-      },
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeys.status,
-        on_value: true,
-        key_value: false,
-        block: true,
-        message:
-          "Para ser um provedor do serviço, é necessário primeiro ativar o serviço 'Whatsapp Integrado'.",
-      },
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeysWhatsappIntegrated.use_remote_service,
-        on_value: true,
-        key_value: true,
-        block: true,
-        message:
-          "Você está usando a Integração Remota para se conectar em outra máquina, para ser um provedor do serviço, desative o recurso 'Integração Remota'.",
-      },
-    ],
-
-    validate_keys: [
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.http_server,
-        key: EnumKeys.status,
-        onvalue: true,
-        keyvalue: false,
-        block: true,
-        message:
-          "Para ser um provedor do serviço, é necessário primeiro ativar o serviço 'Servidor HTTP'.",
-      },
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeys.status,
-        onvalue: true,
-        keyvalue: false,
-        block: true,
-        message:
-          "Para ser um provedor do serviço, é necessário primeiro ativar o serviço 'Whatsapp Integrado'.",
-      },
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeysWhatsappIntegrated.use_remote_service,
-        onvalue: true,
-        keyvalue: true,
-        block: true,
-        message:
-          "Você está usando a Integração Remota para se conectar em outra máquina, para ser um provedor do serviço, desative o recurso 'Integração Remota'.",
       },
     ],
   },
@@ -136,6 +71,7 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
       "Esse recurso vai se conectar em outro Data7 Manager que esteja executando o serviço de Whatsapp Integrado. \n Isso será necessário quando o limite de 4 conexões simultâneas do Whatsapp for atingido. ",
     type: EnumTypesOptions.boolean,
     disabled: false,
+    restart_services: true,
     configs_dependencies: [
       {
         category: EnumTabs.services,
@@ -153,73 +89,12 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
       },
     ],
     required_configs: [
-      // {
-      //   category: EnumTabs.services,
-      //   sub_category: EnumServices.whatsapp_integrated,
-      //   key: EnumKeys.status,
-      //   on_value: true,
-      //   key_value: false,
-      //   block: true,
-      //   message:
-      //     "Para usar a Integração Remota, é necessário primeiro ativar o serviço 'Whatsapp Integrado'.",
-      // },
-      // {
-      //   category: EnumTabs.services,
-      //   sub_category: EnumServices.whatsapp_integrated,
-      //   key: EnumKeysWhatsappIntegrated.allow_remote_service_server,
-      //   on_value: true,
-      //   key_value: true,
-      //   block: true,
-      //   message:
-      //     "Você definiu esse Data7 Manager como um provedor de Integração Remota. Para usar o serviço de outra máquina, desative o recurso 'Servidor Integração Remota'.",
-      // },
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeysWhatsappIntegrated.use_bot,
-        on_value: true,
-        key_value: false,
-        block: true,
-        message: "Use BOT messsage.",
-      },
       {
         category: EnumTabs.services,
         sub_category: EnumServices.whatsapp_integrated,
         key: EnumKeysWhatsappIntegrated.remote_service_address,
         on_value: true,
         key_value: "",
-        block: true,
-        message:
-          "Para usar o serviço de outra máquina, primeiro informe o endereço IP do provedor do serviço no campo 'IP Integração Remota'.",
-      },
-    ],
-    validate_keys: [
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeys.status,
-        onvalue: true,
-        keyvalue: false,
-        block: true,
-        message:
-          "Para usar a Integração Remota, é necessário primeiro ativar o serviço 'Whatsapp Integrado'.",
-      },
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeysWhatsappIntegrated.allow_remote_service_server,
-        onvalue: true,
-        keyvalue: true,
-        block: true,
-        message:
-          "Você definiu esse Data7 Manager como um provedor de Integração Remota. Para usar o serviço de outra máquina, desative o recurso 'Servidor Integração Remota'.",
-      },
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeysWhatsappIntegrated.remote_service_address,
-        onvalue: true,
-        keyvalue: "",
         block: true,
         message:
           "Para usar o serviço de outra máquina, primeiro informe o endereço IP do provedor do serviço no campo 'IP Integração Remota'.",
@@ -246,18 +121,7 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
       "Esse recurso usa uma lib externa para lidar com o Whatsapp, ela permite fazer o envio de arquivos sem ser através do link de compartilhamento que é usado por padrão.",
     type: EnumTypesOptions.boolean,
     disabled: false,
-    validate_keys: [
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_integrated,
-        key: EnumKeys.status,
-        onvalue: true,
-        keyvalue: true,
-        block: false,
-        message:
-          "Você precisa reiniciar o serviço (Campo Ativo) para essa alteração ter efeito.",
-      },
-    ],
+    restart_services: true,
   },
   {
     ...SubCatgoryWhatsIntegrated,
@@ -277,6 +141,16 @@ export const ServiceWhatsIntegrated: IOptionConfig2[] = [
     description:
       "Esse valor define o intervalo entre cada operação do BOT interno para que simule a o tempo de interação de um usuário real. \nValor minimo de 0.5 segundos será aplicado por padrão.",
     type: EnumTypesOptions.number,
+    disabled: false,
+  },
+  {
+    ...SubCatgoryWhatsIntegrated,
+    key: EnumKeysWhatsappIntegrated.text_after_file,
+    value: true,
+    label: "Mensagem após arquivo (Arquivo ou Link do mesmo)",
+    description:
+      "Esse valor define se a mensagem complementar ao arquivo irá ser enviada acima ou abaixo do arquivo. Em caso onde seja gerado o link do arquivo a mesma configuração se aplica.",
+    type: EnumTypesOptions.boolean,
     disabled: false,
   },
   {

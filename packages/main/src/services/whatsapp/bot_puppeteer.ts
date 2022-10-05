@@ -2,14 +2,20 @@ import { app } from "electron";
 import pie from "puppeteer-in-electron";
 import type { Browser } from "puppeteer-core";
 import puppeteer from "puppeteer-core";
-import type { Chat} from "whatsapp-web-electron.js";
+import type { Chat } from "whatsapp-web-electron.js";
 import { Client, MessageMedia } from "whatsapp-web-electron.js";
 import { EventEmitter } from "./eventemitter";
 import { Events } from "../../../../../types/enums/whatsapp";
 import Whatsapp from ".";
 import { FileToBase64, OnlyDataBase64 } from "/@/utils";
-import { extname, normalize } from "path";
-import { existsSync } from "fs";
+import { basename, extname, normalize } from "path";
+import { existsSync, readFileSync } from "fs";
+import {
+  EnumKeysWhatsappIntegrated,
+  EnumServices,
+} from "../../../../../types/enums/configTabsAndKeys";
+import { GetKeyValue } from "../local_storage";
+import mime from "mime";
 let client: Client | null;
 let browser: Browser;
 
@@ -39,15 +45,18 @@ function Stop() {
 async function SendMessage(phone: string, messages: IMessageWhatsapp[]) {
   const validation: IValidation[] = [];
   try {
-    const chatId = phone + "@c.us";
+    const idx = 4;
+    const NewPhone = phone.slice(0, idx) + phone.slice(idx + 1);
+    const chatId = NewPhone + "@c.us";
+
     const client = await Start();
     const chat = await client.getChatById(chatId);
     for (let e = 0; e < messages.length; e++) {
-      const { text, image_base64, file_path } = messages[e];
+      const { text, image_base64, file_path, name_file } = messages[e];
       try {
         if (text && !image_base64 && !file_path) await chat.sendMessage(text);
         if (image_base64) await SendImage(chat, image_base64, text);
-        if (file_path) await SendFile(chat, file_path, text);
+        if (file_path) await SendFile(chat, file_path, text, name_file);
       } catch (error) {
         validation.push({
           message: String(error),
@@ -77,7 +86,12 @@ async function SendImage(chat: Chat, image_base64: string, caption?: string) {
     Promise.reject(error);
   }
 }
-async function SendFile(chat: Chat, path: string, caption?: string) {
+async function SendFile(
+  chat: Chat,
+  path: string,
+  caption?: string,
+  name_file?: string,
+) {
   try {
     const path_nomalized = normalize(path);
     if (!existsSync(path_nomalized))
@@ -89,10 +103,23 @@ async function SendFile(chat: Chat, path: string, caption?: string) {
       const Image = FileToBase64(path_nomalized);
       return SendImage(chat, Image, caption);
     }
-    const media = MessageMedia.fromFilePath(path_nomalized);
+    const TextAfterFile = Boolean(
+      GetKeyValue({
+        key: EnumKeysWhatsappIntegrated.text_after_file,
+        sub_category: EnumServices.whatsapp_integrated,
+      }),
+    );
+    const base64_data = readFileSync(path_nomalized, { encoding: "base64" });
+    const media = new MessageMedia(
+      mime.getType(path_nomalized) || "application/pdf",
+      base64_data,
+      name_file || basename(path_nomalized),
+    ); //.fromFilePath(path_nomalized);
     if (caption?.trim()) {
-      const message = await chat.sendMessage(media);
-      return Promise.resolve(await message.reply(caption));
+      const message = await chat.sendMessage(TextAfterFile ? media : caption);
+      return Promise.resolve(
+        await message.reply(TextAfterFile ? caption : media),
+      );
     }
     return Promise.resolve(await chat.sendMessage(media));
   } catch (error) {

@@ -1,15 +1,6 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { toDataURL } from "qrcode";
-import type {
-  EnumKeys,
-  EnumKeysFirebase,
-  EnumKeysHttpServer,
-  EnumKeysSendFilesWhats,
-  EnumKeysTerminalData,
-  EnumKeysWhatsappIntegrated,
-  EnumServices,
-  EnumTabs,
-} from "../../../../types/enums/configTabsAndKeys";
+import type { EnumServices } from "../../../../types/enums/configTabsAndKeys";
 import { EnumIpcEvents } from "../../../../types/enums/GlobalState";
 import { Global_State } from "../global_state";
 import {
@@ -29,7 +20,6 @@ import {
   Storage,
 } from "../services/local_storage";
 import { DefaultConfigTabs } from "../services/local_storage/configs";
-import { SendMessageOnWhatsapp } from "../services/protocoll_events";
 import { WindowPix } from "../windows/pix";
 import { ToggleWindow, WindowsCreated } from "./ControlWindows";
 import { DataToLoginMobile, URL_Login_Mobile } from "./login_mobile";
@@ -107,72 +97,20 @@ function HandleStorage() {
   );
   ipcMain.handle(
     EnumIpcEvents.config_get_key,
-    (
-      _,
-      key:
-        | EnumKeys
-        | EnumKeysFirebase
-        | EnumKeysHttpServer
-        | EnumKeysSendFilesWhats
-        | EnumKeysTerminalData
-        | EnumKeysWhatsappIntegrated,
-      sub_category?: EnumServices,
-      category?: EnumTabs,
-    ) => {
-      return GetKey(key, sub_category, category);
+    (_, filter_config: ICommonConfigIdentification) => {
+      return GetKey(filter_config);
     },
   );
   ipcMain.handle(
     EnumIpcEvents.config_get_key_value,
-    (
-      _,
-      key:
-        | EnumKeys
-        | EnumKeysFirebase
-        | EnumKeysHttpServer
-        | EnumKeysSendFilesWhats
-        | EnumKeysTerminalData
-        | EnumKeysWhatsappIntegrated,
-      sub_category?: EnumServices,
-      category?: EnumTabs,
-    ) => {
-      return GetKeyValue(key, sub_category, category);
+    (_, filter_config: ICommonConfigIdentification) => {
+      return GetKeyValue(filter_config);
     },
   );
-  // ipcMain.handle(
-  //   EnumIpcEvents.config_set_key_value,
-  //   (
-  //     _,
-  //     value: string | number | boolean | string[],
-  //     key:
-  //       | EnumKeys
-  //       | EnumKeysFirebase
-  //       | EnumKeysHttpServer
-  //       | EnumKeysSendFilesWhats
-  //       | EnumKeysTerminalData
-  //       | EnumKeysWhatsappIntegrated,
-  //     sub_category?: EnumServices,
-  //     category?: EnumTabs
-  //   ) => {
-  //     return SetKeyValue(value, key, sub_category, category);
-  //   }
-  // );
   ipcMain.handle(
     EnumIpcEvents.config_set_key_value,
-    (
-      _,
-      value: string | number | boolean | string[],
-      key:
-        | EnumKeys
-        | EnumKeysFirebase
-        | EnumKeysHttpServer
-        | EnumKeysSendFilesWhats
-        | EnumKeysTerminalData
-        | EnumKeysWhatsappIntegrated,
-      sub_category?: EnumServices,
-      category?: EnumTabs,
-    ) => {
-      return SetConfigKeyValue({ value, key, sub_category, category });
+    (_, values_to_set_config: IValuesToSetConfigKey) => {
+      return SetConfigKeyValue(values_to_set_config);
     },
   );
 }
@@ -226,8 +164,15 @@ function HandlePix() {
   });
   ipcMain.handle(
     EnumIpcEvents.get_fc_send_message_on_whatsapp,
-    (_, data_to_message: IWhatsAppMessage) => {
-      return SendMessageOnWhatsapp(data_to_message);
+    async (_, phone: string, messages: IMessageWhatsapp[]) => {
+      try {
+        const ret = await Whatsapp.SendWhatsappMessage(phone, messages);
+        return Promise.resolve(ret);
+      } catch (error) {
+        console.log("ERROR", error);
+
+        return Promise.reject(error);
+      }
     },
   );
 }

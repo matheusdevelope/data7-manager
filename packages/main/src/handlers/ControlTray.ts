@@ -2,42 +2,18 @@ import type { MenuItemConstructorOptions } from "electron";
 import { app, BrowserWindow, dialog, Menu, Tray } from "electron";
 import { resolve } from "path";
 import { Global_State } from "../global_state";
-import { SendWhatsappMessage } from "../services/whatsapp";
 import { WindowConfigurationPanel } from "../windows/configuration";
 import { ToggleWindow } from "./ControlWindows";
 import { RemoveAllNotifications } from "./notifications";
 let AppTray: Tray;
-const Path = "C:\\Data7\\TempFiles\\";
-const phone = "556696971841";
 
 let Menus: MenuItemConstructorOptions[] = [
   {
     id: "config-window",
-    label: "Painel",
+    label: "Configurações",
     click: () => {
       WindowConfigurationPanel().Create();
       WindowConfigurationPanel().Focus();
-    },
-  },
-  {
-    label: "Enviar Mensagens Whats",
-    click: async () => {
-      try {
-        await SendWhatsappMessage(phone, [
-          {
-            text: "Inicio do Teste",
-          },
-          {
-            text: "Arquivo JGP",
-            file_path: Path + "foto.jpg",
-          },
-          {
-            text: "Fim do Teste",
-          },
-        ]);
-      } catch (error) {
-        console.log(error);
-      }
     },
   },
   {
@@ -54,6 +30,27 @@ let Menus: MenuItemConstructorOptions[] = [
   {
     label: "Encerrar",
     click: () => {
+      const Win = BrowserWindow.getAllWindows().find((win) =>
+        win.isAlwaysOnTop(),
+      );
+
+      if (Win)
+        return dialog
+          .showMessageBox(Win, {
+            title: "Ateção",
+            message: "Tem certeza que deseja encerrar a aplicação?",
+            buttons: ["Voltar", "Encerrar"],
+          })
+          .then((ret) => {
+            if (ret.response == 1) {
+              BrowserWindow.getAllWindows().map((Window) => {
+                Window.removeAllListeners();
+                Window.destroy();
+              });
+              app.quit();
+            }
+          });
+
       dialog
         .showMessageBox({
           title: "Ateção",
@@ -74,6 +71,24 @@ let Menus: MenuItemConstructorOptions[] = [
   {
     label: "Sobre",
     click: () => {
+      const Win = BrowserWindow.getAllWindows().find((win) =>
+        win.isAlwaysOnTop(),
+      );
+
+      if (Win)
+        return dialog.showMessageBox(Win, {
+          type: "info",
+          title: "Sobre",
+          message:
+            "Data7 Manager v" +
+            app.getVersion() +
+            "\nIP Local: " +
+            Global_State.local_ip +
+            "\nEstação de Trabalho: " +
+            Global_State.hostname +
+            "\nUsuario Logado: " +
+            Global_State.username_machine,
+        });
       dialog.showMessageBox({
         type: "info",
         title: "Sobre",
@@ -97,7 +112,8 @@ export default function ControlTray() {
     if (!AppTray) {
       AppTray = new Tray(path_icon ? path_icon : default_path_icon);
     }
-    AppTray.setToolTip(tool_tip);
+    const ToolTip = tool_tip || Global_State.name_app + " v" + app.getVersion();
+    AppTray.setToolTip(ToolTip);
     AppTray.setContextMenu(BuildMenu(Menus));
     AppTray.on("click", () => {
       RemoveAllNotifications();

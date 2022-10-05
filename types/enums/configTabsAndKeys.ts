@@ -1,6 +1,7 @@
 export enum EnumTypesOptions {
   array = "array",
   text = "text",
+  textarea = "textarea",
   number = "number",
   boolean = "boolean",
   button = "button",
@@ -20,6 +21,10 @@ export enum EnumServices {
 export enum EnumKeys {
   status = "status",
 }
+export enum EnumKeysPix {
+  order_asc = "order_asc",
+  message_whats = "message_whats",
+}
 export enum EnumKeysWhatsappIntegrated {
   use_bot = "use_bot",
   allow_remote_service_server = "allow_remote_service_server",
@@ -31,6 +36,7 @@ export enum EnumKeysWhatsappIntegrated {
   user_agent = "user_agent",
   whats_session = "whats_session",
   url = "url",
+  text_after_file = "text_after_file",
   //SELECTORS
   selector_key_storage_is_logged = "selector_key_storage_is_logged",
   selector_qrcode_img = "selector_qrcode_img",

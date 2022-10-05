@@ -52,7 +52,7 @@ const MapRegex: { [key: string]: string } = {
 };
 
 //utilities
-function error(e: any) {
+function error(e: unknown) {
   return Promise.reject(e);
 }
 function HashUnique(size: number) {
@@ -113,9 +113,12 @@ function Convert_Especial_Caracteres_in_Unicod_To_UTF8(value: string) {
   return string;
 }
 function Convert_UTF16_To_Emoji(string: string) {
-  return string.replace(/\u[0-9a-fA-F]{4}/gi, function (match) {
-    return String.fromCharCode(parseInt(match.replace(/\u/g, ""), 16));
-  });
+  if (!string) return "";
+  return string
+    .replace(/\u[0-9a-fA-F]{4}/gi, function (match) {
+      return String.fromCharCode(parseInt(match.replace(/\u/g, ""), 16));
+    })
+    .replace(/\[n\]/gm, "\n");
 }
 
 function MountMessage(
@@ -129,8 +132,6 @@ function MountMessage(
   if (NewMessage.length > 0) NewMessage += "\n";
 
   files.forEach((obj, i) => {
-    console.log(obj.description_name);
-
     const description =
       obj.description_name === undefined
         ? OnlyNameDescription(String(obj.name), sizeHash) ||

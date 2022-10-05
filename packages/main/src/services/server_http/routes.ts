@@ -13,11 +13,10 @@ import { GetKeyValue } from "../local_storage";
 const multer_storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const TempDir = String(
-      GetKeyValue(
-        EnumKeysTerminalData.temp_files,
-        undefined,
-        EnumTabs.terminal_data,
-      ),
+      GetKeyValue({
+        key: EnumKeysTerminalData.temp_files,
+        category: EnumTabs.terminal_data,
+      }),
     );
     const dir = `${TempDir}/${req.query.dir || "general"}/`;
     if (!existsSync(dir)) {

@@ -19,6 +19,10 @@ import {
 import Dialog from "../../components/modal_dialog";
 import { InputGroup, Input, Button, InputLeftElement } from "@chakra-ui/react";
 import { MaskMoney } from "/@/utils/masks";
+import {
+  EnumKeysPix,
+  EnumServices,
+} from "../../../../../types/enums/configTabsAndKeys";
 const { innerHeight: height } = window;
 const InitialPix: IDataQrCode = {
   action: "",
@@ -145,6 +149,8 @@ function MessageBasedInStatus(qrcode: IDataQrCode) {
 export default function QrCode() {
   const [dataQrCode, setDataQrcode] = useState<IDataQrCode>(InitialPix);
   const [phone, setPhone] = useState(maskPhone(dataQrCode.phone || ""));
+  const [sendingWhats, setSendigWhats] = useState(false);
+  const [sendedWhats, setSendedWhats] = useState(false);
   const [dialog, setDialog] = useState<IDialog>(DefaultDialog);
   const phoneRef = useRef<HTMLInputElement>(null);
   function AddListennersInApp() {
@@ -241,17 +247,49 @@ export default function QrCode() {
     }
   }
 
-  function SendMessageToWhats(e: React.FormEvent<HTMLFormElement>) {
+  async function SendMessageToWhats(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (phone.length < 15) {
       AlertDialog("Telefone Inválido, verifique!");
       return;
     }
+    setSendigWhats(true);
+    const ModelMessage = String(
+      (await window.__electron_preload__Config_GetKeyValue({
+        key: EnumKeysPix.message_whats,
+        sub_category: EnumServices.pix,
+      })) || ""
+    );
+    const Link = `https://data7-pix-web.vercel.app//?id=${dataQrCode.doc_id}`;
+    const Message = ModelMessage.includes("{link@pix}")
+      ? ModelMessage.replaceAll("{link@pix}", Link)
+      : ModelMessage + "\n\n" + Link;
+    try {
+      const ret = await window.__electron_preload__SendWhats("55" + phone, [
+        {
+          text: Message,
+        },
+      ]);
+      if (ret !== true) {
+        setDialog({
+          ...dialog,
+          isOpen: true,
+          title: "Ouve uma falha ao enviar a mensagem no Whatsapp, VERIFIQUE!",
+          message: String(ret),
+          onClickOK: () => {
+            setDialog({ ...DefaultDialog });
+          },
+          textbuttonOK: "OK",
+        });
+      } else {
+        setSendedWhats(true);
+      }
 
-    window.__electron_preload__SendWhats({
-      message: `Olá, acesse o link abaixo e terá acesso ao código do seu PIX, basta copiar e efetuar o pagamento no seu aplicativo preferido. 👇🏻\n\nhttps://data7-pix-web.vercel.app//?id=${dataQrCode.doc_id}`,
-      phone: phone,
-    });
+      setSendigWhats(false);
+      console.log(ret);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function AlertDialog(message: string, callback?: Function) {
@@ -318,7 +356,11 @@ export default function QrCode() {
               size={"sm"}
               type="submit"
             >
-              Enviar Link
+              {sendingWhats
+                ? "Enviando..."
+                : sendedWhats
+                ? "Enviar Novamente"
+                : "Enviar Link"}
             </Button>
           </Form>
         </Footer>

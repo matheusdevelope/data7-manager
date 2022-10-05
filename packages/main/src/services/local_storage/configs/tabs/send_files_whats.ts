@@ -25,16 +25,14 @@ export const ServiceSendFilesWhats: IOptionConfig2[] = [
     description:
       "Esse serviço habilita a integração para o processamento e envio de arquivos através do Data7. ",
     type: EnumTypesOptions.boolean,
-    validate_keys: [
+    restart_services: true,
+    configs_dependencies: [
       {
         category: EnumTabs.services,
         sub_category: EnumServices.http_server,
         key: EnumKeys.status,
-        onvalue: true,
-        keyvalue: false,
-        block: true,
-        message:
-          'Esse recurso depende do serviço "Servidor HTTP", ative-o antes de habilitar esse serviço.',
+        on_value: true,
+        value: true,
       },
     ],
   },

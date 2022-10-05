@@ -1,8 +1,12 @@
-import { EnumKeysTerminalData } from "../../../../types/enums/configTabsAndKeys";
+import {
+  EnumKeysPix,
+  EnumKeysTerminalData,
+  EnumServices,
+} from "../../../../types/enums/configTabsAndKeys";
 import { Global_State } from "../global_state";
 import { ObjectToLowerCase } from "../utils";
 import useFirestore from "./firebase";
-import { GetConfigTabs, GetValuesFirebase } from "./local_storage";
+import { GetConfigTabs, GetKeyValue, GetValuesFirebase } from "./local_storage";
 import { CallQrCode } from "./protocoll_events";
 
 const Firestore = useFirestore(console.error);
@@ -54,7 +58,6 @@ export function StartPixService() {
       const data: {
         [key: string]: string | boolean | number | IComumObject2;
       } = ObjectToLowerCase<IComumObject2>(doc);
-      // console.log({ ID: doc.doc_id, status: doc.STATUS });
 
       //Save the original key of STATUS and ID to use in future
       for (const key in doc) {
@@ -87,7 +90,9 @@ export function StartPixService() {
         const StatusInDoc = String(
           data[FieldsFirebase.status_field],
         ).toLowerCase();
-
+        const DataFromTimesTamp = data[FieldsFirebase.created_at] as {
+          _seconds: string;
+        };
         const QrCode: IDataQrCode = {
           action: "open",
           id: String(data[FieldsFirebase.id] || ""),
@@ -103,7 +108,7 @@ export function StartPixService() {
             StatusInDoc === FieldsFirebase.status_finish_payment.toLowerCase(),
           canceled: CanceledStatus.includes(StatusInDoc),
           message: String(data[FieldsFirebase.message] || ""),
-          created_at: new Date(),
+          created_at: new Date(DataFromTimesTamp._seconds),
           doc_id: String(data.doc_id),
           error: String(data[FieldsFirebase.error] || ""),
         };
@@ -135,9 +140,27 @@ export function StartPixService() {
         }
         //Validate if the LIST is empty and the DOC have a active state
         if (index < 0 && !QrCode.awaiting_payment) return;
-        lista.sort((a, b) =>
-          a.created_at < b.created_at ? 1 : b.created_at < a.created_at ? -1 : 0,
+        const OrderAsc = Boolean(
+          GetKeyValue({
+            key: EnumKeysPix.order_asc,
+            sub_category: EnumServices.pix,
+          }),
         );
+        OrderAsc
+          ? lista.sort((a, b) =>
+              a.created_at > b.created_at
+                ? 1
+                : b.created_at > a.created_at
+                ? -1
+                : 0,
+            )
+          : lista.sort((a, b) =>
+              a.created_at < b.created_at
+                ? 1
+                : b.created_at < a.created_at
+                ? -1
+                : 0,
+            );
 
         CallQrCode(lista[0]);
         if (!QrCode.awaiting_payment) {

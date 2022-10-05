@@ -92,14 +92,6 @@ const SafeStorage = {
   },
 };
 function SetConfigTabs(configs: IOptionConfig2[]) {
-  // const config = configs;
-  // const option = config.find(
-  //   (obj) =>
-  //     obj.key === EnumKeys.status &&
-  //     obj.sub_category === EnumServices.whatsapp_integrated &&
-  //     obj.category === EnumTabs.services
-  // );
-  // console.log(option);
   try {
     Storage.set("config_tabs", configs);
     return true;
@@ -189,19 +181,13 @@ function GetServiceOptions(service: EnumServices) {
         opt.category === EnumTabs.services && opt.sub_category === service,
     );
   }
+  return DefaultConfigTabs.filter(
+    (opt) => opt.category === EnumTabs.services && opt.sub_category === service,
+  );
 }
 
-function GetKey(
-  key:
-    | EnumKeys
-    | EnumKeysFirebase
-    | EnumKeysHttpServer
-    | EnumKeysSendFilesWhats
-    | EnumKeysTerminalData
-    | EnumKeysWhatsappIntegrated,
-  sub_category?: EnumServices,
-  category?: EnumTabs,
-) {
+function GetKey(filter_config: ICommonConfigIdentification) {
+  const { key, sub_category, category } = filter_config;
   if (category && sub_category)
     return GetConfigTabs().find(
       (obj) =>
@@ -219,18 +205,8 @@ function GetKey(
     );
   return GetConfigTabs().find((obj) => obj.key === key);
 }
-function GetKeyValue(
-  key:
-    | EnumKeys
-    | EnumKeysFirebase
-    | EnumKeysHttpServer
-    | EnumKeysSendFilesWhats
-    | EnumKeysTerminalData
-    | EnumKeysWhatsappIntegrated,
-  sub_category?: EnumServices,
-  category?: EnumTabs,
-) {
-  return GetKey(key, sub_category, category)?.value;
+function GetKeyValue(filter_config: ICommonConfigIdentification) {
+  return GetKey(filter_config)?.value;
 }
 
 function GetValuesFirebase(): IFirebaseTypeValues {

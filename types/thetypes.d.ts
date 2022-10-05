@@ -97,6 +97,8 @@ interface IDataToLoginMobile {
   ip: string;
   terminal_identification: string;
   cnpj_cpf: string[];
+  order_asc: boolean;
+  version: string;
 }
 
 interface ICancelQr {
@@ -261,6 +263,7 @@ interface IMessageWhatsapp {
   text?: string;
   image_base64?: string;
   file_path?: string;
+  name_file?: string;
   expiration?: number;
 }
 

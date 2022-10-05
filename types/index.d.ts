@@ -24,7 +24,10 @@ declare global {
     __electron_preload__OpenQr: () => void;
     __electron_preload__CloseQr: () => void;
     __electron_preload__RefreshQr: (id_qrcode: string) => Promise<IRefreshQr>;
-    __electron_preload__SendWhats: (data: IWhatsAppMessage) => void;
+    __electron_preload__SendWhats: (
+      phone: string,
+      messages: IMessageWhatsapp[]
+    ) => Promise<boolean>;
     __electron_preload__RegisterEventLoginWithQr: (
       cb: (image_string: string) => void
     ) => void;
@@ -71,38 +74,13 @@ declare global {
       service: EnumServices
     ) => Promise<IOptionConfig2[] | undefined>;
     __electron_preload__Config_GetKey: (
-      key:
-        | EnumKeys
-        | EnumKeysFirebase
-        | EnumKeysHttpServer
-        | EnumKeysSendFilesWhats
-        | EnumKeysTerminalData
-        | EnumKeysWhatsappIntegrated,
-      sub_category?: EnumServices,
-      category?: EnumTabs
+      filter_config: ICommonConfigIdentification
     ) => Promise<IOptionConfig2 | undefined>;
     __electron_preload__Config_GetKeyValue: (
-      key:
-        | EnumKeys
-        | EnumKeysFirebase
-        | EnumKeysHttpServer
-        | EnumKeysSendFilesWhats
-        | EnumKeysTerminalData
-        | EnumKeysWhatsappIntegrated,
-      sub_category?: EnumServices,
-      category?: EnumTabs
+      filter_config: ICommonConfigIdentification
     ) => Promise<string | number | boolean | string[] | undefined>;
     __electron_preload__Config_SetKeyValue: (
-      value: string | number | boolean | string[],
-      key:
-        | EnumKeys
-        | EnumKeysFirebase
-        | EnumKeysHttpServer
-        | EnumKeysSendFilesWhats
-        | EnumKeysTerminalData
-        | EnumKeysWhatsappIntegrated,
-      sub_category?: EnumServices,
-      category?: EnumTabs
+      values_to_set_config: IValuesToSetConfigKey
     ) => Promise<IReturnSetConfigKey>;
   }
 }

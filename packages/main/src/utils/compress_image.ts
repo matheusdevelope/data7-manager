@@ -29,11 +29,20 @@ async function fromBuffer(buffer: Buffer) {
     .toFormat("png")
     .toBuffer();
 }
+async function toFile(buffer: Buffer, path: string) {
+  return new Promise((resolve, reject) => {
+    sharp(buffer).toFile(path, (error) => {
+      if (error) return reject(error);
+      return resolve(path);
+    });
+  });
+}
 
 const CompressImage = {
   fromPath,
   fromBase64,
   fromBuffer,
+  toFile,
 };
 
 export default CompressImage;

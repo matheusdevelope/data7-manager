@@ -80,6 +80,7 @@ export default function CreateMenus(
       <Box key={key}>
         <TextDefault my="2">{menu.name}</TextDefault>
         {CreateMenus(menu.views, drawerOnClose)}
+        <Separator />
       </Box>
     );
   }

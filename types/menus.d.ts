@@ -37,7 +37,7 @@ interface IOptionConfig {
   type: EnumTypesOptions;
   id_window?: EnumWindowsID;
   alert?: string;
-  validate_keys?: IObjValidationKey[];
+  // validate_keys?: IObjValidationKey[];
   required_configs?: IRequiredConfigs[];
   configs_dependencies?: IDependenciesConfigs[];
   restart_services?: boolean;

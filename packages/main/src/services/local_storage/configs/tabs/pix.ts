@@ -3,35 +3,56 @@ import {
   EnumKeys,
   EnumTypesOptions,
   EnumTabs,
+  EnumKeysPix,
 } from "../../../../../../../types/enums/configTabsAndKeys";
 import { EnumWindowsID } from "../../../../../../../types/enums/windows";
 import { categoryService } from "../comum_categories";
+const SubCategoryPix = {
+  ...categoryService,
+  sub_category: EnumServices.pix,
+  sub_category_label: "PIX",
+  disabled: false,
+  tip: "",
+};
 
 export const ServicePix: IOptionConfig2[] = [
   {
-    ...categoryService,
-    sub_category: EnumServices.pix,
-    sub_category_label: "PIX",
+    ...SubCategoryPix,
     key: EnumKeys.status,
     value: false,
-    disabled: false,
-    tip: "",
     label: "Ativo",
     id_window: EnumWindowsID.pix,
     description:
       "Esse serviço habilita a integração para o processamento de pagamento via PIX na máquina local.",
     type: EnumTypesOptions.boolean,
-    validate_keys: [
+    restart_services: true,
+    configs_dependencies: [
       {
         category: EnumTabs.services,
         sub_category: EnumServices.firebase,
         key: EnumKeys.status,
-        onvalue: true,
-        keyvalue: false,
-        block: true,
-        message:
-          "Esse recurso depende do serviço de sincronização do Firebase, ative-o antes de habilitar esse serviço.",
+        on_value: true,
+        value: true,
       },
     ],
+  },
+  {
+    ...SubCategoryPix,
+    key: EnumKeysPix.order_asc,
+    value: true,
+    label: "Ordem Crescente QRCode",
+    description:
+      "Ordenação da fila de QRCodes, desmarque para ordenar por ordem decrescente das parcelas de pagamento.",
+    type: EnumTypesOptions.boolean,
+  },
+  {
+    ...SubCategoryPix,
+    key: EnumKeysPix.message_whats,
+    value:
+      "Olá, acesse o link abaixo e terá acesso ao código do seu PIX, basta copiar e efetuar o pagamento no seu aplicativo preferido. 👇🏻\n{link@pix}\n\nObrigado.",
+    label: "Mensagem Envio Whatsapp",
+    description:
+      "Aqui você pode definir uma mensagem personalizada para o envio do link de pagamento do PIX. \nLembre-se para indicar onde o link será colocado na mensagem use: {link@pix} . Esse texto será substituido pelo link gerado dinamicamente, caso não informe, o link será aplicado no fim da mensagem definida. ",
+    type: EnumTypesOptions.text,
   },
 ];

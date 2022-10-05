@@ -104,12 +104,21 @@ export default function ServicesWhatsContent() {
       setRemoteProviderStatus({
         online: false,
         status: 500,
-        message: "Erro ao se conectar ao provedor: " + error,
+        message:
+          "Erro ao se conectar ao provedor: Verifique se o provedor do serviço remoto está ativo.",
+      });
+      setWhatsState({
+        ...WhatsState,
+        ready: false,
+        is_loading: false,
+        event: Events.disconnected,
+        logged: false,
       });
     }
   }
 
   useEffect(() => {
+    RegisterListener();
     window
       .__electron_preload__Config_GetServiceOptions(
         EnumServices.whatsapp_integrated
@@ -121,7 +130,6 @@ export default function ServicesWhatsContent() {
       if (UseRemoteProvider) {
         GetStatusService();
       } else {
-        RegisterListener();
         window.__electron_preload__GetStatusWhatsapp().then((data) => {
           setWhatsState({
             ...WhatsState,
@@ -145,16 +153,25 @@ export default function ServicesWhatsContent() {
   useEffect(() => {
     if (IsServiceProvider) {
       window
-        .__electron_preload__Config_GetKeyValue(
-          EnumKeysHttpServer.port,
-          EnumServices.http_server
-        )
+        .__electron_preload__Config_GetKeyValue({
+          key: EnumKeysHttpServer.port,
+          sub_category: EnumServices.http_server,
+        })
         .then((port) => setPortServer(Number(port)));
       window
         .__electron_preload__GetGlobalState()
         .then((global_state) => setGlobalState(JSON.parse(global_state)));
     }
   }, [IsServiceProvider]);
+
+  useEffect(() => {
+    if (UseRemoteProvider) {
+      const Loop = setInterval(GetStatusService, 5 * 1000);
+      return () => {
+        clearInterval(Loop);
+      };
+    }
+  }, [UseRemoteProvider]);
 
   return (
     <StackScrollBar flex="1" p={2}>

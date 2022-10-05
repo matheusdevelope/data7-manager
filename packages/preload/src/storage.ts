@@ -1,14 +1,5 @@
 import { ipcRenderer } from "electron";
-import type {
-  EnumKeys,
-  EnumKeysFirebase,
-  EnumKeysHttpServer,
-  EnumKeysSendFilesWhats,
-  EnumKeysTerminalData,
-  EnumKeysWhatsappIntegrated,
-  EnumServices,
-  EnumTabs,
-} from "../../../types/enums/configTabsAndKeys";
+import type { EnumServices } from "../../../types/enums/configTabsAndKeys";
 import { EnumIpcEvents } from "../../../types/enums/GlobalState";
 
 export function Config_GetConfigTabs() {
@@ -27,60 +18,18 @@ export function Config_GetServiceOptions(service: EnumServices) {
   return ipcRenderer.invoke(EnumIpcEvents.config_get_service_options, service);
 }
 
-export function Config_GetKey(
-  key:
-    | EnumKeys
-    | EnumKeysFirebase
-    | EnumKeysHttpServer
-    | EnumKeysSendFilesWhats
-    | EnumKeysTerminalData
-    | EnumKeysWhatsappIntegrated,
-  sub_category?: EnumServices,
-  category?: EnumTabs,
-) {
-  return ipcRenderer.invoke(
-    EnumIpcEvents.config_get_key,
-    key,
-    sub_category,
-    category,
-  );
+export function Config_GetKey(filter_config: ICommonConfigIdentification) {
+  return ipcRenderer.invoke(EnumIpcEvents.config_get_key, filter_config);
 }
 
-export function Config_GetKeyValue(
-  key:
-    | EnumKeys
-    | EnumKeysFirebase
-    | EnumKeysHttpServer
-    | EnumKeysSendFilesWhats
-    | EnumKeysTerminalData
-    | EnumKeysWhatsappIntegrated,
-  sub_category?: EnumServices,
-  category?: EnumTabs,
-) {
-  return ipcRenderer.invoke(
-    EnumIpcEvents.config_get_key_value,
-    key,
-    sub_category,
-    category,
-  );
+export function Config_GetKeyValue(filter_config: ICommonConfigIdentification) {
+  return ipcRenderer.invoke(EnumIpcEvents.config_get_key_value, filter_config);
 }
 export function Config_SetKeyValue(
-  value: string | number | boolean | string[],
-  key:
-    | EnumKeys
-    | EnumKeysFirebase
-    | EnumKeysHttpServer
-    | EnumKeysSendFilesWhats
-    | EnumKeysTerminalData
-    | EnumKeysWhatsappIntegrated,
-  sub_category?: EnumServices,
-  category?: EnumTabs,
+  values_to_set_config: IValuesToSetConfigKey,
 ) {
   return ipcRenderer.invoke(
     EnumIpcEvents.config_set_key_value,
-    value,
-    key,
-    sub_category,
-    category,
+    values_to_set_config,
   );
 }

@@ -28,6 +28,7 @@ export function GetIndexConfigOption(
         obj.sub_category == sub_category &&
         obj.key === key,
     );
+
   if (category)
     return Configs.findIndex(
       (obj) => obj.category === category && obj.key === key,

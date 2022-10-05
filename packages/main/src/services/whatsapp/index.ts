@@ -10,6 +10,7 @@ import {
   EnumKeys,
   EnumKeysWhatsappIntegrated,
   EnumServices,
+  EnumTabs,
 } from "../../../../../types/enums/configTabsAndKeys";
 import BotPersonal from "./bot_personal";
 import { CreateNotification } from "/@/handlers/notifications";
@@ -21,6 +22,8 @@ import { SendMessageWhatsappRemoteProvider } from "./remote_provider";
 import { createAsyncQueue } from "./queue";
 import { unlinkSync } from "fs";
 import axios from "axios";
+import { ConvertMessagesWhatsToOne } from "./convert_list_messages_to_one";
+import { SendMessageWhatsExternal } from "../protocoll_events";
 let Options: IValuesWhatsappService;
 let Window: BrowserWindow;
 const QueueSendMessages = createAsyncQueue();
@@ -32,6 +35,7 @@ function CreateOrRestoreWindowWhats(
   if (Window && !Window.isDestroyed()) {
     return Window;
   }
+
   Window = createDefaultWindow({
     id: EnumWindowsID.whatsapp,
     WindowOptions: {
@@ -58,17 +62,20 @@ function CreateOrRestoreWindowWhats(
   return Window;
 }
 async function Start() {
-  return;
   const UseRemoteServer = Boolean(
-    GetKeyValue(
-      EnumKeysWhatsappIntegrated.use_remote_service,
-      EnumServices.whatsapp_integrated,
-    ) || false,
+    GetKeyValue({
+      key: EnumKeysWhatsappIntegrated.use_remote_service,
+      sub_category: EnumServices.whatsapp_integrated,
+    }) || false,
   );
-  Options = { ...Options, ...GetOptionsStorage(), is_loading: true };
 
+  Options = { ...GetOptionsStorage(), is_loading: true };
   if (UseRemoteServer) {
-    Options = { ...(await GetOptionsRemote()) };
+    try {
+      Options = { ...(await GetOptionsRemote()) };
+    } catch (error) {
+      EventEmitter.emit(Events.error, error);
+    }
   } else {
     app.userAgentFallback = Options.user_agent;
     StartListenerEvents();
@@ -87,23 +94,27 @@ async function Start() {
   return Window;
 }
 function Stop() {
-  return;
   const UseRemoteServer = Boolean(
-    GetKeyValue(
-      EnumKeysWhatsappIntegrated.use_remote_service,
-      EnumServices.whatsapp_integrated,
-    ) || false,
+    GetKeyValue({
+      key: EnumKeysWhatsappIntegrated.use_remote_service,
+      sub_category: EnumServices.whatsapp_integrated,
+    }) || false,
+  );
+  const UseBot = Boolean(
+    GetKeyValue({
+      key: EnumKeysWhatsappIntegrated.use_bot,
+      sub_category: EnumServices.whatsapp_integrated,
+    }) || false,
   );
   if (!UseRemoteServer) {
-    Options.use_bot ? BotPuppeteer.Stop() : BotPersonal.Stop();
+    UseBot ? BotPuppeteer.Stop() : BotPersonal.Stop();
     if (Window) Window.destroy();
-    EventEmitter.emit(Events.close);
-    EventEmitter.events.clear();
   }
+  EventEmitter.emit(Events.close);
+  EventEmitter.events.clear();
 }
 function GetOptionsStorage() {
   const ServiceOptions = GetServiceOptions(EnumServices.whatsapp_integrated);
-  if (!ServiceOptions) return;
   const TempOptions: IComumObject = {};
   ServiceOptions.forEach((service) => {
     const value = service.value;
@@ -126,18 +137,19 @@ function GetOptionsStorage() {
 async function GetOptionsRemote() {
   try {
     const AddressRemoteServer = String(
-      GetKeyValue(
-        EnumKeysWhatsappIntegrated.remote_service_address,
-        EnumServices.whatsapp_integrated,
-      ),
+      GetKeyValue({
+        key: EnumKeysWhatsappIntegrated.remote_service_address,
+        sub_category: EnumServices.whatsapp_integrated,
+      }),
     );
     const data = await axios.get(
       `http://${AddressRemoteServer}/data7/send_message_whatsapp`,
     );
+    Options = { ...data.data };
     return Promise.resolve(data.data);
   } catch (error) {
     EventEmitter.emit(Events.error, error);
-    return Promise.resolve(Options);
+    return Promise.reject(error);
   }
 }
 function SendDataToFrontEnd(data: IDataListenerWhatsapp) {
@@ -151,6 +163,11 @@ function SendDataToFrontEnd(data: IDataListenerWhatsapp) {
             "file://" + __dirname,
           ).toString();
     ConfigWin.loadURL(pageUrl + "#/home/services/whatsapp");
+    ConfigWin.on("ready-to-show", () => {
+      ConfigWin.webContents.send(EnumIpcEvents.listener_whatsapp_bot, {
+        ...data,
+      });
+    });
     WindowConfigurationPanel().Focus();
     CreateNotification({
       body: `Você precisa fazer login para usar o Whatsapp Integrado.\n Scaneie o QRCode nas configurações do ${Global_State.name_app} para fazer login.`,
@@ -284,10 +301,10 @@ async function OnReady() {
     is_loading: false,
   };
   if (
-    GetKeyValue(
-      EnumKeysWhatsappIntegrated.show_window_on_start,
-      EnumServices.whatsapp_integrated,
-    )
+    GetKeyValue({
+      key: EnumKeysWhatsappIntegrated.show_window_on_start,
+      sub_category: EnumServices.whatsapp_integrated,
+    })
   ) {
     Window.show();
     Window.focus();
@@ -334,43 +351,70 @@ export async function SendWhatsappMessage(
   phone: string,
   messages: IMessageWhatsapp[],
 ) {
-  const StatusService = Boolean(
-    GetKeyValue(EnumKeys.status, EnumServices.whatsapp_integrated) || false,
-  );
-  const UseRemoteServer = Boolean(
-    GetKeyValue(
-      EnumKeysWhatsappIntegrated.use_remote_service,
-      EnumServices.whatsapp_integrated,
-    ) || false,
-  );
-  const IsLogged = Options?.is_logged;
-
-  if (!StatusService)
-    return Promise.reject(
-      "You can't sent a message with this service service disabled",
-    );
-  if (!IsLogged)
-    return Promise.reject(
-      "You can't sent a message before login in the whatsapp",
-    );
-  const SanitizedPhone = OnlyNumbersString(phone).trim();
-
   const validation: IValidation[] = [];
-  if (messages.length == 0) {
-    validation.push({
-      message: "list of messages is empty",
-      index: 0,
-    });
-    return Promise.reject(validation);
-  }
-  if (SanitizedPhone.length == 0) {
-    validation.push({
-      message: "Invalid Phone Number",
-    });
-    return Promise.reject(validation);
-  }
 
   try {
+    const StatusService = Boolean(
+      GetKeyValue({
+        key: EnumKeys.status,
+        sub_category: EnumServices.whatsapp_integrated,
+      }) || false,
+    );
+    const UseRemoteServer = Boolean(
+      GetKeyValue({
+        key: EnumKeysWhatsappIntegrated.use_remote_service,
+        sub_category: EnumServices.whatsapp_integrated,
+      }) || false,
+    );
+    const WhatsIntegrated = Boolean(
+      GetKeyValue({
+        key: EnumKeys.status,
+        sub_category: EnumServices.whatsapp_integrated,
+        category: EnumTabs.services,
+      }),
+    );
+
+    const SanitizedPhone = OnlyNumbersString(phone).trim();
+
+    if (messages.length == 0) {
+      validation.push({
+        message: "list of messages is empty",
+        index: 0,
+      });
+      return Promise.resolve(validation);
+    }
+    if (SanitizedPhone.length == 0) {
+      validation.push({
+        message: "Invalid Phone Number",
+      });
+      return Promise.resolve(validation);
+    }
+
+    if (!WhatsIntegrated) {
+      const message = await ConvertMessagesWhatsToOne(messages);
+      if (typeof message == "string") {
+        await SendMessageWhatsExternal(SanitizedPhone, message);
+        return Promise.resolve(true);
+      }
+    }
+
+    if (UseRemoteServer) await GetOptionsRemote();
+
+    const IsLogged = Options?.is_logged;
+    if (!StatusService)
+      return Promise.resolve(
+        `Você não pode enviar mensagens com esse serviço desativado. ${
+          UseRemoteServer ? "(Você está usando um provedor REMOTO)" : ""
+        } `,
+      );
+    if (!IsLogged) {
+      const message = `Você não pode enviar mensagens sem estar logado no Whatsapp. ${
+        UseRemoteServer ? "(Você está usando um provedor REMOTO)" : ""
+      } `;
+
+      return Promise.resolve(message);
+    }
+
     await QueueSendMessages.push(async () => {
       if (UseRemoteServer) {
         await SendMessageWhatsappRemoteProvider(SanitizedPhone, messages);
@@ -389,7 +433,7 @@ export async function SendWhatsappMessage(
     validation.push({
       message: typeof error === "string" ? error : JSON.stringify(error),
     });
-    return Promise.reject(validation);
+    return Promise.resolve(validation);
   }
 }
 

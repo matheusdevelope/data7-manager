@@ -67,6 +67,7 @@ function Create() {
 function Focus() {
   Window.show();
   Window.focus();
+  Window.moveTop();
 }
 
 export function WindowConfigurationPanel() {

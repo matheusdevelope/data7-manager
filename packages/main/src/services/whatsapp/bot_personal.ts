@@ -1,7 +1,7 @@
 import type { BrowserWindow, WebContents } from "electron";
 import { clipboard, nativeImage } from "electron";
 import { existsSync } from "fs";
-import { basename, extname, normalize } from "path";
+import { extname, normalize } from "path";
 import Whatsapp from ".";
 import {
   EnumKeysWhatsappIntegrated,
@@ -76,10 +76,10 @@ async function VerifyIsLogged(opt?: IValuesWhatsappService) {
   const script1 = `window.sessionStorage.getItem("${Options.selector_key_storage_is_logged}")`;
   const script2 = `window.localStorage.getItem("${Options.selector_key_storage_is_logged}")`;
   const Interval_Verification = Number(
-    GetKeyValue(
-      EnumKeysWhatsappIntegrated.veryfication_is_logged_interval,
-      EnumServices.whatsapp_integrated,
-    ) || 10,
+    GetKeyValue({
+      key: EnumKeysWhatsappIntegrated.veryfication_is_logged_interval,
+      sub_category: EnumServices.whatsapp_integrated,
+    }) || 10,
   );
   const SessionWid = await ExecJSBrowser(script1);
   const StorageWid = await ExecJSBrowser(script2);
@@ -122,7 +122,7 @@ function SyncQrCode() {
               Stop();
               Start();
             });
-        }, 10 * 1000);
+        }, 2 * 1000);
       })
       .catch(() => {
         Stop();
@@ -145,11 +145,12 @@ async function SendMessage(
   OpenChatWhatsapp(phone);
   await Delay(() => null);
   for (let i = 0; i < messages.length; i++) {
-    const { text, image_base64, file_path } = messages[i];
+    const { text, image_base64, file_path, expiration, name_file } =
+      messages[i];
     try {
       if (text && !image_base64 && !file_path) await SendText(text);
       if (image_base64) await SendImage(image_base64, text);
-      if (file_path) await SendFile(file_path, text);
+      if (file_path) await SendFile(file_path, text, expiration, name_file);
     } catch (error) {
       validation.push({
         message: String(error),
@@ -167,7 +168,12 @@ async function SendText(text: string) {
   });
   await Delay(PressEnter);
 }
-async function SendFile(path: string, caption?: string, expiration?: number) {
+async function SendFile(
+  path: string,
+  caption?: string,
+  expiration?: number,
+  name_file?: string,
+) {
   try {
     const path_nomalized = normalize(path);
     if (!existsSync(path_nomalized))
@@ -181,10 +187,21 @@ async function SendFile(path: string, caption?: string, expiration?: number) {
     }
     const URL_File = await ServiceS3().create(
       path_nomalized,
-      basename(path_nomalized),
       expiration,
+      name_file,
     );
-    const Message = URL_File.Location + "\n\n" + (caption ? caption : "");
+    const TextAfterFile = Boolean(
+      GetKeyValue({
+        key: EnumKeysWhatsappIntegrated.text_after_file,
+        sub_category: EnumServices.whatsapp_integrated,
+      }),
+    );
+    let Message = "";
+    if (TextAfterFile) {
+      Message = URL_File.Location + "\n" + (caption ? caption : "");
+    } else {
+      Message = (caption ? caption : "") + "\n" + URL_File.Location;
+    }
     await Delay(() => {
       Copy(Message);
       Paste();
@@ -248,14 +265,3 @@ const BotPersonal = {
 };
 
 export default BotPersonal;
-//function BotPersonal(opt: IValuesWhatsappService) {
-//   Options = opt;
-//   if (!Window) Start();
-
-//   return {
-//     Start,
-//     Stop,
-//     SetOptions,
-//     SendMessage,
-//   };
-// }
