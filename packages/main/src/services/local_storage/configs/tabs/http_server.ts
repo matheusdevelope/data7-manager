@@ -53,7 +53,7 @@ export const ServiceHttpServer: IOptionConfig2[] = [
   {
     ...SubCategoryHttpServer,
     key: EnumKeysHttpServer.port,
-    value: 3000,
+    value: 3545,
     label: "Porta Local",
     description: "Porta local que o servidor vai rodar.",
     type: EnumTypesOptions.number,
