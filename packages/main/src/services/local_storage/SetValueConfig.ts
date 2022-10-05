@@ -57,7 +57,15 @@ function ValidateRequiredConfigs(
           required_configs: [{ ...config }],
         };
       const OptionToValidate = Configs[IndexOption];
-      if (OptionToValidate.value === config.key_value) {
+
+      const ValueOption = Array.isArray(OptionToValidate.value)
+        ? OptionToValidate.value.length
+        : OptionToValidate.value;
+      const ConfigOption = Array.isArray(config.key_value)
+        ? config.key_value.length
+        : config.key_value;
+
+      if (ValueOption === ConfigOption) {
         if (ret.can_go && config.block) {
           ret.can_go = false;
         }

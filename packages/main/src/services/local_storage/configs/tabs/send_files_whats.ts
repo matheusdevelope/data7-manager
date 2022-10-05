@@ -6,6 +6,7 @@ import {
   EnumTypesOptions,
   EnumKeysSendFilesWhats,
   EnumTabs,
+  EnumKeysTerminalData,
 } from "../../../../../../../types/enums/configTabsAndKeys";
 import { categoryService } from "../comum_categories";
 
@@ -33,6 +34,17 @@ export const ServiceSendFilesWhats: IOptionConfig2[] = [
         key: EnumKeys.status,
         on_value: true,
         value: true,
+      },
+    ],
+    required_configs: [
+      {
+        category: EnumTabs.terminal_data,
+        key: EnumKeysTerminalData.cnpj_cpf,
+        on_value: true,
+        key_value: [],
+        block: true,
+        message:
+          "Para usar o serviço Envio Arquivos Whatsapp você precisa informar pelo menos um CNPJ/CPF nos Dados do Terminal.",
       },
     ],
   },
