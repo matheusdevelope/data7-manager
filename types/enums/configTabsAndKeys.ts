@@ -17,6 +17,7 @@ export enum EnumServices {
   firebase = "firebase",
   http_server = "http_server",
   whatsapp_integrated = "whatsapp_integrated",
+  dispatch_panel = "dispatch_panel",
 }
 export enum EnumKeys {
   status = "status",
@@ -62,6 +63,16 @@ export enum EnumKeysSendFilesWhats {
 }
 export enum EnumKeysHttpServer {
   port = "port",
+}
+export enum EnumKeysDispatchPanel {
+  time_refresh = "time_refresh",
+  database = "database",
+  host = "host",
+  port = "port",
+  dbname = "dbname",
+  user = "user",
+  pass = "pass",
+  query = "query",
 }
 export enum EnumKeysFirebase {
   validate_ip = "validate_ip",

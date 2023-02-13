@@ -131,3 +131,7 @@ export function ToggleService(service: string, active: string) {
 export function GetURLLoginMobile(): Promise<string> {
   return ipcRenderer.invoke(EnumIpcEvents.get_url_login_mobile);
 }
+
+export function IsPortInUse(port: number) {
+  return ipcRenderer.invoke(EnumIpcEvents.is_port_in_use, port);
+}

@@ -33,6 +33,7 @@ export {
   VisibilityWindow,
   ToggleService,
   GetURLLoginMobile,
+  IsPortInUse,
 } from "./preload";
 
 export { MoveWindow, MinimizeWindow, CloseWindow } from "./WindowHeaderBar";

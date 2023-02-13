@@ -18,6 +18,14 @@ const config = {
   extraMetadata: {
     version: process.env.VITE_APP_VERSION,
   },
+  win: {
+    target: "msi",
+    requestedExecutionLevel: "highestAvailable",
+    icon: "./icon.png",
+  },
+  msi: {
+    perMachine: true,
+  },
 };
 
 module.exports = config;

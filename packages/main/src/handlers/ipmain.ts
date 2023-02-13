@@ -25,6 +25,7 @@ import { ToggleWindow, WindowsCreated } from "./ControlWindows";
 import { DataToLoginMobile, URL_Login_Mobile } from "./login_mobile";
 import Whatsapp from "../services/whatsapp";
 import SetConfigKeyValue from "../services/local_storage/SetValueConfig";
+import { IsPortInUse } from "../services/server_http";
 
 function RegisterListenersIpcMain() {
   HandleStorage();
@@ -180,6 +181,9 @@ function HandleServices() {
   ipcMain.on(EnumIpcEvents.toggle_service, (_, active: boolean) => {
     if (active) return ActivateServicesByConfiguration();
     return StopServicesByConfiguration();
+  });
+  ipcMain.handle(EnumIpcEvents.is_port_in_use, async (_, port: number) => {
+    return await IsPortInUse(port);
   });
 }
 function HandleWhatsappBOT() {

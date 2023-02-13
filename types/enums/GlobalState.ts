@@ -34,4 +34,5 @@ export enum EnumIpcEvents {
   config_get_key = "config_get_key",
   config_get_key_value = "config_get_key_value",
   config_set_key_value = "config_set_key_value",
+  is_port_in_use = "is_port_in_use",
 }

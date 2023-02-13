@@ -33,7 +33,7 @@ function Create() {
       height: DimensionsUSer.height,
       minWidth: 600,
       minHeight: 400,
-      alwaysOnTop: import.meta.env.DEV,
+      // alwaysOnTop: import.meta.env.DEV,
       fullscreenable: false,
       frame: false,
       transparent: true,

@@ -29,7 +29,7 @@ const Schema_Storage: Schema<Record<string, string>> = {
 };
 
 const Storage = new Store({
-  name: "the_config",
+  name: "config",
   watch: true,
   encryptionKey: "process.env.encryptionKey",
   schema: Schema_Storage,

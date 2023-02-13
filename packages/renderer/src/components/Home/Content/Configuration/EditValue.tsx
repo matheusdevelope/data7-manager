@@ -13,7 +13,10 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { MdAdd, MdDelete, MdDone, MdSave } from "react-icons/md";
-import { EnumTypesOptions } from "../../../../../../../types/enums/configTabsAndKeys";
+import {
+  EnumKeysHttpServer,
+  EnumTypesOptions,
+} from "../../../../../../../types/enums/configTabsAndKeys";
 import { ValidateCNPJ, ValidateCPF } from "./validation";
 import { MaskCnpj, MaskCpf } from "/@/utils/masks";
 
@@ -44,7 +47,7 @@ export default function RenderEditValue({
     return value.replace(/[^0-9]/g, "");
   }
 
-  function OnSubmit(e: React.FormEvent) {
+  async function OnSubmit(e: React.FormEvent) {
     e.preventDefault();
     function RetArray(opt_value: string | number | boolean | string[]) {
       if (Array.isArray(opt_value)) {
@@ -88,8 +91,19 @@ export default function RenderEditValue({
       } else {
         changeOptions({ ...option, value: [...RetArray(option.value)] });
       }
-    } else {
-      if (value) {
+    } else if (value) {
+      if (option.key === EnumKeysHttpServer.port) {
+        const port_in_use = await window.__electron_preload__IsPortInUse(
+          Number(value)
+        );
+        if (port_in_use) {
+          setValidation(
+            "A porta informada já está sendo utilizada, informe outra porta."
+          );
+        } else {
+          changeOptions({ ...option, value: value });
+        }
+      } else {
         changeOptions({ ...option, value: value });
       }
     }
@@ -226,54 +240,57 @@ export default function RenderEditValue({
 
   return (
     <form onSubmit={OnSubmit}>
-      <InputGroup
-        size={"sm"}
-        variant="outline"
-        borderColor={"gray.200"}
-        borderRadius="8px"
-      >
-        {option.type === EnumTypesOptions.textarea ? (
-          <Textarea
-            scrollBehavior={"inherit"}
-            isDisabled={option.disabled === true}
-            value={String(value)}
-            onChange={OnChangeTextArea}
-            placeholder={option.tip}
-            color={Color.blackFont1}
-            borderRadius="8px"
-            _placeholder={{ color: "gray.500" }}
-          />
-        ) : (
-          <Input
-            isDisabled={option.disabled === true}
-            value={String(value)}
-            onChange={OnChange}
-            placeholder={option.tip}
-            color={Color.blackFont1}
-            borderRadius="8px"
-            _placeholder={{ color: "gray.500" }}
-          />
-        )}
+      <FormControl isInvalid={Boolean(validation)}>
+        <InputGroup
+          size={"sm"}
+          variant="outline"
+          borderColor={"gray.200"}
+          borderRadius="8px"
+        >
+          {option.type === EnumTypesOptions.textarea ? (
+            <Textarea
+              scrollBehavior={"inherit"}
+              isDisabled={option.disabled === true}
+              value={String(value)}
+              onChange={OnChangeTextArea}
+              placeholder={option.tip}
+              color={Color.blackFont1}
+              borderRadius="8px"
+              _placeholder={{ color: "gray.500" }}
+            />
+          ) : (
+            <Input
+              isDisabled={option.disabled === true}
+              value={String(value)}
+              onChange={OnChange}
+              placeholder={option.tip}
+              color={Color.blackFont1}
+              borderRadius="8px"
+              _placeholder={{ color: "gray.500" }}
+            />
+          )}
 
-        {option.value !== value && isEdited ? (
-          <InputRightElement
-            borderRadius="6"
-            bg="transparent"
-            children={
-              <Button bg="transparent" size={"sm"} type="submit" p="0">
-                <MdSave color="green.500" />
-              </Button>
-            }
-          />
-        ) : (
-          <InputRightElement
-            borderRadius="6"
-            m="1"
-            boxSize={"6"}
-            children={<MdDone color="green" />}
-          />
-        )}
-      </InputGroup>
+          {option.value !== value && isEdited ? (
+            <InputRightElement
+              borderRadius="6"
+              bg="transparent"
+              children={
+                <Button bg="transparent" size={"sm"} type="submit" p="0">
+                  <MdSave color="green.500" />
+                </Button>
+              }
+            />
+          ) : (
+            <InputRightElement
+              borderRadius="6"
+              m="1"
+              boxSize={"6"}
+              children={<MdDone color="green" />}
+            />
+          )}
+        </InputGroup>
+        <FormErrorMessage>{validation}</FormErrorMessage>
+      </FormControl>
     </form>
   );
 }

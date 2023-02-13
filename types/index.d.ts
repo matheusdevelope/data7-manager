@@ -61,6 +61,7 @@ declare global {
       cb: (data: IDataListenerWhatsapp) => void
     ) => void;
 
+    __electron_preload__IsPortInUse: (port: number) => Promise<boolean>;
     ///Storage Handles
     __electron_preload__Config_GetConfigTabs: () => Promise<IOptionConfig2[]>;
     __electron_preload__Config_SetConfigTabs: (
@@ -82,5 +83,12 @@ declare global {
     __electron_preload__Config_SetKeyValue: (
       values_to_set_config: IValuesToSetConfigKey
     ) => Promise<IReturnSetConfigKey>;
+  }
+  interface Error extends Error {
+    errno?: number;
+    code?: string;
+    path?: string;
+    syscall?: string;
+    stack?: string;
   }
 }
