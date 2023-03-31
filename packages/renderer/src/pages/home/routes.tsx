@@ -8,6 +8,8 @@ import { HiCode } from "react-icons/hi";
 import { BsGearFill, BsHddNetwork, BsWhatsapp } from "react-icons/bs";
 import { EnumServices } from "../../../../../types/enums/configTabsAndKeys";
 import ServicesHttpServerContent from "/@/components/Home/Content/Services/HttpServer";
+
+import ServicesDispatchPanelContent from "/@/components/Home/Content/Services/DispatchPanel";
 export interface IRouteNavBar {
   layout: string;
   path: string;
@@ -55,6 +57,17 @@ const ServicesMenu: IRouteNavBar[] = [
     component: <ServicesHttpServerContent />,
     views: [],
     service: EnumServices.http_server,
+  },
+  {
+    layout: "/home",
+    path: "/services/dispatch_panel",
+    name: "Painel Expedição",
+    category: "",
+    icon: BsHddNetwork,
+    secondaryNavbar: true,
+    component: <ServicesDispatchPanelContent />,
+    views: [],
+    service: EnumServices.dispatch_panel,
   },
 ];
 

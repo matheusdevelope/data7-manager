@@ -25,20 +25,15 @@ export const ServiceDispatchPanel: IOptionConfig2[] = [
       "Define se a aplicação vai operar como servidor para o Painel de Expedição Remoto.",
     type: EnumTypesOptions.boolean,
     restart_services: true,
-    required_configs: [
-      {
-        category: EnumTabs.services,
-        sub_category: EnumServices.whatsapp_send_files,
-        key: EnumKeys.status,
-        on_value: false,
-        key_value: true,
-        block: true,
-        message:
-          'Esse recurso depende do serviço "HTTP", configure e ative o mesmo para prosseguir.',
-      },
-    ],
   },
-
+  {
+    ...SubCategoryDispatchPanel,
+    key: EnumKeysDispatchPanel.server_port,
+    value: 3546,
+    label: "Porta Servidor Painel",
+    description: "Porta de conexão para o painel de expedição.",
+    type: EnumTypesOptions.number,
+  },
   {
     ...SubCategoryDispatchPanel,
     key: EnumKeysDispatchPanel.time_refresh,
@@ -52,7 +47,8 @@ export const ServiceDispatchPanel: IOptionConfig2[] = [
     key: EnumKeysDispatchPanel.database,
     value: "MSSQL",
     label: "RDBMS",
-    description: "Define o banco de dados entre MSSQL ou SYBASE. \nUsar a mesma sintaxe das opções apresentadas.",
+    description:
+      "Define o banco de dados entre MSSQL ou SYBASE. \nUsar a mesma sintaxe das opções apresentadas.",
     type: EnumTypesOptions.text,
   },
   {

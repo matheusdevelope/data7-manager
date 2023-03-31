@@ -65,6 +65,7 @@ export enum EnumKeysHttpServer {
   port = "port",
 }
 export enum EnumKeysDispatchPanel {
+  server_port = "server_port",
   time_refresh = "time_refresh",
   database = "database",
   host = "host",

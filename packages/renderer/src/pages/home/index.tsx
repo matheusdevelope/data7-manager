@@ -2,7 +2,7 @@
 import { Box, Flex, useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import SideBar from "../../components/Home/SideBar";
-import { RouteObject, Routes, useRoutes } from "react-router-dom";
+import { RouteObject, useRoutes } from "react-router-dom";
 import RoutesNavBar, { IRouteNavBar } from "./routes";
 import WindowBar from "/@/components/WindowBar";
 import { Header } from "/@/components/Home/Header";

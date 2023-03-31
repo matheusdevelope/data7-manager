@@ -36,10 +36,10 @@ function HttpService(Config: IOptionConfig2[]) {
     IsPortInUse(port).then((e) => {
       if (!e) {
         HTTP_Server().execute(port, () => {
-          CreateNotification({
-            title: "Atenção",
-            body: `O serviço HTTP do ${Global_State.name_app} está sendo executado.`,
-          });
+          // CreateNotification({
+          //   title: "Atenção",
+          //   body: `O serviço HTTP do ${Global_State.name_app} está sendo executado.`,
+          // });
         });
       } else {
         dialog.showMessageBoxSync(WindowConfigurationPanel().Create(), {
@@ -50,7 +50,7 @@ function HttpService(Config: IOptionConfig2[]) {
     });
 }
 function DispatchPanelService() {
-  DispatchPanel().execute(HTTP_Server().server);
+  DispatchPanel().execute();
 }
 
 function IsActive(sub_category: EnumServices) {
@@ -72,13 +72,13 @@ export function StopServicesByConfiguration() {
   !IsActive(EnumServices.pix) && WindowPix().Stop();
   !IsActive(EnumServices.http_server) &&
     HTTP_Server().stop(() => {
-      CreateNotification({
-        title: "Atenção",
-        body: `O serviço HTTP do ${Global_State.name_app} foi desativado.`,
-      });
+      // CreateNotification({
+      //   title: "Atenção",
+      //   body: `O serviço HTTP do ${Global_State.name_app} foi desativado.`,
+      // });
     });
   !IsActive(EnumServices.whatsapp_integrated) && Whatsapp.Stop();
-  !IsActive(EnumServices.dispatch_panel) && DispatchPanel().Stop();
+  !IsActive(EnumServices.dispatch_panel) && DispatchPanel().stop();
 }
 export function InitializeInterface() {
   RegisterListenersIpcMain();

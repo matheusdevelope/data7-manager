@@ -2,11 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "@fontsource/roboto";
 import { ChakraProvider, extendTheme, ThemeConfig } from "@chakra-ui/react";
-
-import { getColor } from "@chakra-ui/theme-tools";
-import { theme as defaultTheme } from "@chakra-ui/theme";
-import RouterAplication from "./router";
-const borderColor = getColor(defaultTheme, "gray.300", "gray");
+import Entrar from "./pages/entrar";
 const config: ThemeConfig = {
   initialColorMode: "light",
   useSystemColorMode: false,
@@ -25,21 +21,7 @@ const styles = {
   },
 };
 
-// __css={{
-//   "&::-webkit-scrollbar": {
-//     w: "1",
-//   },
-//   "&::-webkit-scrollbar-track": {
-//     w: "1",
-//   },
-//   "&::-webkit-scrollbar-thumb": {
-//     borderRadius: "10",
-//     bg: `gray.400`,
-//   },
-// }}
-
 const fonts = {
-  // heading: `'Heading Font Name', sans-serif`,
   body: `'Roboto', sans-serif`,
 };
 
@@ -47,16 +29,12 @@ const theme = extendTheme({
   config,
   styles,
   fonts,
-
-  borders: {
-    "1px": `1px solid ${borderColor}`,
-  },
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <RouterAplication />
+    <ChakraProvider resetCSS theme={theme}>
+      <Entrar />
     </ChakraProvider>
   </React.StrictMode>
 );

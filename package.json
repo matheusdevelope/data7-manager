@@ -11,12 +11,14 @@
   },
   "main": "packages/main/dist/index.cjs",
   "scripts": {
-    "build": "npm run build:main && npm run build:preload && npm run build:renderer ",
+    "build": "npm run build:main && npm run build:preload && npm run build:renderer && npm run build:panel ",
     "build:main": "cd ./packages/main && vite build",
     "build:preload": "cd ./packages/preload && vite build",
     "build:renderer": "cd ./packages/renderer && vite build",
+    "build:panel": "cd ./packages/public_renderer/dispatch_panel && vite build",
+    "build:panel:w": "cd ./packages/public_renderer/dispatch_panel && vite build -w",
+    "dev:panel": "cd ./packages/public_renderer/dispatch_panel && vite",
     "compile": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js --dir --config.asar=false",
-    "compile2": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js",
     "package": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js",
     "test": "npm run test:main && npm run test:preload && npm run test:renderer && npm run test:e2e",
     "test:e2e": "npm run build && vitest run",
@@ -24,6 +26,7 @@
     "test:preload": "vitest run -r packages/preload --passWithNoTests",
     "test:renderer": "vitest run -r packages/renderer --passWithNoTests",
     "watch": "node scripts/watch.mjs",
+    "watch:panel": "cd ./packages/public_renderer/dispatch_panel && vite ",
     "lint": "eslint . --ext js,ts,",
     "typecheck:main": "tsc --noEmit -p packages/main/tsconfig.json",
     "typecheck:preload": "tsc --noEmit -p packages/preload/tsconfig.json",
@@ -32,7 +35,6 @@
     "postinstall": "cross-env ELECTRON_RUN_AS_NODE=1 electron scripts/update-electron-vendors.mjs"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
     "@types/cors": "^2.8.13",
     "@types/ip": "^1.1.0",
     "@types/mime-types": "^2.1.1",
@@ -91,9 +93,12 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
     "react-router-dom": "^6.3.0",
+    "repository-data7": "^1.0.10",
     "sharp": "^0.31.1",
     "socket.io": "^4.6.0",
+    "socket.io-client": "^4.6.1",
     "styled-components": "^5.3.5",
+    "use-sound": "^4.0.1",
     "whatsapp-web-electron.js": "^1.16.6-2"
   }
 }

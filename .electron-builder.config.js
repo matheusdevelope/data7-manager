@@ -1,30 +1,44 @@
+let NameApp = "";
 if (process.env.VITE_APP_VERSION === undefined) {
-  // const now = new Date();
   const package = require("./package.json");
-  process.env.VITE_APP_VERSION = package.version; //`${now.getUTCFullYear() - 2000}.${now.getUTCMonth() + 1}.${now.getUTCDate()}-${now.getUTCHours() * 60 + now.getUTCMinutes()}`;
+  NameApp = package.description;
+  process.env.VITE_APP_VERSION = package.version;
 }
 
 /**
  * @type {import('electron-builder').Configuration}
  * @see https://www.electron.build/configuration/configuration
  */
+
 const config = {
-  productName: "Data7 Manager",
+  productName: NameApp,
   directories: {
     output: "dist",
     buildResources: "buildResources",
   },
+  extraResources: ["node_modules/sybase/JavaSybaseLink/**/*"],
   files: ["packages/**/dist/**"],
   extraMetadata: {
     version: process.env.VITE_APP_VERSION,
   },
   win: {
-    target: "msi",
-    requestedExecutionLevel: "highestAvailable",
+    target: [
+      {
+        target: "nsis",
+        arch: ["x64"],
+      },
+    ],
+    // requestedExecutionLevel: "highestAvailable",
     icon: "./icon.png",
   },
-  msi: {
-    perMachine: true,
+  nsis: {
+    oneClick: false,
+    perMachine: false,
+    // allowElevation: true,
+    allowToChangeInstallationDirectory: true,
+    artifactName: NameApp + " v" + process.env.VITE_APP_VERSION + " .${ext}",
+    shortcutName: NameApp,
+    createDesktopShortcut: false,
   },
 };
 
