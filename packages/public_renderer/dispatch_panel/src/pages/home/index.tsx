@@ -44,6 +44,17 @@ export default function Home() {
     socket.connect();
   }, []);
 
+  useEffect(()=>{
+   
+    setInterval(async()=>{
+      try {
+         await fetch(window.location +'ping')
+      } catch (error) {
+        console.log(error);
+      }
+    }, 20*1000)
+  },[])
+
   const CircleIcon = (props: IconProps) => (
     <Icon viewBox="0 0 200 200" {...props}>
       <path

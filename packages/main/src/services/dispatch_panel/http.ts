@@ -8,9 +8,15 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cors());
 app.use(express.static(resolve(__dirname, "public", "dispatch_panel")));
+
+app.get("/ping", (req, res) => {
+  res.status(200).send("Server Ok");
+});
+
 app.get("*", (req, res) => {
   res.sendFile(resolve(__dirname, "public", "dispatch_panel", "index.html"));
 });
+
 
 export default function HTTP_Server_Dispatch() {
   return {
