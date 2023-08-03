@@ -12,11 +12,40 @@ import {
 import { CreateNotification } from "/@/handlers/notifications";
 import HTTP_Server_Dispatch from "./http";
 import { dialog } from "electron";
-import { resolve } from "path";
+import path, { resolve } from "path";
+import { appendFileSync } from "fs";
+import { tmpdir } from "os";
 
 let IO: Server | null = null;
 let timer: NodeJS.Timer;
 let connections_count = 0;
+
+function generateFileName(base:string) {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+  const day = currentDate.getDate().toString().padStart(2, "0");
+  const fileName = `${base}-${year}-${month}-${day}.txt`;
+  return fileName;
+}
+
+function LogFile(data:string) {
+  try {
+    appendFileSync( path.join(tmpdir() , generateFileName("log-data7-panel")),
+    `
+    ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}
+    ${data}
+    -------------------------------------------------------------------------
+
+
+    `);
+  } catch (error) {
+    console.log(error);
+    
+  }
+  
+}
+
 
 async function SendData(query: string, DB: any) {
   if (connections_count > 0) {
@@ -81,13 +110,20 @@ function execute() {
         : new ConnectionSqlServer(db_params);
     const DB = new Database(connectionDB);
     HTTP_Server_Dispatch().execute(server_port);
+    
     IO = new Server(HTTP_Server_Dispatch().execute(server_port), {
       cors: {
         origin: "*",
       },
     });
+    LogFile( "--- Socket Service Enabled ");
+    // IO.setMaxListeners()
 
     IO.on("error", (e) => {
+      LogFile(
+        `Socket Error Event:
+         ${String(e)} 
+        `);
       CreateNotification({
         title: "Painel de Expedição",
         body:
@@ -96,6 +132,11 @@ function execute() {
     });
 
     IO.on("connection", (socket) => {
+      LogFile(
+      `Socket Connection: 
+       idDevice: ${socket.handshake.query.idDevice}
+       socketId: ${socket.id}
+      `);
       CreateNotification({
         title: "Painel de Expedição",
         body: "Painel conectado.",
@@ -105,7 +146,12 @@ function execute() {
         const ret = await DB.query(config[EnumKeysDispatchPanel.query]);
         socket.emit("data_dispath_panel", ret);
       });
-      socket.on("disconnect", () => {
+      socket.on("disconnect", (_) => {
+        LogFile(
+          `Socket Disconnection: 
+           idDevice: ${socket.handshake.query.idDevice}
+           socketId: ${socket.id}
+          `);
         if (connections_count > 0) connections_count--;
         CreateNotification({
           title: "Painel de Expedição",
@@ -120,6 +166,10 @@ function execute() {
     );
     return IO;
   } catch (e) {
+    LogFile(
+      `Socket Error Execute Method:
+       ${String(e)} 
+      `);
     CreateNotification({
       title: "Painel de Expedição",
       body: "Erro ao iniciar o serviço do painel de expedição: \n" + String(e),
@@ -138,8 +188,10 @@ function stop() {
   // });
   IO?.disconnectSockets();
   IO?.removeAllListeners();
+  IO?.close();
   IO = null;
   HTTP_Server_Dispatch().stop(() => console.log);
+  LogFile( "--- Socket Service Disabled ");
 }
 
 export default function SocketService() {

@@ -52,11 +52,12 @@ async function SendMessage(phone: string, messages: IMessageWhatsapp[]) {
     const client = await Start();
     const chat = await client.getChatById(chatId);
     for (let e = 0; e < messages.length; e++) {
-      const { text, image_base64, file_path, name_file } = messages[e];
+      const { text, image_base64, file_path, name_file, base64, mimetype } = messages[e];
       try {
-        if (text && !image_base64 && !file_path) await chat.sendMessage(text);
+        if (text && !image_base64 && !file_path && !base64) await chat.sendMessage(text);
         if (image_base64) await SendImage(chat, image_base64, text);
         if (file_path) await SendFile(chat, file_path, text, name_file);
+        if (base64) await SendFileBase64(chat,base64, mimetype||"application/pdf", text, name_file);
       } catch (error) {
         validation.push({
           message: String(error),
@@ -115,6 +116,33 @@ async function SendFile(
       base64_data,
       name_file || basename(path_nomalized),
     ); //.fromFilePath(path_nomalized);
+    if (caption?.trim()) {
+      const message = await chat.sendMessage(TextAfterFile ? media : caption);
+      return Promise.resolve(
+        await message.reply(TextAfterFile ? caption : media),
+      );
+    }
+    return Promise.resolve(await chat.sendMessage(media));
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+async function SendFileBase64(
+  chat: Chat,
+  base64: string,
+  mimetype: string,
+  caption?: string,
+  name_file?: string,
+) {
+  try {
+    const TextAfterFile = Boolean(
+      GetKeyValue({
+        key: EnumKeysWhatsappIntegrated.text_after_file,
+        sub_category: EnumServices.whatsapp_integrated,
+      }),
+    );
+    const base64_data = OnlyDataBase64(base64);
+    const media = new MessageMedia(mimetype, base64_data,name_file);
     if (caption?.trim()) {
       const message = await chat.sendMessage(TextAfterFile ? media : caption);
       return Promise.resolve(

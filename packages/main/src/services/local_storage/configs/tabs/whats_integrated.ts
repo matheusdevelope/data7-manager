@@ -13,7 +13,7 @@ export const SubCatgoryWhatsIntegrated = {
   id_window: EnumWindowsID.whatsapp,
   sub_category: EnumServices.whatsapp_integrated,
   sub_category_label: "Whatsapp Integrado",
-  disabled: true,
+  disabled: false,
   tip: "",
 };
 

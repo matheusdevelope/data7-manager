@@ -262,6 +262,8 @@ interface IWhatsappOptions {
 interface IMessageWhatsapp {
   text?: string;
   image_base64?: string;
+  base64?: string;
+  mimetype?:string;
   file_path?: string;
   name_file?: string;
   expiration?: number;

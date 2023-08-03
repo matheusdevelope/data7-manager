@@ -1,32 +1,34 @@
 import type { Request, Response } from "express";
-import { basename, join } from "path";
+// import { basename, join } from "path";
 import {
-  EnumKeysTerminalData,
+  // EnumKeysTerminalData,
   EnumKeysWhatsappIntegrated,
   EnumServices,
-  EnumTabs,
+  // EnumTabs,
 } from "../../../../../../types/enums/configTabsAndKeys";
 import { GetKeyValue } from "../../local_storage";
 import Whatsapp, { SendWhatsappMessage } from "../../whatsapp";
 
 async function post(req: Request, res: Response) {
-  const TempDir = String(
-    GetKeyValue({
-      key: EnumKeysTerminalData.temp_files,
-      category: EnumTabs.terminal_data,
-    }),
-  );
-  const dir = `${TempDir}/${req.query.dir || "general"}/`;
+  // const TempDir = String(
+  //   GetKeyValue({
+  //     key: EnumKeysTerminalData.temp_files,
+  //     category: EnumTabs.terminal_data,
+  //   }),
+  // );
+  // const dir = `${TempDir}/${req.query.dir || "general"}/`;
 
   const Messages = req.body.messages as IMessageWhatsapp[];
-  const NewMessages = Messages.map((message) => {
-    return {
-      ...message,
-      file_path: message.file_path
-        ? join(dir, basename(message.file_path))
-        : undefined,
-    };
-  });
+  const NewMessages = Messages;
+  // .map((message) => {
+  //   return {
+  //     ...message,
+  //     file_path: message.file_path
+  //       ? join(dir, basename(message.file_path))
+  //       : undefined,
+  //   };
+  // });
+
   try {
     const result = await SendWhatsappMessage(req.body.phone, NewMessages);
     if (result === true) {

@@ -99,6 +99,6 @@
     "socket.io-client": "^4.6.1",
     "styled-components": "^5.3.5",
     "use-sound": "^4.0.1",
-    "whatsapp-web-electron.js": "^1.16.6-2"
+    "whatsapp-web-electron.js": "^1.21.0-1"
   }
 }

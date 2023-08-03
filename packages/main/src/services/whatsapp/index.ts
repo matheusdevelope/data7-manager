@@ -20,7 +20,6 @@ import { EnumIpcEvents } from "../../../../../types/enums/GlobalState";
 import { Global_State } from "/@/global_state";
 import { SendMessageWhatsappRemoteProvider } from "./remote_provider";
 import { createAsyncQueue } from "./queue";
-import { unlinkSync } from "fs";
 import axios from "axios";
 import { ConvertMessagesWhatsToOne } from "./convert_list_messages_to_one";
 import { SendMessageWhatsExternal } from "../protocoll_events";
@@ -424,9 +423,9 @@ export async function SendWhatsappMessage(
           : await BotPersonal.SendMessage(SanitizedPhone, messages);
       }
     });
-    messages.forEach((message) => {
-      message.file_path && unlinkSync(message.file_path);
-    });
+    // messages.forEach((message) => {
+    //   message.file_path && unlinkSync(message.file_path);
+    // });
     return Promise.resolve(true);
   } catch (error) {
     EventEmitter.emit(Events.error, error);

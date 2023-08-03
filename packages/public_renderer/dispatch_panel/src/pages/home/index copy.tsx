@@ -4,6 +4,7 @@ import {
   Divider,
   HStack,
   Icon,
+  IconButton,
   IconProps,
   Modal,
   ModalBody,
@@ -18,92 +19,144 @@ import {
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import ItemsList from "/@/components/column";
+// import socket from "/@/infra/socket";
 import { Player } from "@lottiefiles/react-lottie-player";
 import useSound from "use-sound";
 import Coffee from "../../svg/animations/4qQI8BBTYK.json";
 import LoadingAnimation from "../../svg/animations/loading.json";
 import boopSfx from "../../../public/notification.mp3";
-import SocketIOClient from "./socket_sigleton";
+import { Socket, io } from "socket.io-client";
 
 const regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
 
 let TotalItens = 0;
 
+let socket:Socket|null //= io({reconnection:true,  reconnectionDelay:1000});
 const MAX_RECONNECT_ATTEMPTS = 5;
 
 export default function Home() {
+  // const [socket, setSocket] = useState<Socket|null>(null);
   const [showModal, setShowModal] = useState(false);
 
   const [play] = useSound(boopSfx);
   const [connected, setConnected] = useState(false);
+  const [disconnected, setDisconnected] = useState(false);
   const [items, setItems] = useState<{ [key: string]: string | number }[]>([]);
   const [last_time_received, setLast_time_received] = useState<Date>();
   const queryParams = new URLSearchParams(window.location.search);
   let CounterTotalItens = 0;
 
-  const socketClient = SocketIOClient.getInstance({
-    maxReconnectAttempts: MAX_RECONNECT_ATTEMPTS,
-    onConnectionChange,
-    onMaxReconnectAttemptsReached: onMaxAttemptsReached,
-  });
 
-  function onConnectionChange(isConnected: boolean): void {
-    setConnected(isConnected);
-    if (isConnected) {
-      setShowModal(false);
-      console.log("Connected to server!");
-    } else {
-      console.log("Disconnected from server!");
-    }
-  }
-
-  function onMaxAttemptsReached(): void {
-    setShowModal(true);
-    console.log("Max reconnection attempts reached!");
-  }
-
-  useEffect(() => {
-    socketClient.connect();
-    socketClient.listen("data_dispath_panel", (data) => {
-      console.log(`Received data`);
-      setItems(data);
-      setLast_time_received(new Date());
-      setShowModal(false);
-    });
-
-    return () => socketClient.disconnect();
-  }, []);
-
-  async function fetchWithTimeout(resource: string | URL, timeout: number) {
+  async function fetchWithTimeout(resource: string | URL, timeout:number) {
+   
+    
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
     const response = await fetch(resource, {
       timeout,
-      signal: controller.signal,
+      signal: controller.signal  
     });
     clearTimeout(id);
     return response;
   }
+ 
+
+  function connectSocket(){
+    socket?.disconnect()
+    socket?.removeAllListeners()
+    socket?.close()
+    socket = null
+    socket = io({autoConnect:false,  reconnection:true,  reconnectionDelay:1000});
+    socket.on('connect', () => {
+      console.log('Connected to socket server');
+      setConnected(true);
+      setShowModal(false)
+      setDisconnected(false)
+     });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from socket server');
+      setConnected(false);
+      setDisconnected(true)
+    });
+    socket.io.on("reconnect_attempt", (attempt) => {
+      if (attempt >= MAX_RECONNECT_ATTEMPTS) {
+        setShowModal(true) 
+      }
+      console.log('reconnect_attempt', attempt)
+    });
+    socket.on("data_dispath_panel", (data) => {
+          Array.isArray(data) && setItems(data);
+          setLast_time_received(new Date());
+        });
+        socket?.connect();
+  }
+
+  useEffect(() => {
+    connectSocket()
+    return () => {socket?.close()};
+  }, []);
+
+  useEffect(()=>{
+    if(disconnected){
+      socket?.disconnect()
+      socket?.removeAllListeners()
+      socket?.close()
+      setTimeout(handleManualReconnect, 5000)
+    }
+    
+  },[disconnected])
+
+
+  useEffect(() => {
+    if(connected){
+      console.log('Check ping');
+      fetchWithTimeout(window.location +'ping', 2000).catch(()=>{
+          setConnected(false)
+       setDisconnected(true)
+        })
+    
+    }
+  }, [connected]);
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
   const handleManualReconnect = () => {
+    console.log('Attempting to manually reconnect to socket server...');
+    connectSocket()
     setShowModal(false);
-    socketClient.reconnect()
   };
 
-  useEffect(() => {
-    setInterval(async () => {
+  // useEffect(() => {
+  //   socket.on("configs_dispath_panel", (data) => {
+  //     setConnected(true);
+  //   });
+  //   socket.on("data_dispath_panel", (data) => {
+  //     Array.isArray(data) && setItems(data);
+  //     setLast_time_received(new Date());
+  //     setConnected(true);
+  //   });
+  //   socket.on("disconnect", (reason) => {
+  //     setConnected(false);
+  //     socket.connect();
+  //   });
+  //   socket.connect();
+  // }, []);
+
+
+  useEffect(()=>{
+    setInterval(async()=>{
       try {
-        await fetchWithTimeout(window.location + "ping", 2000);
+         await fetchWithTimeout(window.location +'ping', 2000)
       } catch (error) {
         console.log(error);
-        setConnected(false);
+        setConnected(false)
+        setDisconnected(true)
       }
-    }, 60 * 1000);
-  }, []);
+    }, 60*1000)
+  },[])
 
   const CircleIcon = (props: IconProps) => (
     <Icon viewBox="0 0 200 200" {...props}>
@@ -269,50 +322,33 @@ export default function Home() {
         <Text>Ultima Atualização: {last_time_received?.toLocaleString()}</Text>
         <HStack flex={1} justifyContent="flex-end">
           <CheckCircleIcon color={connected ? "green" : "red"} />
-          {connected ? (
-            <Text>Conectado</Text>
-          ) : (
-            <Button
-              colorScheme="blue"
-              onClick={() => {
-                handleManualReconnect();
-              }}
-            >
-              Reconectar
-            </Button>
-          )}
+          {
+            connected ?<Text>Conectado</Text> :
+<Button colorScheme="blue"  onClick={()=>{
+  handleManualReconnect()
+}}>Reconectar</Button>
+          }
         </HStack>
+     
       </HStack>
+     
+       <Modal isCentered isOpen={showModal} onClose={handleCloseModal}>
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader>Atenção</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+      A conexão com o servidor foi perdida.
+      </ModalBody>
 
-      <Modal isCentered isOpen={showModal} onClose={handleCloseModal}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Atenção</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            Foram feitas {MAX_RECONNECT_ATTEMPTS} tentativas de reconexão com o
-            servidor, deseja tentar novamente?
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              variant="ghost"
-              colorScheme="blue"
-              mr={3}
-              onClick={handleCloseModal}
-            >
-              Cancelar
-            </Button>
-            <Button
-              autoFocus
-              colorScheme="blue"
-              onClick={handleManualReconnect}
-            >
-              Reconectar
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ModalFooter>
+        <Button variant='ghost' colorScheme='blue' mr={3} onClick={handleCloseModal}>
+          Close
+        </Button>
+        <Button autoFocus  colorScheme='blue' onClick={handleManualReconnect} >Reconectar</Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
     </VStack>
   );
 }

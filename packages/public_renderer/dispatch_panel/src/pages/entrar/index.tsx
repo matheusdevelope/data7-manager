@@ -18,6 +18,9 @@ export default function Entrar() {
           onClick={() => {
             setStart(true);
           }}
+          _hover={{
+            bgColor:"#055679"
+          }}
           bgColor="#006B98"
           w={300}
           fontSize="2xl"
